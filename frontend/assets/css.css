@@ -1,0 +1,16 @@
+:root{
+    --primary-color: #0D1936;
+    --secondary-color: #535354;
+    --background-color: #efefef;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --white-color: #fff;
+    --black-color: #000;
+    --input-border-color: #E3e4e6;
+    --transition-3s: 0.3s;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
