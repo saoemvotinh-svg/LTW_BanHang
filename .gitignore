@@ -1,0 +1,29 @@
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# PHP/Composer
+vendor/
+composer.lock
+
+# Uploads (giữ cấu trúc thư mục)
+backend/uploads/products/*
+backend/uploads/users/*
+!backend/uploads/products/.gitkeep
+!backend/uploads/users/.gitkeep
+
+# Assets được sinh ra / quá lớn
+frontend/assets/images/banners/*
+frontend/assets/images/products/*
+!frontend/assets/images/banners/.gitkeep
+!frontend/assets/images/products/.gitkeep
+
+# Database local
+*.sql.bak
+
+# Logs
+*.log

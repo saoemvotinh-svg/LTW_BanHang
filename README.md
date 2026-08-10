@@ -1,174 +1,149 @@
-# E-Commerce Project
+# Website Bán Hàng Cơ Bản
 
-Dự án thương mại điện tử xây dựng với **HTML + JS + PHP + MySQL**, phát triển theo nhóm 6 thành viên. Mỗi thành viên đảm nhận cả Frontend (HTML, JS) lẫn Backend (PHP, MySQL) cho module được phân công.
+Website bán hàng cơ bản - Bài tập môn học. Phạm vi project được giữ ở mức cơ bản phù hợp bài tập môn học: **không triển khai đặt hàng, thanh toán online hoặc cổng thanh toán**. Tập trung vào hiển thị sản phẩm, tìm kiếm/danh mục, giỏ hàng cơ bản, tài khoản User và quản trị Admin.
 
 ## Công nghệ
 
-| Thành phần | Công nghệ |
-|---|---|
-| Frontend | HTML, CSS, JavaScript (Fetch API) |
-| Backend | PHP (API thuần, không framework) |
-| Database | MySQL |
-| Luồng xử lý | HTML → JS fetch() → PHP API → Controller → Model → MySQL |
+- **Frontend:** HTML + CSS + JavaScript
+- **Backend:** PHP
+- **Database:** MySQL
 
-## Phân công thành viên
+## Tính năng cuối kỳ
 
-| Thành viên | Module | Phần chính |
-|---|---|---|
-| Member 1 | Authentication & User | Đăng nhập, đăng ký, profile, phân quyền |
-| Member 2 | Product | Sản phẩm, chi tiết, tìm kiếm |
-| Member 3 | Category + Admin Product | Danh mục + quản lý sản phẩm Admin |
-| Member 4 | Cart + Checkout | Giỏ hàng + đặt hàng |
-| Member 5 | Order | Lịch sử đơn + quản lý đơn Admin |
-| Member 6 | Admin + System | Dashboard, quản lý User, tích hợp hệ thống |
+- Trang chủ và giao diện sản phẩm.
+- Danh sách sản phẩm, chi tiết sản phẩm, danh mục, tìm kiếm/lọc cơ bản.
+- Giỏ hàng cơ bản: thêm, xóa, tăng/giảm số lượng, tính tổng tiền.
+- Tài khoản: đăng ký, đăng nhập, đăng xuất, profile.
+- Admin: Dashboard đơn giản, CRUD sản phẩm, CRUD danh mục, quản lý User.
+- PHP + MySQL Backend; HTML/CSS/JS Frontend tách riêng.
+- Responsive cơ bản.
+- **Không** triển khai đặt hàng, checkout, thanh toán online hoặc tích hợp cổng thanh toán.
+
+## Phân công nhóm (6 thành viên)
+
+| Thành viên | Module | Nhiệm vụ | File chính |
+|---|---|---|---|
+| Thành viên 1 | Trang chủ + giao diện dùng chung | Header, Footer, trang chủ, banner, danh sách sản phẩm nổi bật, bố cục dùng chung | `frontend/index.html`; `includes/header.html`; `includes/footer.html`; `css/global.css`; `css/home.css`; `js/main.js` |
+| Thành viên 2 | Sản phẩm + danh mục User | Danh sách sản phẩm, chi tiết sản phẩm, danh mục, tìm kiếm và lọc cơ bản | `pages/products.html`; `product-detail.html`; `category.html`; `search.html`; `css/product.css`; `js/product.js`; Product API |
+| Thành viên 3 | Giỏ hàng cơ bản | Thêm vào giỏ, xóa, tăng/giảm số lượng, tính tổng tiền. Không có checkout/thanh toán | `pages/cart.html`; `css/cart.css`; `js/cart.js`; Cart API/logic |
+| Thành viên 4 | Tài khoản User | Đăng ký, đăng nhập, đăng xuất, profile và bảo vệ trang cần đăng nhập | `pages/login.html`; `register.html`; `profile.html`; `css/auth.css`; `js/auth.js`; Auth/User API |
+| Thành viên 5 | Admin | Dashboard đơn giản, CRUD sản phẩm, CRUD danh mục, quản lý User | `admin/index.html`; `products.html`; `categories.html`; `users.html`; `css/admin.css`; `js/admin.js`; Admin API |
+| Thành viên 6 | Database + Backend tích hợp | Thiết kế CSDL, PHP API, kết nối MySQL, middleware/phân quyền, tích hợp và kiểm thử | `database/ecommerce.sql`; `backend/config`; `models`; `controllers`; `api`; `middleware`; README |
 
 ## Cấu trúc thư mục
 
 ```
 ecommerce/
 ├── frontend/
-│   ├── index.html [M6]
+│   ├── index.html
 │   ├── pages/
-│   │   ├── products.html [M2]
-│   │   ├── product-detail.html [M2]
-│   │   ├── category.html [M3]
-│   │   ├── search.html [M2]
-│   │   ├── login.html [M1]
-│   │   ├── register.html [M1]
-│   │   ├── profile.html [M1]
-│   │   ├── cart.html [M4]
-│   │   ├── checkout.html [M4]
-│   │   └── orders.html [M5]
+│   │   ├── products.html
+│   │   ├── product-detail.html
+│   │   ├── category.html
+│   │   ├── search.html
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   ├── profile.html
+│   │   └── cart.html
 │   ├── admin/
-│   │   ├── index.html [M6]
-│   │   ├── users.html [M6]
-│   │   ├── products.html [M3]
-│   │   ├── categories.html [M3]
-│   │   └── orders.html [M5]
+│   │   ├── index.html
+│   │   ├── products.html
+│   │   ├── categories.html
+│   │   └── users.html
 │   ├── css/
-│   │   ├── style.css [M3 + M6]
-│   │   ├── responsive.css [M6]
-│   │   └── admin.css [M6]
+│   │   ├── global.css
+│   │   ├── home.css
+│   │   ├── product.css
+│   │   ├── cart.css
+│   │   ├── auth.css
+│   │   ├── admin.css
+│   │   └── responsive.css
 │   ├── js/
-│   │   ├── main.js [M6]
-│   │   ├── auth.js [M1]
-│   │   ├── product.js [M2]
-│   │   ├── cart.js [M4]
-│   │   ├── checkout.js [M4]
-│   │   └── admin.js [M6]
+│   │   ├── main.js
+│   │   ├── auth.js
+│   │   ├── product.js
+│   │   ├── cart.js
+│   │   └── admin.js
+│   ├── includes/
+│   │   ├── header.html
+│   │   └── footer.html
 │   └── assets/
 │       ├── images/
+│       │   ├── logo.png
+│       │   ├── banners/
+│       │   └── products/
 │       └── icons/
 ├── backend/
 │   ├── config/
-│   │   └── database.php [M6]
+│   │   ├── database.php
+│   │   └── config.php
 │   ├── controllers/
-│   │   ├── AuthController.php [M1]
-│   │   ├── UserController.php [M1/M6]
-│   │   ├── ProductController.php [M2/M3]
-│   │   ├── CategoryController.php [M3]
-│   │   ├── CartController.php [M4]
-│   │   ├── CheckoutController.php [M4]
-│   │   └── OrderController.php [M5]
+│   │   ├── AuthController.php
+│   │   ├── UserController.php
+│   │   ├── ProductController.php
+│   │   ├── CategoryController.php
+│   │   └── CartController.php
 │   ├── models/
-│   │   ├── User.php [M1]
-│   │   ├── Product.php [M2/M3]
-│   │   ├── Category.php [M3]
-│   │   ├── ProductImage.php [M3]
-│   │   ├── Order.php [M4/M5]
-│   │   └── OrderDetail.php [M5]
+│   │   ├── User.php
+│   │   ├── Product.php
+│   │   ├── Category.php
+│   │   └── Cart.php
 │   ├── api/
-│   │   ├── auth/ [M1]
+│   │   ├── auth/
 │   │   │   ├── login.php
 │   │   │   ├── register.php
 │   │   │   ├── logout.php
 │   │   │   └── profile.php
-│   │   ├── products/ [M2/M3]
+│   │   ├── products/
 │   │   │   ├── list.php
 │   │   │   ├── detail.php
 │   │   │   ├── create.php
 │   │   │   ├── update.php
 │   │   │   ├── delete.php
 │   │   │   └── upload.php
-│   │   ├── categories/ [M3]
+│   │   ├── categories/
 │   │   │   ├── list.php
 │   │   │   ├── create.php
 │   │   │   ├── update.php
 │   │   │   └── delete.php
-│   │   ├── cart/ [M4]
-│   │   │   ├── list.php
-│   │   │   ├── add.php
-│   │   │   ├── update.php
-│   │   │   └── delete.php
-│   │   └── orders/ [M5]
-│   │       ├── create.php
+│   │   └── cart/
 │   │       ├── list.php
-│   │       ├── detail.php
-│   │       ├── update-status.php
-│   │       └── cancel.php
+│   │       ├── add.php
+│   │       ├── update.php
+│   │       └── delete.php
 │   ├── middleware/
-│   │   └── auth.php [M6]
+│   │   ├── auth.php
+│   │   └── admin.php
 │   └── uploads/
 │       ├── products/
 │       └── users/
 ├── database/
-│   └── ecommerce.sql [M6 + ALL]
-└── README.md [M6 + ALL]
+│   └── ecommerce.sql
+├── .gitignore
+└── README.md
 ```
 
-## Chi tiết tính năng theo module
+## Kế hoạch 5 tuần
 
-### Member 1 — Authentication & User
-- Frontend: `login.html`, `register.html`, `profile.html`, `auth.js`
-- Backend: `AuthController.php`, `UserController.php`, `User.php`, API `auth/`
-- Tính năng: Đăng ký, đăng nhập, đăng xuất, profile, đổi thông tin cá nhân, đổi mật khẩu, kiểm tra đăng nhập, phân quyền User/Admin
-- Database: `users`
+| Tuần | Nội dung | Kết quả |
+|---|---|---|
+| Tuần 1 - HTML | Dựng toàn bộ khung trang bằng HTML, chưa xử lý dữ liệu thật | Tất cả trang HTML mở được và liên kết với nhau |
+| Tuần 2 - CSS | Hoàn thiện giao diện và responsive | Website có giao diện thống nhất, đẹp và responsive |
+| Tuần 3 - JavaScript | Thêm tương tác Frontend và xử lý dữ liệu giả | Các chức năng Frontend chạy được bằng dữ liệu mẫu |
+| Tuần 4 - PHP + MySQL | Xây dựng Backend/API và kết nối cơ sở dữ liệu | Frontend gọi PHP bằng `fetch()`, PHP xử lý và MySQL lưu dữ liệu |
+| Tuần 5 - Tích hợp + kiểm thử | Kết nối toàn bộ hệ thống, sửa lỗi, hoàn thiện demo và source | Hoàn thành User + Admin, CRUD, đăng nhập/phân quyền, tìm kiếm, giỏ hàng cơ bản, responsive |
 
-### Member 2 — Product (User)
-- Frontend: `products.html`, `product-detail.html`, `search.html`, `product.js`
-- Backend: `ProductController.php`, `Product.php`, `ProductImage.php`, API `products/`
-- Tính năng: Danh sách sản phẩm, chi tiết sản phẩm, tìm kiếm, lọc, phân trang, hiển thị nhiều ảnh, sắp xếp giá
-- Database: `products`, `product_images`
+## Quy ước làm việc
 
-### Member 3 — Category + Product Admin
-- Frontend: `category.html`, admin `products.html`, `categories.html`
-- Backend: `ProductController.php`, `CategoryController.php`, `Product.php`, `Category.php`, API `products/`, `categories/`
-- Tính năng Product Admin: Thêm/Xem/Sửa/Xóa sản phẩm, upload nhiều ảnh
-- Tính năng Category: Thêm/Xem/Sửa/Xóa danh mục
-- Database: `products`, `product_images`, `categories`
+- **Không nhúng PHP vào HTML.** Frontend gọi PHP API bằng `fetch()`.
+- PHP xử lý nghiệp vụ và truy vấn MySQL, trả dữ liệu JSON cho JavaScript.
+- `database/ecommerce.sql` là cơ sở dữ liệu chung; thay đổi cấu trúc phải thống nhất cả nhóm.
+- Mỗi thành viên làm branch riêng và merge vào `develop` sau khi test.
+- Tuần 1-3 ưu tiên HTML/CSS/JS; tuần 4 kết nối PHP + MySQL; tuần 5 tích hợp và kiểm thử.
 
-### Member 4 — Cart + Checkout
-- Frontend: `cart.html`, `checkout.html`, `cart.js`, `checkout.js`
-- Backend: `CartController.php`, `CheckoutController.php`, `Order.php`, API `cart/`
-- Tính năng Cart: Thêm, xóa, tăng/giảm số lượng, tính tổng tiền
-- Tính năng Checkout: Thông tin người nhận, địa chỉ, số điện thoại, phương thức thanh toán, xác nhận đặt hàng
-- Kiến thức yêu cầu: JavaScript, Fetch API, PHP API, Session, MySQL, Transaction
+## Cài đặt và chạy dự án
 
-### Member 5 — Order
-- Frontend user: `orders.html`; Frontend admin: `orders.html`
-- Backend: `OrderController.php`, `Order.php`, `OrderDetail.php`, API `orders/`
-- Tính năng User: Xem đơn hàng, xem chi tiết, theo dõi trạng thái
-- Tính năng Admin: Xem đơn, xem chi tiết, xác nhận, đang giao, hoàn thành, hủy đơn
-- Ví dụ trạng thái: `Pending → Confirmed → Shipping → Completed` (hoặc `Pending → Cancelled`)
-
-### Member 6 — Admin + System Integration
-- Frontend: `index.html`, admin `index.html`, `users.html`, `admin.css`, `responsive.css`, `main.js`, `admin.js`
-- Backend: `database.php`, `auth.php` (middleware), toàn bộ API
-- Tính năng Dashboard: Tổng người dùng, tổng sản phẩm, tổng đơn hàng, doanh thu
-- Tính năng User Admin: Xem/Thêm/Sửa/Xóa/Khóa User, phân quyền
-
-### File dùng chung (không chia riêng cho một người)
-- CSS: `style.css` (giao diện User), `responsive.css` (responsive), `admin.css` (giao diện Admin)
-- JS: mỗi người phụ trách JS của module mình
-
-## Quy trình làm việc
-
-1. **BUỚC 1**: Thiết kế Database — cả 6 thành viên cùng thống nhất file `ecommerce.sql` từ đầu (vẽ ERD)
-2. **BUỚC 2**: Thống nhất API
-3. **BUỚC 3**: Tạo cấu trúc project chung
-4. **BUỚC 4**: Mỗi người code module được phân công
-5. **BUỚC 5**: Tích hợp Frontend + Backend
-6. **BUỚC 6**: Kiểm thử (Test) chéo
-7. **BUỚC 7**: Deploy và làm slide báo cáo
-
-> **Lưu ý:** Database `ecommerce.sql` là điểm kết nối tất cả các module. Yêu cầu báo cáo có phần phân tích thiết kế hệ thống và CSDL, vì vậy nhóm nên thiết kế ERD kỹ càng trước khi bắt đầu code. Các thành viên dùng chung model/API (ví dụ Member 2 và Member 3 dùng chung Product) cần thống nhất API và Database trước khi code.
+1. Cài XAMPP (Apache + PHP + MySQL), đặt project vào thư mục `htdocs`.
+2. Tạo database `ecommerce` và import `database/ecommerce.sql`.
+3. Cấu hình kết nối MySQL trong `backend/config/database.php` và `backend/config/config.php`.
+4. Truy cập `http://localhost/<tên-thư-mục-project>/frontend/index.html`.
