@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách sản phẩm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/product.css">
+</head>
+<body>
+   <header class="main-header">
+    <div class="container header-container">
+      <div class="logo"><a href="#">Nhóm 2</a></div>
+       <nav class="main-nav">
+        <ul>
+          <li><a href="../index.html">Trang chủ</a></li>
+          <li><a href="products.html" class="active">Sản phẩm</a></li>
+          <li><a href="../news.html">Khuyến mãi</a></li>
+          <li class="dropdown">
+            <a href="category.html">Danh mục <i class="fa-solid fa-chevron-down"></i></a>
+            <ul class="dropdown-menu">
+              <li><a href="category.html">Quần áo</a></li>
+              <li><a href="category.html">Váy</a></li>
+            </ul>
+          </li>
+          <li><a href="cart.html">Đơn hàng</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="#"><i class="fa-regular fa-user"></i> Tài khoản</a>
+        <a href="#" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
+      </div>
+    </div>
+     </header>
+    <main class="container">
+        <h1 class="section-title">Tất cả sản phẩm</h1>
+        <div class="filter-section">
+            <label for="sort">Sắp xếp theo:</label>
+            <select id="sort">
+                <option value="new">Mới nhất</option>
+                <option value="price_asc">Giá: Thấp đến cao</option>
+                <option value="price_desc">Giá: Cao xuống thấp</option>
+            </select>
+        </div>
+        <br>
+        <div class="product-grid">
+            <!-- Sản phẩm 1 -->
+            <div class="product-card">
+                <div class="card-img">
+                  <span class="badge">New</span>
+                  <div class="img-placeholder">
+                      <a href="product-detail.html">
+                          <img src="../assets/images/demo1.jpg" alt="Áo quần">
+                      </a>
+                  </div>
+              </div>
+                <div class="card-body">
+                    <span class="category">Áo quần trẻ em</span>
+                    <h3 class="product-title">
+                     <a href="product-detail.html">Quần áo mùa hè cute</a>
+                    </h3>
+                    <div class="card-footer">
+                      <span class="price">90.000 VNĐ</span>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Sản phẩm 2 -->
+            <div class="product-card">
+                <div class="card-img">
+                    <div class="img-placeholder"><img src="../assets/images/demo2.jpg" alt="Váy xòe"></div>
+                </div>
+                <div class="card-body">
+                    <span class="category">Váy bé gái</span>
+                    <h3 class="product-title">Váy xòe trái tim</h3>
+                    <div class="card-footer">
+                        <span class="price">70.000 VNĐ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination">
+            <a href="#">&laquo; Trước</a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">Sau &raquo;</a>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h3>Nhóm 2</h3>
+        <p>Mục tiêu xây dựng Web bán hàng để học hỏi các kiến thức thật tế, tự tin bước vào thị trường</p>
+      </div>
+      <div class="footer-col">
+        <h4>Điều hướng</h4>
+        <ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <ul><li>Địa chỉ: 25, Võ Oanh</li><li>Email: vanwhuy60@gmail,com</li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Chính sách</h4>
+        <ul><li>Lỗi đổi trả trong 7 ngày</li><li>Bảo hành 2 tháng</li></ul>
+      </div>
+    </div>
+    </footer>
+
+</body>
+</html>
