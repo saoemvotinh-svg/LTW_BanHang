@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý sản phẩm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div data-include="../includes/header.html"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h2 class="sidebar-title">Quản trị</h2>
+      <nav>
+        <a class="sidebar-link" href="admin-dashboard.html">Tổng quan</a>
+        <a class="sidebar-link active" href="admin-products.html">Sản phẩm</a>
+        <a class="sidebar-link" href="admin-form.html">Thêm/Sửa sản phẩm</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header row-between">
+        <div>
+          <h1>Quản lý sản phẩm</h1>
+          <p>Danh sách sản phẩm hiện có.</p>
+        </div>
+        <a class="btn btn-primary" href="admin-form.html">+ Thêm sản phẩm</a>
+      </header>
+
+      <section class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Hình ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Gia</th>
+                <th>Số lượng</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SP01</td>
+                <td><img class="thumb" src="../assets/images/shopping.webp" alt="sản phẩm 1"></td>
+                <td>Áo mùa hè cute</td>
+                <td>90.000 đ</td>
+                <td>30</td>
+                <td>
+                  <a class="btn btn-edit" href="admin-form.html">Sửa</a>
+                  <button class="btn btn-delete" type="button">Xóa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>SP02</td>
+                <td><img class="thumb" src="../assets/images/shopping (1).webp" alt="sản phẩm 2"></td>
+                <td>Váy xòe trái tim</td>
+                <td>70.000 đ</td>
+                <td>22</td>
+                <td>
+                  <a class="btn btn-edit" href="admin-form.html">Sửa</a>
+                  <button class="btn btn-delete" type="button">Xóa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>SP03</td>
+                <td><img class="thumb" src="../assets/images/shopping (2).webp" alt="sản phẩm 3"></td>
+                <td>Đồ bộ khủng long</td>
+                <td>80.000 đ</td>
+                <td>15</td>
+                <td>
+                  <a class="btn btn-edit" href="admin-form.html">Sửa</a>
+                  <button class="btn btn-delete" type="button">Xóa</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div data-include="../includes/footer.html"></div>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
