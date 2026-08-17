@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Products</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div data-include="../includes/header.html"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h2 class="sidebar-title">Quan tri</h2>
+      <nav>
+        <a class="sidebar-link" href="admin-dashboard.html">Tong quan</a>
+        <a class="sidebar-link active" href="admin-products.html">San pham</a>
+        <a class="sidebar-link" href="admin-form.html">Them/Sua san pham</a>
+        <a class="sidebar-link" href="../index.html">Ve trang chu</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header row-between">
+        <div>
+          <h1>Quan ly san pham</h1>
+          <p>Danh sach san pham hien co.</p>
+        </div>
+        <a class="btn btn-primary" href="admin-form.html">+ Them san pham</a>
+      </header>
+
+      <section class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Hinh anh</th>
+                <th>Ten san pham</th>
+                <th>Gia</th>
+                <th>So luong</th>
+                <th>Hanh dong</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SP01</td>
+                <td><img class="thumb" src="../assets/images/shopping.webp" alt="san pham 1"></td>
+                <td>Ao mua he cute</td>
+                <td>90.000 d</td>
+                <td>30</td>
+                <td>
+                  <a class="btn btn-edit" href="admin-form.html">Sua</a>
+                  <button class="btn btn-delete" type="button">Xoa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>SP02</td>
+                <td><img class="thumb" src="../assets/images/shopping (1).webp" alt="san pham 2"></td>
+                <td>Vay xoe trai tim</td>
+                <td>70.000 d</td>
+                <td>22</td>
+                <td>
+                  <a class="btn btn-edit" href="admin-form.html">Sua</a>
+                  <button class="btn btn-delete" type="button">Xoa</button>
+                </td>
+              </tr>
+              <tr>
+                <td>SP03</td>
+                <td><img class="thumb" src="../assets/images/shopping (2).webp" alt="san pham 3"></td>
+                <td>Do bo khung long</td>
+                <td>80.000 d</td>
+                <td>15</td>
+                <td>
+                  <a class="btn btn-edit" href="admin-form.html">Sua</a>
+                  <button class="btn btn-delete" type="button">Xoa</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div data-include="../includes/footer.html"></div>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

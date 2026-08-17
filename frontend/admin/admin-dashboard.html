@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div data-include="../includes/header.html"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h2 class="sidebar-title">Quan tri</h2>
+      <nav>
+        <a class="sidebar-link active" href="admin-dashboard.html">Tong quan</a>
+        <a class="sidebar-link" href="admin-products.html">San pham</a>
+        <a class="sidebar-link" href="admin-form.html">Them/Sua san pham</a>
+        <a class="sidebar-link" href="../index.html">Ve trang chu</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1>Bang dieu khien</h1>
+        <p>Theo doi nhanh tinh hinh cua cua hang.</p>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <h3>120</h3>
+          <p>San pham</p>
+        </article>
+        <article class="stat-card">
+          <h3>35</h3>
+          <p>Don hang moi</p>
+        </article>
+        <article class="stat-card">
+          <h3>58</h3>
+          <p>Khach hang</p>
+        </article>
+        <article class="stat-card">
+          <h3>12</h3>
+          <p>Danh muc</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Don hang gan day</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ma don</th>
+                <th>Khach hang</th>
+                <th>Tong tien</th>
+                <th>Trang thai</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#DH001</td>
+                <td>Nguyen Van A</td>
+                <td>450.000 d</td>
+                <td><span class="status done">Da giao</span></td>
+              </tr>
+              <tr>
+                <td>#DH002</td>
+                <td>Tran Thi B</td>
+                <td>220.000 d</td>
+                <td><span class="status wait">Dang xu ly</span></td>
+              </tr>
+              <tr>
+                <td>#DH003</td>
+                <td>Le Van C</td>
+                <td>680.000 d</td>
+                <td><span class="status wait">Dang xu ly</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div data-include="../includes/footer.html"></div>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
