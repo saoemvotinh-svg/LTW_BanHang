@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Product Form</title>
+  <title>Thêm/Sửa sản phẩm</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/admin.css">
 </head>
@@ -12,63 +12,62 @@
 
   <div class="admin-layout">
     <aside class="admin-sidebar">
-      <h2 class="sidebar-title">Quan tri</h2>
+      <h2 class="sidebar-title">Quản trị</h2>
       <nav>
-        <a class="sidebar-link" href="admin-dashboard.html">Tong quan</a>
-        <a class="sidebar-link" href="admin-products.html">San pham</a>
-        <a class="sidebar-link active" href="admin-form.html">Them/Sua san pham</a>
-        <a class="sidebar-link" href="../index.html">Ve trang chu</a>
+        <a class="sidebar-link" href="admin-dashboard.html">Tổng quan</a>
+        <a class="sidebar-link" href="admin-products.html">Sản phẩm</a>
+        <a class="sidebar-link active" href="admin-form.html">Thêm/Sửa sản phẩm</a>
       </nav>
     </aside>
 
     <main class="admin-main">
       <header class="admin-header">
-        <h1>Them / Sua san pham</h1>
-        <p>Nhap thong tin co ban de quan ly san pham.</p>
+        <h1>Thêm / Sửa sản phẩm</h1>
+        <p>Nhập thông tin cơ bản để quản lý sản phẩm.</p>
       </header>
 
       <section class="panel">
         <form class="admin-form" action="#" method="post">
           <div class="form-group">
-            <label for="productName">Ten san pham</label>
-            <input id="productName" type="text" placeholder="Nhap ten san pham" required>
+            <label for="productName">Tên sản phẩm</label>
+            <input id="productName" type="text" placeholder="Nhập tên sản phẩm" required>
           </div>
 
           <div class="form-group two-col">
             <div>
-              <label for="productCategory">Danh muc</label>
+              <label for="productCategory">Danh mục</label>
               <select id="productCategory" required>
-                <option value="">Chon danh muc</option>
-                <option>Ao quan tre em</option>
-                <option>Vay</option>
-                <option>Do bo</option>
+                <option value="">Chọn danh mục</option>
+                <option>Áo quần trẻ em</option>
+                <option>Váy</option>
+                <option>Đồ bộ</option>
               </select>
             </div>
             <div>
-              <label for="productPrice">Gia (d)</label>
+              <label for="productPrice">Giá (đ)</label>
               <input id="productPrice" type="number" min="0" placeholder="VD: 90000" required>
             </div>
           </div>
 
           <div class="form-group two-col">
             <div>
-              <label for="productQty">So luong</label>
+              <label for="productQty">Số lượng</label>
               <input id="productQty" type="number" min="0" placeholder="VD: 10" required>
             </div>
             <div>
-              <label for="productImage">Link hinh anh</label>
+              <label for="productImage">Link hình ảnh</label>
               <input id="productImage" type="text" placeholder="assets/images/ten-anh.jpg">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="productDesc">Mo ta</label>
-            <textarea id="productDesc" rows="5" placeholder="Mo ta ngan ve san pham"></textarea>
+            <label for="productDesc">Mô tả</label>
+            <textarea id="productDesc" rows="5" placeholder="Mô tả ngắn về sản phẩm"></textarea>
           </div>
 
           <div class="form-actions">
-            <button class="btn btn-primary" type="submit">Luu san pham</button>
-            <a class="btn btn-cancel" href="admin-products.html">Huy</a>
+            <button class="btn btn-primary" type="submit">Lưu sản phẩm</button>
+            <a class="btn btn-cancel" href="admin-products.html">Hủy</a>
           </div>
         </form>
       </section>
