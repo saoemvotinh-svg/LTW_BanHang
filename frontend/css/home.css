@@ -20,44 +20,8 @@ a {
     text-decoration: none;
     color: inherit;
 }
-.header-actions {
-    display: flex;
-    align-items: center;
-}
 .header-actions a{
     margin-left: 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.search-form {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-}
-
-.search-input {
-    padding: 8px 12px;
-    border-radius: 4px 0 0 4px; 
-    border: 1px solid #ccc;
-    border-right: none; 
-    outline: none;
-    font-size: 14px;
-}
-
-.search-btn {
-    padding: 8px 15px;
-    border: 1px solid #00a884;
-    background: #00a884;
-    color: white;
-    border-radius: 0 4px 4px 0; 
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s;
-}
-
-.search-btn:hover {
-    background: #008a6b;
 }
 ul {
     list-style: none;
