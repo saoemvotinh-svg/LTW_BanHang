@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> Giỏ hàng - Nhóm 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/cart.css">
+
+</head>
+
+<body>
+    <!--HEADER-->
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="../index.html">Nhóm 2</a>
+            </div>
+
+            <nav class="main-nav">
+                <ul>
+                    <li>
+                        <a href="../index.html">Trang chủ</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Sản phẩm</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Khuyến mãi</a>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#">
+                            Danh mục
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Quần áo</a></li>
+                            <li><a href="#">Váy</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <a href="#">Đơn hàng</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="#">
+                    <i class="fa-regular fa-user"></i>
+                    Tài khoản
+                </a>
+
+                <a href="cart.html" class="cart-btn">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    Giỏ hàng
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="cart-page">
+        <div class="container">
+
+            <div class="cart-header">
+                <h1>Giỏ hàng</h1>
+                <p>Kiểm tra sản phẩm và thông tin đặt hàng</p>
+            </div>
+
+            <!--Giỏ hàng-->
+            <section class="cart-section">
+                <div class="cart-list">
+
+                    <!--sản phẩm 1-->
+                    <div class="cart-item">
+                        <div class="cart-product">
+                            <img src="../assets/images/shopping.webp" alt="Quần áo mùa hè cute">
+                            <div class="cart-product-info">
+                                <h3>Quần áo mùa hè cute</h3>
+                                <p>Áo quần trẻ em</p>
+                            </div>
+                        </div>
+
+                        <div class="cart-price">
+                            <span>90.000 VNĐ</span>
+                        </div>
+
+                        <div class="cart-quantity">
+                            <button type="button">-</button>
+                            <input type="number" value="1" min="1">
+                            <button type="button">+</button>
+                        </div>
+
+                        <div class="cart-total">
+                            <span>90.000 VNĐ</span>
+                        </div>
+
+                        <button type="button" class="remove-btn">
+                            <i class="fa-solid fa-trash"></i>
+                            Xóa
+                        </button>
+
+                    </div>
+
+                    <!--sản phẩm 2-->
+                    <div class="cart-item">
+                        <div class="cart-product">
+                            <img src="../assets/images/shopping (1).webp" alt="Váy xòe trái tim">
+                            <div class="cart-product-info">
+                                <h3>Váy xòe trái tim</h3>
+                                <p>Váy trẻ em</p>
+                            </div>
+                        </div>
+
+                        <div class="cart-price">
+                            <span>70.000 VNĐ</span>
+                        </div>
+
+                        <div class="cart-quantity">
+                            <button type="button">-</button>
+                            <input type="number" value="1" min="1">
+                            <button type="button">+</button>
+                        </div>
+
+                        <div class="cart-total">
+                            <span>70.000 VNĐ</span>
+                        </div>
+
+                        <button type="button" class="remove-btn">
+                            <i class="fa-solid fa-trash"></i>
+                            Xóa
+                        </button>
+                    </div>
+
+                </div>
+
+                <!--TỔNG TIỀN-->
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Tổng tiền hàng</span>
+                        <strong>160.000 VNĐ</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Phí vận chuyển</span>
+                        <strong>0 VNĐ</strong>
+                    </div>
+
+                    <div class="summary-row summary-total">
+                        <span>Tổng thanh toán</span>
+                        <strong>160.000 VNĐ</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!--FORM đặt hàng-->
+            <section class="order-section">
+                <div class="order-form-container">
+                    <div class="order-title">
+                        <h2>Thông tin đặt hàng</h2>
+                        <p>Vui lòng nhập đầy đủ thông tin của bạn</p>
+                    </div>
+
+                    <form class="order-form">
+                        <div class="form-group">
+                            <label for="fullname">
+                                Họ và tên
+                            </label>
+                            <input
+                                type="text"
+                                id="fullname"
+                                name="fullname"
+                                placeholder="Nhập họ và tên">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">
+                                Số điện thoại
+                            </label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="Nhập số điện thoại">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">
+                                Địa chỉ
+                            </label>
+                            <textarea
+                                id="address"
+                                name="address"
+                                rows="4"
+                                placeholder="Nhập địa chỉ nhận hàng"></textarea>
+                        </div>
+
+                        <button type="submit" class="order-btn">
+                            <i class="fa-solid fa-check"></i>
+                            Xác nhận đặt hàng
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+<footer class="main-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <h3>Nhóm 2</h3>
+            <p>Mục tiêu xây dựng Web bán hàng để học hỏi các kiến thức thật tế, tự tin bước vào thị trường</p>
+        </div>
+        <div class="footer-col">
+            <h4>Điều hướng</h4>
+            <ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul>
+        </div>
+        <div class="footer-col">
+            <h4>Liên hệ</h4>
+            <ul><li>Địa chỉ: 25, Võ Oanh</li><li>Email: vanwhuy60@gmail,com</li></ul>
+        </div>
+        <div class="footer-col">
+            <h4>Chính sách</h4>
+            <ul><li>Lỗi đổi trả trong 7 ngày</li><li>Bảo hành 2 tháng</li></ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
