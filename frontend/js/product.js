@@ -2,9 +2,9 @@
 const mockProducts = [
     { id: 1, name: "Quần áo mùa hè cute", price: 90000, category: "Quần áo", img: "../assets/images/demo1.jpg", isNew: true },
     { id: 2, name: "Váy xòe trái tim", price: 70000, category: "Váy", img: "../assets/images/demo2.jpg", isNew: false },
-    { id: 3, name: "Khủng long nhỏ", price: 80000, category: "Quần áo", img: "../assets/images/demo1.jpg", isNew: true },
-    { id: 4, name: "Đồ bộ lịch lãm", price: 200000, category: "Quần áo", img: "../assets/images/demo2.jpg", isNew: false },
-    { id: 5, name: "Váy công chúa", price: 150000, category: "Váy", img: "../assets/images/demo1.jpg", isNew: true }
+    { id: 3, name: "Khủng long nhỏ", price: 80000, category: "Quần áo", img: "../assets/images/khung-long.jpg", isNew: true },
+    { id: 4, name: "Đồ bộ cho bé", price: 200000, category: "Quần áo", img: "../assets/images/do-bo.jpg", isNew: false },
+    { id: 5, name: "Váy công chúa", price: 150000, category: "Váy", img: "../assets/images/vay-cong-chua.jpg", isNew: true }
 ];
 
 function formatPrice(price) {
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
             const sortValue = e.target.value;
-            let sortedProducts = [...currentProducts]; /
+            let sortedProducts = [...currentProducts];
             if (sortValue === 'price_asc') {
                 sortedProducts.sort((a, b) => a.price - b.price); 
             } else if (sortValue === 'price_desc') {
