@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin tài khoản - Nhóm 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <header class="main-header">
+      <div class="container header-container">
+        <div class="logo"><a href="#">Nhóm 2</a></div>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="../index.html">Trang chủ</a></li>
+            <li><a href="products.html">Sản phẩm</a></li>
+            <li><a href="../news.html">Khuyến mãi</a></li>
+            <li class="dropdown">
+              <a href="category.html">Danh mục <i class="fa-solid fa-chevron-down"></i></a>
+              <ul class="dropdown-menu">
+                <li><a href="category.html">Quần áo</a></li>
+                <li><a href="category.html">Váy</a></li>
+              </ul>
+            </li>
+            <li><a href="cart.html">Đơn hàng</a></li>
+          </ul>
+        </nav>
+        <div class="header-actions">
+          <form action="search.html" method="GET" class="search-form">
+              <input type="text" name="keyword" class="search-input" placeholder="Tìm kiếm...">
+              <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          <a href="profile.html" class="active"><i class="fa-regular fa-user"></i> Tài khoản</a>
+          <a href="cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="login-section">
+        <div class="card" style="text-align: center;">
+            <h3 style="margin-bottom: 15px;">Tài Khoản</h3>
+            <p style="margin-bottom: 20px; color: #555;">Xin chào quý khách!</p>
+            <form action="login.html" method="GET">
+                <button type="submit" class="btn">Đăng xuất</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <h3>Nhóm 2</h3>
+          <p>Website bán hàng thời trang chất lượng cao.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Thông tin & Chính sách</h4>
+          <ul>
+            <li>Địa chỉ: 25 Võ Oanh, Bình Thạnh, TP.HCM</li>
+            <li>Đổi trả 7 ngày</li>
+            <li>Bảo hành uy tín</li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+</body>
+</html>
