@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thêm/Sửa sản phẩm</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
@@ -18,6 +17,7 @@
         <a class="sidebar-link" href="admin-products.html">Sản phẩm</a>
         <a class="sidebar-link active" href="admin-form.html">Thêm/Sửa sản phẩm</a>
       </nav>
+        <a class="sidebar-link" href="../index.html">Về trang chủ</a>
     </aside>
 
     <main class="admin-main">
@@ -27,7 +27,7 @@
       </header>
 
       <section class="panel">
-        <form class="admin-form" action="#" method="post">
+        <form id="productForm" class="admin-form" action="#" method="post">
           <div class="form-group">
             <label for="productName">Tên sản phẩm</label>
             <input id="productName" type="text" placeholder="Nhập tên sản phẩm" required>
@@ -55,8 +55,18 @@
               <input id="productQty" type="number" min="0" placeholder="VD: 10" required>
             </div>
             <div>
-              <label for="productImage">Link hình ảnh</label>
-              <input id="productImage" type="text" placeholder="assets/images/ten-anh.jpg">
+              <label>Hình ảnh sản phẩm</label>
+              <div style="display: flex; gap: 15px; margin-bottom: 8px;">
+                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal; cursor: pointer;">
+                  <input type="radio" name="uploadType" value="link" checked> Nhập link
+                </label>
+                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal; cursor: pointer;">
+                  <input type="radio" name="uploadType" value="file"> Tải lên
+                </label>
+              </div>
+              <input id="productImageLink" type="text" placeholder="Nhập link hình ảnh">
+              <input id="productImageFile" type="file" accept="image/*" style="display: none; padding: 8px 12px; height: auto;">
+              <small id="uploadHint" style="display: none; color: var(--muted); margin-top: 5px; font-size: 13px;">Sẽ được map ở: C:\Users\hung\Desktop\HKH\Web\Proj\Proj\frontend\assets\images\products</small>
             </div>
           </div>
 
