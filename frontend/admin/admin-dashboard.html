@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng điều khiển quản trị</title>
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/home.css">
+</head>
+
+<body>
+  <header></header>
+  <aside></aside>
+  <main>
+    <div class="dashboard">
+      <!-- Header dashboard -->
+      <section class="dashboard-header">
+        <div class="dashboard-title">
+          <h1>Hello, Admin 👋</h1>
+          <p>Thống kê tổng quan tình hình kinh doanh của cửa hàng</p>
+        </div>
+
+        <div class="dashboard-filter">
+          <button class="date-filter">
+            <i class="fa-regular fa-calendar"></i>
+            01/05/2024 - 31/05/2024
+          </button>
+        </div>
+      </section>
+
+
+      <!-- KPI CARDS -->
+      <section class="dashboard-stats" id="dashboard-stats">
+        <!-- Dashboard stats will be rendered here via JS -->
+      </section>
+
+
+      <!-- BIỂU ĐỒ + TOP SẢN PHẨM -->
+      <section class="dashboard-middle">
+
+        <!-- Doanh thu -->
+        <div class="dashboard-card revenue-chart-card">
+
+          <div class="card-header">
+            <div>
+              <h2>Doanh thu & Đơn hàng</h2>
+              <p>Thống kê theo thời gian</p>
+            </div>
+
+            <select class="chart-filter">
+              <option>Theo ngày</option>
+              <option>Theo tuần</option>
+              <option>Theo tháng</option>
+            </select>
+          </div>
+
+          <div class="chart-container">
+            <!-- Sau này JS/Chart.js sẽ vẽ biểu đồ ở đây -->
+            <canvas id="revenueChart"></canvas>
+          </div>
+
+        </div>
+
+
+        <!-- Top sản phẩm -->
+        <div class="dashboard-card top-products-card">
+
+          <div class="card-header">
+            <h2>Top sản phẩm bán chạy</h2>
+            <a href="admin-products.html">Xem tất cả</a>
+          </div>
+
+          <div class="top-products-list" id="top-products-list">
+            <!-- Top products will be rendered here via JS -->
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- BOTTOM -->
+      <section class="dashboard-bottom">
+
+        <!-- Đơn hàng mới -->
+        <div class="dashboard-card recent-orders-card">
+
+          <div class="card-header">
+            <h2>Đơn hàng mới nhất</h2>
+            <a href="admin-orders.html">Xem tất cả</a>
+          </div>
+
+          <div class="table-container">
+
+            <table class="recent-orders-table">
+
+              <thead>
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Khách hàng</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Thời gian</th>
+                </tr>
+              </thead>
+
+              <tbody id="recent-orders-tbody">
+                <!-- Recent orders will be rendered here via JS -->
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <!-- Thống kê danh mục -->
+        <div class="dashboard-card category-card">
+
+          <div class="card-header">
+            <h2>Thống kê danh mục</h2>
+          </div>
+
+          <div class="category-chart">
+
+            <!-- Sau này JS/Chart.js vẽ biểu đồ -->
+            <canvas id="categoryChart"></canvas>
+
+          </div>
+
+          <div class="category-list" id="category-list">
+            <!-- Categories will be rendered here via JS -->
+          </div>
+
+        </div>
+
+
+        <!-- Hoạt động gần đây -->
+        <div class="dashboard-card activity-card">
+
+          <div class="card-header">
+            <h2>Hoạt động gần đây</h2>
+          </div>
+
+          <div class="activity-list" id="activity-list">
+            <!-- Activities will be rendered here via JS -->
+          </div>
+
+        </div>
+
+      </section>
+    </div>
+  </main>
+  <footer></footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/admin-dashboard.js"></script>
+</body>
+
+</html>

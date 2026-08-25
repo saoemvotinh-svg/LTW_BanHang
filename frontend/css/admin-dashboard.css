@@ -1,0 +1,818 @@
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard {
+    width: 100%;
+
+    padding: 30px 30px 40px 40px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   DASHBOARD HEADER
+   ========================================================= */
+
+.dashboard-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.dashboard-title h1 {
+    margin: 0 0 5px;
+
+    color: #111827;
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.dashboard-title p {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   DATE FILTER
+   ========================================================= */
+
+.dashboard-filter {
+    display: flex;
+    align-items: center;
+}
+
+.date-filter {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-width: 190px;
+
+    padding: 10px 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.date-filter i {
+    font-size: 14px;
+}
+
+.date-filter:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   KPI CARDS
+   ========================================================= */
+
+.dashboard-stats {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-height: 105px;
+
+    padding: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    box-sizing: border-box;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   KPI ICON
+   ========================================================= */
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+
+    min-width: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 22px;
+}
+
+.revenue-icon {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.orders-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.products-icon {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.customers-icon {
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+.profit-icon {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   KPI CONTENT
+   ========================================================= */
+
+.stat-info {
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+.stat-label {
+    margin-bottom: 5px;
+
+    color: #374151;
+
+    font-size: 15px;
+}
+
+.stat-value {
+    color: #111827;
+
+    font-size: 26px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+.stat-change {
+    margin-top: 8px;
+
+    color: #16a34a;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MIDDLE
+   ========================================================= */
+
+.dashboard-middle {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 2fr)
+        minmax(300px, 1fr);
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
+.dashboard-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+.revenue-chart-card,
+.top-products-card {
+    min-height: 330px;
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.card-header h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+.card-header p {
+    margin: 4px 0 0;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+.card-header a {
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 12px;
+}
+
+.card-header a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
+
+.chart-filter {
+    padding: 8px 12px;
+
+    background: #ffffff;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    color: #374151;
+
+    font-size: 12px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.chart-container {
+    height: 250px;
+
+    padding: 15px 20px 20px;
+
+    box-sizing: border-box;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   TOP PRODUCTS
+   ========================================================= */
+
+.top-products-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    padding: 18px 20px;
+}
+
+.top-product {
+    display: grid;
+
+    grid-template-columns:
+        30px
+        minmax(0, 1fr)
+        40px;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.product-rank {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f3f4f6;
+
+    border-radius: 50%;
+
+    color: #374151;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.product-info {
+    min-width: 0;
+}
+
+.product-name {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.product-progress {
+    width: 100%;
+
+    height: 5px;
+
+    background: #f1f5f9;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.product-progress span {
+    display: block;
+
+    width: 75%;
+    height: 100%;
+
+    background: #2563eb;
+
+    border-radius: 10px;
+}
+
+.top-product:nth-child(2)
+.product-progress span {
+    width: 65%;
+}
+
+.top-product:nth-child(3)
+.product-progress span {
+    width: 55%;
+}
+
+.top-product:nth-child(4)
+.product-progress span {
+    width: 47%;
+}
+
+.top-product:nth-child(5)
+.product-progress span {
+    width: 35%;
+}
+
+.product-sold {
+    color: #374151;
+
+    font-size: 12px;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   BOTTOM
+   ========================================================= */
+
+.dashboard-bottom {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.6fr)
+        minmax(250px, 0.8fr)
+        minmax(280px, 1fr);
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   RECENT ORDERS
+   ========================================================= */
+
+.recent-orders-card {
+    min-width: 0;
+}
+
+.table-container {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.recent-orders-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    white-space: nowrap;
+}
+
+.recent-orders-table th {
+    padding: 12px 16px;
+
+    background: #f8fafc;
+
+    color: #6b7280;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.recent-orders-table td {
+    padding: 12px 16px;
+
+    color: #374151;
+
+    font-size: 11px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.recent-orders-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.recent-orders-table td:first-child {
+    color: #2563eb;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+.order-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px 9px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 500;
+}
+
+.order-status.delivered {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.order-status.processing {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.order-status.shipping {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.order-status.cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   CATEGORY
+   ========================================================= */
+
+.category-card {
+    min-width: 0;
+}
+
+.category-chart {
+    height: 170px;
+
+    padding: 15px 25px 0;
+
+    box-sizing: border-box;
+}
+
+.category-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.category-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding: 0 20px 18px;
+}
+
+.category-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    color: #4b5563;
+
+    font-size: 11px;
+}
+
+.category-item strong {
+    color: #374151;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ACTIVITY
+   ========================================================= */
+
+.activity-card {
+    min-width: 0;
+}
+
+.activity-list {
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 8px 20px 15px;
+}
+
+.activity-item {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 30px;
+    height: 30px;
+
+    min-width: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 12px;
+}
+
+.activity-content {
+    min-width: 0;
+}
+
+.activity-content p {
+    margin: 0 0 4px;
+
+    color: #374151;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+.activity-content span {
+    color: #9ca3af;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   DASHBOARD RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .dashboard-bottom {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .activity-card {
+        grid-column: 1 / -1;
+    }
+}
+
+
+@media (max-width: 1024px) {
+
+    .dashboard {
+        padding: 25px;
+    }
+
+    .dashboard-middle {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-card {
+        grid-column: auto;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .dashboard {
+        padding: 20px;
+    }
+
+    .dashboard-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .dashboard-title h1 {
+        font-size: 24px;
+    }
+
+    .dashboard-filter {
+        width: 100%;
+    }
+
+    .date-filter {
+        width: 100%;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-card {
+        padding: 15px;
+
+        min-height: 95px;
+    }
+
+    .stat-icon {
+        width: 42px;
+        height: 42px;
+
+        min-width: 42px;
+
+        font-size: 17px;
+    }
+
+    .stat-value {
+        font-size: 17px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .dashboard {
+        padding: 15px;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-title h1 {
+        font-size: 21px;
+    }
+
+    .stat-card {
+        min-height: 85px;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .top-products-list {
+        padding: 15px;
+    }
+}

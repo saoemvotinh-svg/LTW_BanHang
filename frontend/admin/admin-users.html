@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý người dùng</title>
+  <link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-users.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header></header>
+  <aside></aside>
+  
+  <main>
+    <div class="users-wrapper">
+      <div class="page-header">
+        <div class="page-title" style="display: flex; flex-direction: column; position: relative; padding-left: 48px;">
+          <i class="fa-solid fa-users" style="position: absolute; left: 0; top: 5px; font-size: 32px; color: #2563eb;"></i>
+          <h1 style="font-size: 24px; font-weight: 700; margin: 0 0 4px 0; color: #111827;">Quản lý người dùng</h1>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Danh sách tất cả người dùng trong hệ thống</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline" onclick="location.reload()">
+            <i class="fa-solid fa-rotate-right"></i> Làm mới
+          </button>
+        </div>
+      </div>
+      
+      <div class="users-layout">
+        <!-- MAIN CONTENT (Table & Filters) -->
+        <div class="users-main">
+          <!-- FILTERS -->
+          <div class="filter-bar">
+            <div class="filter-group search-group">
+              <label>Tìm kiếm</label>
+              <div class="search-box">
+                <input type="text" placeholder="Tìm theo tên, email, SĐT...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label>Vai trò</label>
+              <select>
+                <option>Tất cả vai trò</option>
+                <option>Admin</option>
+                <option>Khách hàng</option>
+                <option>Nhân viên</option>
+              </select>
+            </div>
+
+
+          </div>
+
+          <!-- TABLE -->
+          <div class="table-responsive">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox"></th>
+                  <th width="60">ID</th>
+                  <th>Họ tên</th>
+                  <th>Email</th>
+                  <th>Số điện thoại</th>
+                  <th>Vai trò</th>
+                  <th>Ngày tạo</th>
+                  <th width="100">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <!-- Render via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PAGINATION -->
+          <div class="pagination-bar">
+            <div class="pagination-controls">
+              <button class="btn-page"><i class="fa-solid fa-angles-left"></i></button>
+              <button class="btn-page"><i class="fa-solid fa-chevron-left"></i></button>
+              <button class="btn-page active">1</button>
+              <button class="btn-page">2</button>
+              <button class="btn-page">3</button>
+              <button class="btn-page"><i class="fa-solid fa-chevron-right"></i></button>
+              <button class="btn-page"><i class="fa-solid fa-angles-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAILS PANEL (Right Sidebar) -->
+        <div class="details-panel" id="user-details-panel">
+          <div class="panel-header">
+            <h2>Chi tiết người dùng</h2>
+            <button class="btn-close" id="closeUserPanel"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="panel-body">
+            
+            <div class="user-profile-top">
+              <img src="" id="u-avatar" class="u-avatar-large" alt="Avatar">
+              <div class="u-meta">
+                  <h3 id="u-name">Nguyễn Văn An</h3>
+                  <div class="u-badges">
+                      <span class="badge role" id="u-role">Admin</span>
+                  </div>
+                  <p>ID: <span id="u-id">1</span></p>
+              </div>
+            </div>
+
+            <div class="section-title">Thông tin cơ bản</div>
+            <div class="info-list">
+              <div class="info-row">
+                  <span class="info-label">Họ và tên</span>
+                  <strong id="u-name-val">Nguyễn Văn An</strong>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Email</span>
+                  <a href="#" id="u-email">an.nguyen@example.com</a>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Số điện thoại</span>
+                  <span id="u-phone">0901 234 567</span>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Vai trò</span>
+                  <span id="u-role-val">Admin</span>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Địa chỉ</span>
+                  <span id="u-address" class="address-text">123 Đường ABC, Phường 1, Quận 1, TP. Hồ Chí Minh</span>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Ngày tạo</span>
+                  <span id="u-date">25/05/2024 10:30</span>
+              </div>
+            </div>
+
+            <div class="section-title">Thống kê</div>
+            <div class="user-stats">
+              <div class="stat-box">
+                  <span>Đơn hàng</span>
+                  <strong class="blue" id="u-orders-count">18</strong>
+                  <p>Tổng giá trị</p>
+                  <strong class="blue-text" id="u-orders-total">24.560.000 đ</strong>
+              </div>
+              <div class="stat-box">
+                  <span>Đánh giá</span>
+                  <strong class="green" id="u-reviews-count">12</strong>
+                  <p>Trung bình</p>
+                  <div class="rating">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                      <strong id="u-rating">4.8</strong>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="section-title">Hành động</div>
+            <div class="action-buttons-col">
+              <button class="btn btn-outline btn-block"><i class="fa-solid fa-lock"></i> Đổi mật khẩu</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer></footer>
+  <script src="../js/admin.js"></script>
+  <script src="../js/admin-users.js"></script>
+</body>
+</html>
