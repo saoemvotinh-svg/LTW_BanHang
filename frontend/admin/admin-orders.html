@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý đơn hàng</title>
+  <link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-orders.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header></header>
+  <aside></aside>
+  
+  <main>
+    <div class="orders-wrapper">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Quản lý đơn hàng</h1>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline" onclick="location.reload()">
+            <i class="fa-solid fa-rotate-right"></i> Làm mới
+          </button>
+        </div>
+      </div>
+      
+      <!-- SUMMARY CARDS -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="icon light-blue"><i class="fa-regular fa-clipboard"></i></div>
+          <div class="info">
+            <p>Tổng đơn hàng</p>
+            <strong>24</strong>
+            <span>Tất cả đơn hàng</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon yellow"><i class="fa-regular fa-bell"></i></div>
+          <div class="info">
+            <p>Chờ xử lý</p>
+            <strong>5</strong>
+            <span>Đơn chờ xác nhận</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon blue"><i class="fa-solid fa-truck-fast"></i></div>
+          <div class="info">
+            <p>Đang giao</p>
+            <strong>3</strong>
+            <span>Đơn đang giao</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon green"><i class="fa-solid fa-check"></i></div>
+          <div class="info">
+            <p>Đã giao</p>
+            <strong>15</strong>
+            <span>Đơn đã giao</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon red"><i class="fa-solid fa-ban"></i></div>
+          <div class="info">
+            <p>Đã hủy</p>
+            <strong>1</strong>
+            <span>Đơn đã hủy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="orders-layout">
+        <!-- MAIN CONTENT (Table & Filters) -->
+        <div class="orders-main">
+          <!-- FILTERS -->
+          <div class="filter-bar">
+            <div class="filter-group search-group">
+              <label>Tìm kiếm</label>
+              <div class="search-box">
+                <input type="text" placeholder="Tên khách hàng, SĐT, ID...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label>Trạng thái</label>
+              <select>
+                <option>Tất cả trạng thái</option>
+                <option>Chờ xử lý</option>
+                <option>Đã xác nhận</option>
+                <option>Đang giao</option>
+                <option>Đã giao</option>
+                <option>Đã hủy</option>
+              </select>
+            </div>
+
+            <div class="filter-group date-group">
+              <label>Khoảng ngày</label>
+              <div class="date-inputs">
+                <div class="date-input-wrap">
+                    <input type="text" placeholder="dd/mm/yyyy">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+                <span>-</span>
+                <div class="date-input-wrap">
+                    <input type="text" placeholder="dd/mm/yyyy">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TABLE -->
+          <div class="table-responsive">
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th width="40"><input type="checkbox"></th>
+                  <th width="80">ID</th>
+                  <th>Khách hàng</th>
+                  <th>SĐT</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày đặt</th>
+                  <th width="120">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody">
+                <!-- Render via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PAGINATION -->
+          <div class="pagination-bar">
+
+            <div class="pagination-controls">
+              <button class="btn-page"><i class="fa-solid fa-angles-left"></i></button>
+              <button class="btn-page"><i class="fa-solid fa-chevron-left"></i></button>
+              <button class="btn-page active">1</button>
+              <button class="btn-page">2</button>
+              <button class="btn-page">3</button>
+              <button class="btn-page"><i class="fa-solid fa-chevron-right"></i></button>
+              <button class="btn-page"><i class="fa-solid fa-angles-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAILS PANEL (Right Sidebar) -->
+        <div class="details-panel" id="order-details-panel">
+          <div class="panel-header">
+            <h2>Chi tiết đơn hàng</h2>
+            <button class="btn-close" id="closeOrderPanel"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          
+          <div class="panel-body">
+            <div class="order-top-info">
+              <h3 id="o-id">Đơn hàng #10025</h3>
+              <span class="status-badge" id="o-status" style="background-color: #fef08a; color: #a16207; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Chờ xử lý</span>
+            </div>
+            <p class="order-date-text">Ngày đặt: <span id="o-date">25/05/2024 10:30</span></p>
+            
+            <div class="section-title">
+              <i class="fa-regular fa-user"></i> Thông tin khách hàng
+            </div>
+            <div class="info-list">
+              <div class="info-row">
+                  <span class="info-label">Họ tên</span>
+                  <strong id="c-name">Nguyễn Văn An</strong>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">SĐT</span>
+                  <span id="c-phone">0901 234 567</span>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Email</span>
+                  <span id="c-email">an.nguyen@email.com</span>
+              </div>
+              <div class="info-row">
+                  <span class="info-label">Địa chỉ</span>
+                  <span id="c-address" class="address-text">123 Đường ABC, Phường 1, Quận 1, TP. Hồ Chí Minh</span>
+              </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 20px;">Sản phẩm đã đặt</div>
+            <div class="order-products" id="o-products-list">
+              <!-- Render via JS -->
+            </div>
+            
+            <div class="order-summary-box">
+              <div class="summary-row">
+                <span>Tạm tính</span>
+                <strong id="o-subtotal">1.250.000 ₫</strong>
+              </div>
+              <div class="summary-row">
+                <span>Phí vận chuyển</span>
+                <strong id="o-shipping">30.000 ₫</strong>
+              </div>
+              <div class="summary-row">
+                <span>Giảm giá</span>
+                <strong id="o-discount">0 ₫</strong>
+              </div>
+              <div class="summary-row total">
+                <span>Tổng cộng</span>
+                <strong class="text-blue" id="o-total-price">1.280.000 ₫</strong>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+              <label>Trạng thái đơn hàng</label>
+              <select class="status-select">
+                <option>Chờ xử lý</option>
+                <option>Đã xác nhận</option>
+                <option>Đang giao</option>
+                <option>Đã giao</option>
+                <option>Đã hủy</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Ghi chú</label>
+              <textarea id="o-note" rows="2" placeholder="Nhập ghi chú..."></textarea>
+            </div>
+          </div>
+          
+          <div class="panel-footer">
+            <button class="btn btn-outline" id="btnCancelPanel">Đóng</button>
+            <button class="btn btn-primary" style="flex: 1"><i class="fa-regular fa-floppy-disk"></i> Cập nhật</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer></footer>
+
+  <script src="../js/admin.js"></script>
+  <script src="../js/admin-orders.js"></script>
+</body>
+</html>

@@ -3,53 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý sản phẩm</title>
+  <title>Quản lý sản phẩm - Bảng điều khiển quản trị</title>
   <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-products.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/home.css">
 </head>
 <body>
-  <div data-include="../includes/header.html"></div>
-
-  <div class="admin-layout">
-    <aside class="admin-sidebar">
-      <h2 class="sidebar-title">Quản trị</h2>
-      <nav>
-        <a class="sidebar-link" href="admin-dashboard.html">Tổng quan</a>
-        <a class="sidebar-link active" href="admin-products.html">Sản phẩm</a>
-        <a class="sidebar-link" href="admin-form.html">Thêm/Sửa sản phẩm</a>
-      </nav>
-        <a class="sidebar-link" href="../index.html">Về trang chủ</a>
-    </aside>
-
-    <main class="admin-main">
-      <header class="admin-header row-between">
-        <div>
+  <header></header>
+  <aside></aside>
+  <main>
+    <div class="products-container">
+      <!-- HEADER -->
+      <div class="page-header">
+        <div class="page-title">
           <h1>Quản lý sản phẩm</h1>
-          <p>Danh sách sản phẩm hiện có.</p>
         </div>
-        <a class="btn btn-primary" href="admin-form.html">+ Thêm sản phẩm</a>
-      </header>
+        <div class="page-actions">
+          <button class="btn btn-primary" id="btnAddProduct">
+            <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+          </button>
+          <button class="btn btn-outline" onclick="location.reload()">
+            <i class="fa-solid fa-rotate-right"></i> Làm mới
+          </button>
+        </div>
+      </div>
 
-      <section class="panel">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Hình ảnh</th>
-                <th>Tên sản phẩm</th>
-                <th>Giá</th>
-                <th>Số lượng</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody id="productTableBody"></tbody>
-          </table>
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="filter-group search-group">
+          <label>Tìm kiếm</label>
+          <div class="search-input">
+            <input type="text" placeholder="Tên sản phẩm, mô tả...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
         </div>
-      </section>
-    </main>
+
+        <div class="filter-group">
+          <label>Danh mục</label>
+          <select>
+            <option>Tất cả danh mục</option>
+            <option>Thời trang bé trai</option>
+            <option>Thời trang bé gái</option>
+            <option>Giày dép</option>
+            <option>Phụ kiện</option>
+            <option>Đồ chơi</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Trạng thái</label>
+          <select>
+            <option>Tất cả</option>
+            <option>Còn hàng</option>
+            <option>Hết hàng</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DATA TABLE -->
+      <div class="table-container">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th width="60">ID</th>
+              <th width="80">Ảnh</th>
+              <th>Tên sản phẩm</th>
+              <th>Danh mục</th>
+              <th>Giá (₫)</th>
+              <th>Kho</th>
+              <th>Đã bán</th>
+              <th>Ngày tạo</th>
+              <th width="120">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody">
+            <!-- Sản phẩm sẽ được render ở đây bằng JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="pagination-bar">
+        <div class="pagination-controls">
+          <button class="btn-page"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="btn-page active">1</button>
+          <button class="btn-page">2</button>
+          <button class="btn-page">3</button>
+          <button class="btn-page"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- PRODUCT DETAILS OFFCANVAS -->
+  <div class="offcanvas-overlay" id="offcanvas-overlay"></div>
+  <div class="offcanvas" id="product-offcanvas">
+    <div class="offcanvas-header">
+      <h2>Chi tiết sản phẩm</h2>
+      <button class="btn-close" id="btnCloseOffcanvas"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="offcanvas-body">
+      <ul class="tabs">
+        <li class="tab active">Thông tin</li>
+        <li class="tab">Hình ảnh (4)</li>
+      </ul>
+      
+      <div class="tab-content active" id="tab-info">
+        <div class="form-group">
+          <label>Ảnh đại diện</label>
+          <div class="image-uploader">
+            <img id="preview-image" src="" alt="Preview" style="display: none;">
+            <div class="upload-placeholder" id="upload-placeholder">
+              <i class="fa-regular fa-image"></i>
+            </div>
+            <button class="btn-upload"><i class="fa-solid fa-upload"></i> Thay đổi ảnh</button>
+            <span class="help-text">JPG, PNG, WebP (Max 2MB)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Tên sản phẩm <span>*</span></label>
+          <input type="text" id="p-name" value="Set bộ đồ chơi bé trai phong cách Hàn Quốc">
+        </div>
+
+        <div class="form-group">
+          <label>Danh mục <span>*</span></label>
+          <select id="p-category">
+            <option>Thời trang bé trai</option>
+            <option>Thời trang bé gái</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Giá bán (₫) <span>*</span></label>
+            <input type="text" id="p-price" value="239000">
+          </div>
+          <div class="form-group">
+            <label>Kho <span>*</span></label>
+            <input type="number" id="p-stock" value="120">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mô tả ngắn</label>
+          <textarea id="p-desc" rows="3">Set đồ chơi cho bé trai với thiết kế phong cách Hàn Quốc, chất liệu cotton mềm mại...</textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select id="p-status" class="status-select">
+              <option value="active" selected>Còn hàng</option>
+              <option value="inactive">Hết hàng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ngày tạo</label>
+            <input type="text" disabled value="25/05/2024 10:30" class="disabled-input">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="offcanvas-footer">
+      <button class="btn btn-outline" id="btnCancelOffcanvas">Hủy</button>
+      <button class="btn btn-primary">Cập nhật</button>
+    </div>
   </div>
 
-  <div data-include="../includes/footer.html"></div>
+  <footer></footer>
   <script src="../js/admin.js"></script>
+  <script src="../js/admin-products.js"></script>
 </body>
 </html>
