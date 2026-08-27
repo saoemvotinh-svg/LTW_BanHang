@@ -33,11 +33,21 @@ function createProductCard(product) {
         </div>
     `;
 }
-
+function removeVietnameseTones(str) {
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") 
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "d")
+        .toLowerCase()
+        .trim();
+}
 
 function getProcessedProducts() {
     let result = mockProducts.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const productNameNoTone = removeVietnameseTones(p.name);
+        const searchNoTone = removeVietnameseTones(searchQuery);
+        const matchSearch = productNameNoTone.includes(searchNoTone);
         const matchCategory = selectedCategory === "all" || p.category_id === Number(selectedCategory);
         return matchSearch && matchCategory;
     });
