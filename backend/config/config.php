@@ -8,16 +8,18 @@ define('APP_NAME', 'Web Bán Hàng');
 
 
 // =====================================================
-// SQL SERVER - CLOUD
+// MYSQL SERVER - XAMPP
 // =====================================================
 
-define('SQLSRV_HOST', 'sql8012.site4now.net');
+define('MYSQL_HOST', 'localhost');
 
-define('SQLSRV_DATABASE', 'db_acd9e1_ecommerce');
+define('MYSQL_PORT', '3306');
 
-define('SQLSRV_USERNAME', 'db_acd9e1_ecommerce_admin');
+define('MYSQL_DATABASE', 'ecommerce');
 
-define('SQLSRV_PASSWORD', 'VietNam1@');
+define('MYSQL_USERNAME', 'root');
+
+define('MYSQL_PASSWORD', '');
 
 
 // =====================================================
