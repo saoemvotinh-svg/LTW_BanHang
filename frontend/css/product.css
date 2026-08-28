@@ -20,7 +20,15 @@ body {
     gap: 8px;
     margin-bottom: 15px;
 }
-
+.dropdown{
+    display: none;
+}
+.search-input {
+    display: none;
+}
+.search-btn{
+    display: none;
+}
 .search-box {
     position: relative;
     display: flex;
