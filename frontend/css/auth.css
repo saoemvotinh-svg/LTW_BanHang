@@ -175,6 +175,30 @@ main {
     color: #D97706;
 }
 
+.confirm-password-box {
+    width: 100%;
+}
+
+.confirm-password-box input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.password-error {
+    display: none;
+    margin-top: 5px;
+
+    color: red;
+    font-size: 13px;
+}
+
+.error {
+    display: none;
+    margin-top: 5px;
+
+    color: red;
+    font-size: 13px;
+}
 
 /* =========================
    FORGOT PASSWORD
