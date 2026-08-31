@@ -1,3 +1,5 @@
+import { LOGIN_URL, REGISTER_URL, HOME_URL } from "./configs.js";
+
 const loginheader = document.querySelector(".login-header h1")
 const Eregister = document.querySelector(".register")
 const passwordBox = document.querySelector(".password-box");
@@ -9,6 +11,7 @@ const form = document.querySelector(".login-form");
 const error = document.querySelector(".error");
 
 var isRegister = false;
+
 
 async function login() {
 
@@ -27,7 +30,7 @@ async function login() {
 
     try {
 
-        const response = await fetch("#", {
+        const response = await fetch(LOGIN_URL, {
             method: "POST",
 
             headers: {
@@ -39,11 +42,30 @@ async function login() {
 
         const result = await response.json();
 
-        console.log(result);
+        console.log(result)
+        if  (result.success === true)
+        {
+            // Lưu token và thông tin user vào localStorage
+            if (result.token) {
+                localStorage.setItem('auth_token', result.token);
+            }
+            localStorage.setItem('auth_user', JSON.stringify(result.user));
+
+            if (result.user.role === "admin") 
+            {
+                window.location.href = "../admin/index.html";
+                return;
+            }
+                window.location.href = "../index.html";
+        } else {
+            error.innerText = result.message;
+            error.style.display = "block";
+        }
 
     } catch (error) {
 
         console.error(error);
+
 
     }
 }
@@ -78,7 +100,7 @@ async function register() {
 
     try {
 
-        const response = await fetch("#", {
+        const response = await fetch(REGISTER_URL, {
             method: "POST",
 
             headers: {
@@ -90,7 +112,13 @@ async function register() {
 
         const result = await response.json();
 
-        console.log(result);
+        if (result.success === false)
+        {
+            error.innerText = result.message;
+            error.style.display = "block";
+        } else {
+            changemode();
+        }
 
     } catch (error) {
 

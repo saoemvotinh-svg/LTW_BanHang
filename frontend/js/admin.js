@@ -1,39 +1,11 @@
-function loadIncludes() {
+// Header và Footer được load bởi layout.js (đã khai báo trước trong HTML)
+// Admin chỉ cần load thêm aside riêng
 
-    const header = document.querySelector("header");
-    const footer = document.querySelector("footer");
+function loadAside() {
+
     const aside = document.querySelector("aside");
 
-    fetch("../includes/header.html")
-        .then(response => response.text())
-        .then(html => {
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-
-            const headerReal = doc.querySelector("header");
-
-            if (headerReal) {
-                header.outerHTML = headerReal.outerHTML;
-                const trangchu = document.querySelector(".main-nav li");
-
-                trangchu.outerHTML = '<li><a href="../index.html">Trang chủ</a></li>';
-            }
-        });
-
-    fetch("../includes/footer.html")
-        .then(response => response.text())
-        .then(html => {
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-
-            const footerReal = doc.querySelector("footer");
-
-            if (footerReal) {
-                footer.outerHTML = footerReal.outerHTML;
-            }
-        });
+    if (!aside) return;
 
     fetch("../includes/admin-aside.html")
         .then(response => response.text())
@@ -75,6 +47,8 @@ function setActiveMenu() {
 }
 
 
+// Admin dùng loadIncludes() từ layout.js cho header + footer
+// Sau đó load thêm aside riêng
 loadIncludes();
-
-// Dashboard logic moved to admin-dashboard.js
+loadAside();
+

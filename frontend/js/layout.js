@@ -14,6 +14,19 @@ function loadIncludes() {
 
             if (headerReal) {
                 header.outerHTML = headerReal.outerHTML;
+
+                const trangchu = document.querySelector(".main-nav li");
+                if (trangchu) {
+                    trangchu.outerHTML = '<li><a href="../index.html">Trang chủ</a></li>';
+                }
+
+                const profileActions = document.querySelector(".header-actions");
+                if (profileActions) {
+                    profileActions.outerHTML = `<div class="header-actions">
+        <a href="./profile.html"><i class="fa-regular fa-user"></i> Tài khoản</a>
+        <a href="./cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
+      </div>`;
+                }
             }
         });
 
@@ -33,4 +46,9 @@ function loadIncludes() {
 }
 
 
-loadIncludes();
+// Tự động gọi cho trang thường (không phải admin)
+// Admin tự gọi loadIncludes() thông qua admin.js
+if (!document.querySelector(".sidebar")) {
+    loadIncludes();
+}
+
