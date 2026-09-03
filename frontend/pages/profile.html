@@ -4,65 +4,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thông tin tài khoản - Nhóm 2</title>
+    <meta name="description" content="Xem và chỉnh sửa thông tin tài khoản của bạn tại Nhóm 2.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body>
-    <header class="main-header">
-      <div class="container header-container">
-        <div class="logo"><a href="#">Nhóm 2</a></div>
-        <nav class="main-nav">
-          <ul>
-            <li><a href="../index.html">Trang chủ</a></li>
-            <li><a href="products.html">Sản phẩm</a></li>
-            <li><a href="../news.html">Khuyến mãi</a></li>
-            <li class="dropdown">
-              <a href="category.html">Danh mục <i class="fa-solid fa-chevron-down"></i></a>
-              <ul class="dropdown-menu">
-                <li><a href="category.html">Quần áo</a></li>
-                <li><a href="category.html">Váy</a></li>
-              </ul>
-            </li>
-            <li><a href="cart.html">Đơn hàng</a></li>
-          </ul>
-        </nav>
-        <div class="header-actions">
-          <form action="search.html" method="GET" class="search-form">
-              <input type="text" name="keyword" class="search-input" placeholder="Tìm kiếm...">
-              <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-          </form>
-          <a href="profile.html" class="active"><i class="fa-regular fa-user"></i> Tài khoản</a>
-          <a href="cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
-        </div>
-      </div>
-    </header>
 
-    <main class="login-section">
-        <div class="card" style="text-align: center;">
-            <h3 style="margin-bottom: 15px;">Tài Khoản</h3>
-            <p style="margin-bottom: 20px; color: #555;">Xin chào quý khách!</p>
-            <form action="login.html" method="GET">
-                <button type="submit" class="btn">Đăng xuất</button>
-            </form>
+    <header></header>
+
+
+    <main class="profile-main">
+        <div class="container">
+
+            <!--LOADING-->
+            <div class="profile-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <span>Đang tải thông tin...</span>
+            </div>
+
+            <!--LỖI-->
+            <div class="profile-error" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>Không thể tải thông tin. Vui lòng thử lại.</span>
+            </div>
+
+            <!--NỘI DUNG CHÍNH-->
+            <div class="profile-content" style="display: none;">
+
+                <!--TIÊU ĐỀ-->
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="profile-header-info">
+                        <h1 class="profile-fullname">—</h1>
+                        <span class="profile-badge profile-role">Khách hàng</span>
+                    </div>
+                </div>
+
+                <!--THÔNG TIN TÀI KHOẢN-->
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+                        <h2><i class="fa-solid fa-circle-info"></i> Thông tin tài khoản</h2>
+                        <button type="button" class="profile-edit-btn">
+                            <i class="fa-solid fa-pen"></i> Chỉnh sửa
+                        </button>
+                    </div>
+
+                    <div class="profile-info-grid">
+
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">
+                                <i class="fa-solid fa-user"></i> Họ và tên
+                            </span>
+                            <span class="profile-info-value profile-fullname">—</span>
+                        </div>
+
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">
+                                <i class="fa-solid fa-envelope"></i> Email
+                            </span>
+                            <span class="profile-info-value profile-email">—</span>
+                        </div>
+
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">
+                                <i class="fa-solid fa-phone"></i> Số điện thoại
+                            </span>
+                            <span class="profile-info-value profile-phone">—</span>
+                        </div>
+
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">
+                                <i class="fa-solid fa-location-dot"></i> Địa chỉ
+                            </span>
+                            <span class="profile-info-value profile-address">—</span>
+                        </div>
+
+                        <div class="profile-info-item">
+                            <span class="profile-info-label">
+                                <i class="fa-solid fa-calendar"></i> Ngày tham gia
+                            </span>
+                            <span class="profile-info-value profile-created-at">—</span>
+                        </div>
+
+                    </div>
+
+                    <!--FORM CHỈNH SỬA-->
+                    <div class="profile-edit-form" style="display: none;">
+
+                        <div class="edit-form-title">
+                            <h3><i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa thông tin</h3>
+                        </div>
+
+                        <div class="edit-form-grid">
+
+                            <div class="edit-form-group">
+                                <label for="edit-fullname">Họ và tên <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    id="edit-fullname"
+                                    name="full_name"
+                                    placeholder="Nhập họ và tên"
+                                >
+                            </div>
+
+                            <div class="edit-form-group">
+                                <label for="edit-phone">Số điện thoại</label>
+                                <input
+                                    type="tel"
+                                    id="edit-phone"
+                                    name="phone"
+                                    placeholder="Nhập số điện thoại"
+                                >
+                            </div>
+
+                            <div class="edit-form-group edit-form-full">
+                                <label for="edit-address">Địa chỉ</label>
+                                <textarea
+                                    id="edit-address"
+                                    name="address"
+                                    rows="3"
+                                    placeholder="Nhập địa chỉ nhận hàng"
+                                ></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="edit-error" style="display: none;"></div>
+                        <div class="edit-success" style="display: none;"></div>
+
+                        <div class="edit-form-actions">
+                            <button type="button" class="profile-save-btn">
+                                <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+                            </button>
+                            <button type="button" class="profile-cancel-btn">
+                                Hủy
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--ĐĂNG XUẤT-->
+                <div class="profile-logout-section">
+                    <button type="button" class="profile-logout-btn">
+                        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                    </button>
+                </div>
+
+            </div>
+            <!--END profile-content-->
+
         </div>
     </main>
 
-    <footer class="main-footer">
-      <div class="container footer-grid">
-        <div class="footer-col">
-          <h3>Nhóm 2</h3>
-          <p>Website bán hàng thời trang chất lượng cao.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Thông tin & Chính sách</h4>
-          <ul>
-            <li>Địa chỉ: 25 Võ Oanh, Bình Thạnh, TP.HCM</li>
-            <li>Đổi trả 7 ngày</li>
-            <li>Bảo hành uy tín</li>
-          </ul>
-        </div>
-      </div>
-    </footer>
+    <footer></footer>
+
+    <script src="../js/layout.js"></script>
+    <script type="module" src="../js/profile.js"></script>
+
 </body>
 </html>

@@ -8,16 +8,18 @@ define('APP_NAME', 'Web Bán Hàng');
 
 
 // =====================================================
-// SQL SERVER - CLOUD
+// MYSQL SERVER - XAMPP
 // =====================================================
 
-define('SQLSRV_HOST', 'sql8012.site4now.net');
+define('MYSQL_HOST', 'localhost');
 
-define('SQLSRV_DATABASE', 'db_acd9e1_ecommerce');
+define('MYSQL_PORT', '3306');
 
-define('SQLSRV_USERNAME', 'db_acd9e1_ecommerce_admin');
+define('MYSQL_DATABASE', 'ecommerce');
 
-define('SQLSRV_PASSWORD', 'VietNam1@');
+define('MYSQL_USERNAME', 'root');
+
+define('MYSQL_PASSWORD', '');
 
 
 // =====================================================
@@ -25,3 +27,35 @@ define('SQLSRV_PASSWORD', 'VietNam1@');
 // =====================================================
 
 define('SESSION_NAME', 'ECOMMERCE_SESSION');
+
+
+/*
+|--------------------------------------------------------------------------
+| CORS
+|--------------------------------------------------------------------------
+*/
+
+header("Access-Control-Allow-Origin: http://127.0.0.1:5500");
+
+header("Access-Control-Allow-Credentials: true");
+
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+header("Content-Type: application/json; charset=UTF-8");
+
+
+/*
+|--------------------------------------------------------------------------
+| OPTIONS
+|--------------------------------------------------------------------------
+*/
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+
+    http_response_code(204);
+
+    exit;
+
+}
