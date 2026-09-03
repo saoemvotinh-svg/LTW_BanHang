@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
                Và ưu tiên những sản phẩm dễ mặc, dễ giặt để giúp bố mẹ thuận tiện trong quá trình chăm sóc bé.
             </p>`,
             date: '22/08/2026',
-            tag: 'Tin tức'
+            tag: 'Tin Tức'
         },
                 {
             id: 5,
@@ -86,12 +86,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // RENDER NEWS
     const NewsContainer = document.getElementById('news_container');
     console.log("NewsContainer:", NewsContainer);
-    function Rendernews(){
+    function Rendernews(type="all"){
         if (!NewsContainer)
             return;
         console.log("Đang render danh sách tin tức");
         let html = '';
         MockNews.forEach((news) => {
+            if (type === 'news' && news.tag !== 'Tin Tức')
+                return;
+            if (type === 'sale' && news.tag !== 'Khuyến Mãi')
+                return;
             html += `
             <div class="news_card">
                 <div class="news_img">
@@ -111,6 +115,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         NewsContainer.innerHTML = html;
         console.log("Đã render", MockNews.length, "bài viết");
+    }
+    const TinTucButton = document.getElementById('tin_tuc_button');
+    const KhuyenMaiButton = document.getElementById('khuyen_mai_button');
+    const TatCaButton = document.getElementById('tat_ca_button');
+    if(TinTucButton){
+        TinTucButton.addEventListener('click', (e) =>{
+            e.preventDefault();
+            Rendernews('news');
+        });
+    }
+    if(KhuyenMaiButton){
+        KhuyenMaiButton.addEventListener('click', (e) =>{
+            e.preventDefault();
+            Rendernews('sale');
+        });
+    }
+    if(TatCaButton){
+        TatCaButton.addEventListener('click', (e) =>{
+            e.preventDefault();
+            Rendernews('all');
+        });
     }
     const DetailCard = document.getElementById('detail_card');
     function RenderNewsDetail(){
