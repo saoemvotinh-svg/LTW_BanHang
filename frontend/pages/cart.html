@@ -76,76 +76,19 @@
 
             <!--Giỏ hàng-->
             <section class="cart-section">
-                <div class="cart-list">
-
-                    <!--sản phẩm 1-->
-                    <div class="cart-item">
-                        <div class="cart-product">
-                            <img src="../assets/images/shopping.webp" alt="Quần áo mùa hè cute">
-                            <div class="cart-product-info">
-                                <h3>Quần áo mùa hè cute</h3>
-                                <p>Áo quần trẻ em</p>
-                            </div>
-                        </div>
-
-                        <div class="cart-price">
-                            <span>90.000 VNĐ</span>
-                        </div>
-
-                        <div class="cart-quantity">
-                            <button type="button">-</button>
-                            <input type="number" value="1" min="1">
-                            <button type="button">+</button>
-                        </div>
-
-                        <div class="cart-total">
-                            <span>90.000 VNĐ</span>
-                        </div>
-
-                        <button type="button" class="remove-btn">
-                            <i class="fa-solid fa-trash"></i>
-                            Xóa
-                        </button>
-
-                    </div>
-
-                    <!--sản phẩm 2-->
-                    <div class="cart-item">
-                        <div class="cart-product">
-                            <img src="../assets/images/shopping (1).webp" alt="Váy xòe trái tim">
-                            <div class="cart-product-info">
-                                <h3>Váy xòe trái tim</h3>
-                                <p>Váy trẻ em</p>
-                            </div>
-                        </div>
-
-                        <div class="cart-price">
-                            <span>70.000 VNĐ</span>
-                        </div>
-
-                        <div class="cart-quantity">
-                            <button type="button">-</button>
-                            <input type="number" value="1" min="1">
-                            <button type="button">+</button>
-                        </div>
-
-                        <div class="cart-total">
-                            <span>70.000 VNĐ</span>
-                        </div>
-
-                        <button type="button" class="remove-btn">
-                            <i class="fa-solid fa-trash"></i>
-                            Xóa
-                        </button>
-                    </div>
-
+                <div class="cart-list" id="cart-list">
                 </div>
 
+                <button type="button" id="clear-cart-btn" class="clear-cart-btn">
+                    <i class="fa-solid fa-trash"></i>
+                    Xóa tất cả
+                </button>
+                
                 <!--TỔNG TIỀN-->
                 <div class="cart-summary">
                     <div class="summary-row">
                         <span>Tổng tiền hàng</span>
-                        <strong>160.000 VNĐ</strong>
+                        <strong id="cart-subtotal">0 VNĐ</strong>
                     </div>
 
                     <div class="summary-row">
@@ -155,7 +98,7 @@
 
                     <div class="summary-row summary-total">
                         <span>Tổng thanh toán</span>
-                        <strong>160.000 VNĐ</strong>
+                        <strong id="cart-total">0 VNĐ</strong>
                     </div>
                 </div>
             </section>
@@ -232,5 +175,8 @@
         </div>
     </div>
 </footer>
+
+<script src="../js/cart.js"></script>
+
 </body>
 </html>
