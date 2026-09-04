@@ -3,7 +3,7 @@ function loadIncludes() {
     const header = document.querySelector("header");
     const footer = document.querySelector("footer");
 
-    fetch("../includes/header.html")
+    fetch("./includes/header.html")
         .then(response => response.text())
         .then(html => {
 
@@ -22,15 +22,36 @@ function loadIncludes() {
 
                 const profileActions = document.querySelector(".header-actions");
                 if (profileActions) {
-                    profileActions.outerHTML = `<div class="header-actions">
-        <a href="./profile.html"><i class="fa-regular fa-user"></i> Tài khoản</a>
-        <a href="./cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
-      </div>`;
-                }
+                  const authUser = localStorage.getItem("auth_user");
+                  const currentUser = authUser ? JSON.parse(authUser) : null;
+                  if (currentUser) {
+                    profileActions.outerHTML = `
+                        <div class="header-actions">
+                            <a href="./profile.html"><i class="fa-regular fa-user"></i>${currentUser.email}</a>
+                            <a href="#" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>Đăng xuất</a>
+                            <a href="./cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i>Giỏ hàng</a>
+                        </div>
+                    `;
+                    const logoutBtn = document.querySelector(".logout-btn");
+                    logoutBtn.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        localStorage.removeItem("auth_user");
+                        localStorage.removeItem("auth_token");
+                        window.location.href = "./login.html";
+                    });
+                } else {
+                    profileActions.outerHTML = `
+                    <div class="header-actions">
+                        <a href="./profile.html"><i class="fa-regular fa-user"></i>Tài khoản</a>
+                        <a href="./cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i>Giỏ hàng</a>
+                    </div>
+                `;
+                }  
             }
-        });
+        }
+    });
 
-    fetch("../includes/footer.html")
+    fetch("./includes/footer.html")
         .then(response => response.text())
         .then(html => {
 
