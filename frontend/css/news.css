@@ -134,7 +134,7 @@ ul{
     border-color: var(--primary-color);
 }
 .news_container{
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0px auto 30px;
     justify-content: center;
     display: flex;
