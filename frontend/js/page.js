@@ -1,3 +1,4 @@
+loadIncludes();
 const mockCategories = [
   { id: 1, name: "Áo quần trẻ em", description: "Thời trang cho bé trai và bé gái" },
   { id: 2, name: "Váy", description: "Các mẫu váy đầm bé gái" }
