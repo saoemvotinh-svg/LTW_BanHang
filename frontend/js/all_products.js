@@ -7,6 +7,24 @@ let sortType = "default";
 let selectedCategory = "all";
 let isCategoriesLoaded = false;
 
+const rawUser = localStorage.getItem("auth_user") || localStorage.getItem("user");
+const profileActions = document.querySelector(".header-actions");
+// bị lỗi do index.html và products.html dùng chung css nhưng e lại muốn ẩn danh mục khi kh ở trang sản phẩm dẫn đến lỗi khi import layout.js xử lý hiện tên tk, login.. nên hàm
+// bên dưới để xử lý riêng bằng js 
+if (profileActions && rawUser) {
+    const user = JSON.parse(rawUser);
+    const displayName = user.fullname || user.email || user.username || "Tài khoản";
+    profileActions.innerHTML = `
+        <a href="./profile.html"><i class="fa-regular fa-user"></i> ${displayName}</a>
+        <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+        <a href="./cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
+    `;
+    document.getElementById("logout-btn")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = "./login.html";
+    });
+}
 function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + " VNĐ";
 }
