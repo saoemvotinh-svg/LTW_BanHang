@@ -8,8 +8,6 @@ require_once __DIR__ . '/../../config/database.php';
 try {
     $db = new Database();
     $conn = $db->connect();
-
-    // 1. LẤY 4 SẢN PHẨM MỚI NHẤT
     $sqlLatest = "
         SELECT p.id, p.name, p.price, p.stock, p.created_at,
                c.name AS category_name,
@@ -24,8 +22,6 @@ try {
     $stmtLatest->execute();
     $latestProducts = $stmtLatest->fetchAll(PDO::FETCH_ASSOC);
 
-    // 2. LẤY 4 SẢN PHẨM BÁN CHẠY NHẤT (NỔI BẬT)
-    // Tính tổng số lượng bán từ bảng order_items
     $sqlBestSeller = "
         SELECT p.id, p.name, p.price, p.stock,
                c.name AS category_name,
@@ -43,7 +39,6 @@ try {
     $stmtBest->execute();
     $bestSellers = $stmtBest->fetchAll(PDO::FETCH_ASSOC);
 
-    // Trả cả 2 danh mục về cho Frontend
     http_response_code(200);
     echo json_encode([
         "success" => true,
