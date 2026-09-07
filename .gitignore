@@ -18,6 +18,7 @@ backend/uploads/users/*
 
 # Assets được sinh ra / quá lớn
 frontend/assets/images/banners/*
+!frontend/assets/images/banners/banner1.png
 frontend/assets/images/products/*
 !frontend/assets/images/banners/.gitkeep
 !frontend/assets/images/products/.gitkeep
