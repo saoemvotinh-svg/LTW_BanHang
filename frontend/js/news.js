@@ -169,3 +169,37 @@ document.addEventListener("DOMContentLoaded", () => {
     // console.log("Đã gọi Rendernews");
     RenderNewsDetail();
 });
+// Xử lý hiển thị trạng thái đăng nhập cho Header riêng của News
+document.addEventListener("DOMContentLoaded", () => {
+    const rawUser = localStorage.getItem("auth_user") || localStorage.getItem("user");
+    const rightHeader = document.querySelector(".right_header");
+
+    if (rightHeader) {
+        if (rawUser) {
+            let currentUser = null;
+            try {
+                currentUser = JSON.parse(rawUser);
+            } catch (e) {
+                currentUser = null;
+            }
+
+            const displayName = currentUser?.fullname || currentUser?.email || currentUser?.username || "Tài khoản";
+            rightHeader.innerHTML = `
+                <a href="profile.html">${displayName}</a>
+                <a href="#" id="news_logout_btn">Đăng Xuất</a>
+                <a href="cart.html">Giỏ Hàng</a>
+            `;
+
+            document.getElementById("news_logout_btn")?.addEventListener("click", (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = "login.html";
+            });
+        } else {
+            rightHeader.innerHTML = `
+                <a href="login.html">Đăng Nhập</a>
+                <a href="cart.html">Giỏ Hàng</a>
+            `;
+        }
+    }
+});

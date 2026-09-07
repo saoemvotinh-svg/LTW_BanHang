@@ -84,3 +84,11 @@ function loadIncludes() {
   if (!document.querySelector(".sidebar")) {
     loadIncludes();
   }
+  console.log("--> Đã chạy vào file layout.js");
+
+if (!document.querySelector(".sidebar")) {
+    console.log("--> Bắt đầu gọi loadIncludes()...");
+    loadIncludes();
+} else {
+    console.log("--> LỖI: Bị chặn vì trang này có chứa class .sidebar!");
+}
