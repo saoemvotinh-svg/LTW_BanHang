@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/products/get_home.php';
+import { GET_HOME_PRODUCTS_URL } from "./configs.js";
 
 function formatCurrency(amount) {
     return new Intl.NumberFormat("vi-VN").format(amount) + " VNĐ";
@@ -43,7 +43,7 @@ function renderProductsToContainer(containerId, productsList, badgeText) {
 
 async function loadHomeProducts() {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(GET_HOME_PRODUCTS_URL);
       const result = await response.json();
 
       if (result.success) {

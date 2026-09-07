@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/products/get_all.php";
+import { GET_ALL_PRODUCTS_URL } from "./configs.js";
 
 let currentPage = 1;
 const itemsPerPage = 8;
@@ -103,7 +103,7 @@ async function fetchAndRenderProducts() {
     }
 
     try {
-        const response = await fetch(`${API_URL}?${params.toString()}`);
+        const response = await fetch(`${GET_ALL_PRODUCTS_URL}?${params.toString()}`);
         const result = await response.json();
 
         if (!result.success) {
@@ -191,40 +191,40 @@ function renderPagination(totalPages) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("search-input");
-  const sortSelect = document.getElementById("sort-select");
+    const searchInput = document.getElementById("search-input");
+    const sortSelect = document.getElementById("sort-select");
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const cat = urlParams.get("category");
-  if (cat) {
-    selectedCategory = cat;
-  }
+    const urlParams = new URLSearchParams(window.location.search);
+    const cat = urlParams.get("category");
+    if (cat) {
+        selectedCategory = cat;
+    }
 
-  if (searchInput) {
-    let debounceTimer;
-    searchInput.addEventListener("input", (e) => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        searchQuery = e.target.value.trim();
+    if (searchInput) {
+        let debounceTimer;
+        searchInput.addEventListener("input", (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            searchQuery = e.target.value.trim();
+            currentPage = 1;
+            fetchAndRenderProducts();
+        }, 300);
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener("change", (e) => {
+        sortType = e.target.value;
         currentPage = 1;
         fetchAndRenderProducts();
-      }, 300);
-    });
-  }
-
-  if (sortSelect) {
-    sortSelect.addEventListener("change", (e) => {
-      sortType = e.target.value;
-      currentPage = 1;
-      fetchAndRenderProducts();
-    });
-  }
-  fetchAndRenderProducts();
+        });
+    }
+    fetchAndRenderProducts();
 });
 
 
 function filterByCategory(categoryId) {
-  selectedCategory = categoryId;
-  currentPage = 1;
-  fetchAndRenderProducts();
+    selectedCategory = categoryId;
+    currentPage = 1;
+    fetchAndRenderProducts();
 }
