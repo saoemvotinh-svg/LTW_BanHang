@@ -1,110 +1,315 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // === MOCK DATA ===
-    const mockUsers = [
-        { id: 1, name: 'Nguyễn Văn An', email: 'an.nguyen@example.com', phone: '0901 234 567', role: 'Admin', status: 'active', date: '25/05/2024 10:30', address: '123 Đường ABC, Phường 1, Quận 1, TP. Hồ Chí Minh', orders: 18, totalSpent: 24560000, reviews: 12, rating: 4.8, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=NA' },
-        { id: 2, name: 'Trần Thị Bình', email: 'binh.tran@example.com', phone: '0912 345 678', role: 'Khách hàng', status: 'active', date: '25/05/2024 09:15', address: '456 Đường DEF, Phường 2, Quận 3, TP. Hồ Chí Minh', orders: 5, totalSpent: 3500000, reviews: 3, rating: 5.0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=TB' },
-        { id: 3, name: 'Lê Minh Cường', email: 'cuong.le@example.com', phone: '0932 456 789', role: 'Khách hàng', status: 'active', date: '24/05/2024 16:45', address: '789 Đường GHI, Phường 3, Quận 10, TP. Hồ Chí Minh', orders: 2, totalSpent: 1200000, reviews: 1, rating: 4.0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=LC' },
-        { id: 4, name: 'Phạm Thị Dung', email: 'dung.pham@example.com', phone: '0945 678 901', role: 'Khách hàng', status: 'active', date: '24/05/2024 14:20', address: '101 Đường JKL, Phường 4, Quận 5, TP. Hồ Chí Minh', orders: 10, totalSpent: 8900000, reviews: 8, rating: 4.5, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=PD' },
-        { id: 5, name: 'Hoàng Văn E', email: 'e.hoang@example.com', phone: '0967 890 123', role: 'Nhân viên', status: 'active', date: '23/05/2024 11:05', address: '202 Đường MNO, Phường 5, Quận 7, TP. Hồ Chí Minh', orders: 0, totalSpent: 0, reviews: 0, rating: 0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=HE' },
-        { id: 6, name: 'Vũ Thị Hạnh', email: 'hanh.vu@example.com', phone: '0978 901 234', role: 'Khách hàng', status: 'active', date: '23/05/2024 08:30', address: '303 Đường PQR, Phường 6, Quận 8, TP. Hồ Chí Minh', orders: 1, totalSpent: 450000, reviews: 0, rating: 0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=VH' },
-        { id: 7, name: 'Đặng Văn Khoa', email: 'khoa.dang@example.com', phone: '0988 012 345', role: 'Nhân viên', status: 'active', date: '22/05/2024 15:10', address: '404 Đường STU, Phường 7, Quận 9, TP. Hồ Chí Minh', orders: 0, totalSpent: 0, reviews: 0, rating: 0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=DK' },
-        { id: 8, name: 'Bùi Thị Lan', email: 'lan.bui@example.com', phone: '0999 123 456', role: 'Khách hàng', status: 'locked', date: '22/05/2024 10:40', address: '505 Đường VWX, Phường 8, Quận Gò Vấp, TP. Hồ Chí Minh', orders: 0, totalSpent: 0, reviews: 0, rating: 0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=BL' },
-        { id: 9, name: 'Phan Văn Minh', email: 'minh.phan@example.com', phone: '0911 222 333', role: 'Nhân viên', status: 'active', date: '21/05/2024 13:25', address: '606 Đường YZ, Phường 9, Quận Phú Nhuận, TP. Hồ Chí Minh', orders: 0, totalSpent: 0, reviews: 0, rating: 0, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=PM' },
-        { id: 10, name: 'Ngô Thị Mai', email: 'mai.ngo@example.com', phone: '0922 333 444', role: 'Khách hàng', status: 'active', date: '21/05/2024 09:12', address: '707 Đường ABCD, Phường 10, Quận Tân Bình, TP. Hồ Chí Minh', orders: 4, totalSpent: 2100000, reviews: 2, rating: 4.5, avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=NM' }
-    ];
+// admin-users.js — Quản lý người dùng, kết nối API thật
 
-    const tbody = document.getElementById('users-tbody');
-    
-    function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN') + ' đ';
+const BASE_URL = "http://localhost:8080/";
+const USERS_LIST_URL   = BASE_URL + "api/admin/users/list.php";
+const USERS_DETAIL_URL = BASE_URL + "api/admin/users/detail.php";
+
+function getAuthToken() {
+    return localStorage.getItem('auth_token') || '';
+}
+
+function authHeaders() {
+    return { 'Authorization': 'Bearer ' + getAuthToken() };
+}
+
+function formatCurrency(amount) {
+    return Number(amount).toLocaleString('vi-VN') + ' đ';
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+}
+
+function getRoleBadge(role) {
+    if (role === 'admin') {
+        return '<span style="color:#2563eb;background:#eff6ff;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:500">Admin</span>';
+    }
+    return '<span style="color:#4b5563;background:#f3f4f6;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:500">Khách hàng</span>';
+}
+
+function getRoleText(role) {
+    return role === 'admin' ? 'Admin' : 'Khách hàng';
+}
+
+// Tạo avatar chữ cái đầu
+function getInitialsAvatar(name) {
+    if (!name) return 'U';
+    const parts = name.trim().split(' ');
+    return parts[parts.length - 1].charAt(0).toUpperCase();
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPage  = 1;
+let totalPages   = 1;
+let currentLimit = 15;
+let searchTimeout = null;
+
+// ============================================================
+// LOAD USERS
+// ============================================================
+async function loadUsers() {
+    const tbody     = document.getElementById('users-tbody');
+    const searchVal = document.getElementById('users-search')?.value.trim() || '';
+    const roleVal   = document.getElementById('role-filter')?.value || '';
+
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#6b7280">Đang tải...</td></tr>';
     }
 
-    function getStatusBadge(status) {
-        if(status === 'active') {
-            return '<span class="badge" style="background-color: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Đang hoạt động</span>';
-        } else {
-            return '<span class="badge" style="background-color: #fee2e2; color: #dc2626; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Bị khóa</span>';
-        }
-    }
+    const params = new URLSearchParams({
+        page:  currentPage,
+        limit: currentLimit,
+        search: searchVal,
+        role:  roleVal,
+    });
 
-    function getRoleBadge(role) {
-        if(role === 'Admin') {
-            return '<span style="color: #2563eb; background-color: #eff6ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Admin</span>';
-        } else if (role === 'Nhân viên') {
-            return '<span style="color: #d97706; background-color: #fef3c7; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Nhân viên</span>';
-        } else {
-            return '<span style="color: #4b5563; background-color: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Khách hàng</span>';
-        }
-    }
-
-    function renderTable() {
-        if (!tbody) return;
-        let html = '';
-        mockUsers.forEach(user => {
-            html += `
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>${user.id}</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <img src="${user.avatar}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                            <strong style="color: #111827; font-weight: 500;">${user.name}</strong>
-                        </div>
-                    </td>
-                    <td>${user.email}</td>
-                    <td>${user.phone}</td>
-                    <td>${getRoleBadge(user.role)}</td>
-                    <td>
-                        <div class="product-name-col">
-                            <span>${user.date.split(' ')[0]}</span>
-                            <span>${user.date.split(' ')[1]}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="btn-icon view" onclick="openUserOffcanvas(${user.id})" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
-                            <button class="btn-icon delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+    try {
+        const response = await fetch(USERS_LIST_URL + '?' + params, {
+            credentials: 'include',
+            headers: authHeaders()
         });
-        tbody.innerHTML = html;
+
+        const result = await response.json();
+
+        if (!result.success) {
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#dc2626">${result.message}</td></tr>`;
+            }
+            return;
+        }
+
+        totalPages = result.pagination.total_pages;
+        renderTable(result.data);
+        renderPagination(result.pagination);
+
+    } catch (err) {
+        console.error('Lỗi load users:', err);
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#dc2626">Không thể kết nối server</td></tr>';
+        }
+    }
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable(users) {
+    const tbody = document.getElementById('users-tbody');
+    if (!tbody) return;
+
+    if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Không tìm thấy người dùng nào</td></tr>';
+        return;
     }
 
-    renderTable();
+    let html = '';
+    users.forEach(user => {
+        const initials = getInitialsAvatar(user.full_name);
+        const colors   = ['#2563eb','#7c3aed','#dc2626','#059669','#d97706'];
+        const color    = colors[user.id % colors.length];
 
-    // === DETAILS PANEL INTERACTION ===
-    const detailsPanel = document.getElementById('user-details-panel');
-    const btnClose = document.getElementById('closeUserPanel');
-    
-    window.openUserOffcanvas = function(userId) {
-        const user = mockUsers.find(u => u.id === userId);
-        if(user) {
-            document.getElementById('u-avatar').src = user.avatar;
-            document.getElementById('u-name').innerText = user.name;
-            document.getElementById('u-id').innerText = user.id;
-            document.getElementById('u-role').outerHTML = getRoleBadge(user.role).replace('>', ' id="u-role">');
-            
-            document.getElementById('u-name-val').innerText = user.name;
-            document.getElementById('u-email').innerText = user.email;
-            document.getElementById('u-phone').innerText = user.phone;
-            document.getElementById('u-role-val').innerText = user.role;
-            document.getElementById('u-address').innerText = user.address;
-            document.getElementById('u-date').innerText = user.date;
-            
-            document.getElementById('u-orders-count').innerText = user.orders;
-            document.getElementById('u-orders-total').innerText = formatCurrency(user.totalSpent);
-            document.getElementById('u-reviews-count').innerText = user.reviews;
-            document.getElementById('u-rating').innerText = user.rating;
+        html += `
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>${user.id}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0">${initials}</div>
+                        <strong style="color:#111827;font-weight:500">${user.full_name || '—'}</strong>
+                    </div>
+                </td>
+                <td>${user.email}</td>
+                <td>${user.phone || '—'}</td>
+                <td>${getRoleBadge(user.role)}</td>
+                <td>
+                    <div class="product-name-col">
+                        <span>${formatDate(user.created_at)}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-icon view" onclick="openUserPanel(${user.id})" title="Xem chi tiết">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+// ============================================================
+// PAGINATION
+// ============================================================
+function renderPagination(pagination) {
+    const controls = document.querySelector('.pagination-controls');
+    if (!controls) return;
+
+    const { current_page, total_pages } = pagination;
+
+    let html = `
+        <button class="btn-page" ${current_page <= 1 ? 'disabled' : ''} onclick="changePage(1)">
+            <i class="fa-solid fa-angles-left"></i>
+        </button>
+        <button class="btn-page" ${current_page <= 1 ? 'disabled' : ''} onclick="changePage(${current_page - 1})">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    `;
+
+    let startPage = Math.max(1, current_page - 2);
+    let endPage   = Math.min(total_pages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="btn-page ${i === current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+    }
+
+    html += `
+        <button class="btn-page" ${current_page >= total_pages ? 'disabled' : ''} onclick="changePage(${current_page + 1})">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button class="btn-page" ${current_page >= total_pages ? 'disabled' : ''} onclick="changePage(${total_pages})">
+            <i class="fa-solid fa-angles-right"></i>
+        </button>
+    `;
+
+    controls.innerHTML = html;
+}
+
+function changePage(page) {
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    loadUsers();
+}
+
+// ============================================================
+// CHI TIẾT NGƯỜI DÙNG
+// ============================================================
+window.openUserPanel = async function(userId) {
+    const panel = document.getElementById('user-details-panel');
+    if (panel) panel.classList.add('active');
+
+    // Reset
+    document.getElementById('u-name').textContent    = 'Đang tải...';
+    document.getElementById('u-name-val').textContent = '—';
+
+    try {
+        const response = await fetch(USERS_DETAIL_URL + '?id=' + userId, {
+            credentials: 'include',
+            headers: authHeaders()
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            showToast(result.message || 'Không thể tải thông tin', 'error');
+            return;
         }
-        
-        if (detailsPanel) detailsPanel.classList.add('active');
+
+        const { user, order_count, total_spent, review_count, avg_rating } = result.data;
+
+        // Avatar
+        const initials = getInitialsAvatar(user.full_name);
+        const colors   = ['#2563eb','#7c3aed','#dc2626','#059669','#d97706'];
+        const color    = colors[user.id % colors.length];
+
+        const avatarEl = document.getElementById('u-avatar');
+        if (avatarEl) {
+            // Thay ảnh bằng div chữ cái nếu không có ảnh thật
+            avatarEl.style.cssText = `width:80px;height:80px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:32px;border:none`;
+            avatarEl.textContent   = initials;
+        }
+
+        document.getElementById('u-name').textContent     = user.full_name || '—';
+        document.getElementById('u-id').textContent       = user.id;
+        document.getElementById('u-name-val').textContent = user.full_name || '—';
+        document.getElementById('u-email').textContent    = user.email;
+        document.getElementById('u-phone').textContent    = user.phone || '—';
+        document.getElementById('u-role-val').textContent = getRoleText(user.role);
+        document.getElementById('u-address').textContent  = user.address || '—';
+        document.getElementById('u-date').textContent     = formatDate(user.created_at);
+
+        // Role badge
+        const uRole = document.getElementById('u-role');
+        if (uRole) {
+            uRole.innerHTML = getRoleBadge(user.role);
+        }
+
+        // Stats
+        document.getElementById('u-orders-count').textContent = order_count;
+        document.getElementById('u-orders-total').textContent = formatCurrency(total_spent);
+        document.getElementById('u-reviews-count').textContent = review_count;
+        document.getElementById('u-rating').textContent       = avg_rating > 0 ? avg_rating.toFixed(1) : '—';
+
+    } catch (err) {
+        console.error('Lỗi load user detail:', err);
+        showToast('Không thể kết nối server', 'error');
+    }
+};
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(message, type = 'success') {
+    let toast = document.getElementById('admin-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-toast';
+        toast.style.cssText = `
+            position:fixed;bottom:24px;right:24px;z-index:9999;
+            padding:12px 20px;border-radius:8px;color:#fff;
+            font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);
+            transition:opacity 0.3s;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.style.background = type === 'success' ? '#16a34a' : '#dc2626';
+    toast.textContent      = message;
+    toast.style.opacity    = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+}
+
+// ============================================================
+// KHỞI TẠO
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    loadUsers();
+
+    // Đóng panel
+    const btnClose  = document.getElementById('closeUserPanel');
+    const closePanel = () => {
+        const panel = document.getElementById('user-details-panel');
+        if (panel) panel.classList.remove('active');
     };
 
-    function closePanel() {
-        if (detailsPanel) detailsPanel.classList.remove('active');
+    if (btnClose) btnClose.addEventListener('click', closePanel);
+
+    // Search debounce
+    const searchInput = document.getElementById('users-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentPage = 1;
+                loadUsers();
+            }, 400);
+        });
     }
 
-    if(btnClose) btnClose.addEventListener('click', closePanel);
+    // Filter role
+    const roleFilter = document.getElementById('role-filter');
+    if (roleFilter) {
+        roleFilter.addEventListener('change', () => {
+            currentPage = 1;
+            loadUsers();
+        });
+    }
 });

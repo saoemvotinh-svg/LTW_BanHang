@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -36,18 +36,17 @@
             <div class="filter-group search-group">
               <label>Tìm kiếm</label>
               <div class="search-box">
-                <input type="text" placeholder="Tìm theo tên, email, SĐT...">
+                <input type="text" id="users-search" placeholder="Tìm theo tên, email, SĐT...">
                 <i class="fa-solid fa-magnifying-glass"></i>
               </div>
             </div>
 
             <div class="filter-group">
               <label>Vai trò</label>
-              <select>
-                <option>Tất cả vai trò</option>
-                <option>Admin</option>
-                <option>Khách hàng</option>
-                <option>Nhân viên</option>
+              <select id="role-filter">
+                <option value="">Tất cả vai trò</option>
+                <option value="admin">Admin</option>
+                <option value="customer">Khách hàng</option>
               </select>
             </div>
 
@@ -166,7 +165,6 @@
     </div>
   </main>
   <footer></footer>
-  <script src="../js/layout.js"></script>
   <script src="../js/admin.js"></script>
   <script src="../js/admin-users.js"></script>
 </body>

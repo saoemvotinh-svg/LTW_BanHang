@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -34,29 +34,24 @@
         <div class="filter-group search-group">
           <label>Tìm kiếm</label>
           <div class="search-input">
-            <input type="text" placeholder="Tên sản phẩm, mô tả...">
+            <input type="text" id="search-input" placeholder="Tên sản phẩm, mô tả...">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
 
         <div class="filter-group">
           <label>Danh mục</label>
-          <select>
-            <option>Tất cả danh mục</option>
-            <option>Thời trang bé trai</option>
-            <option>Thời trang bé gái</option>
-            <option>Giày dép</option>
-            <option>Phụ kiện</option>
-            <option>Đồ chơi</option>
+          <select id="category-filter">
+            <option value="">Tất cả danh mục</option>
           </select>
         </div>
 
         <div class="filter-group">
           <label>Trạng thái</label>
-          <select>
-            <option>Tất cả</option>
-            <option>Còn hàng</option>
-            <option>Hết hàng</option>
+          <select id="stock-filter">
+            <option value="">Tất cả</option>
+            <option value="in_stock">Còn hàng</option>
+            <option value="out_stock">Hết hàng</option>
           </select>
         </div>
       </div>
@@ -118,6 +113,7 @@
             <div class="upload-placeholder" id="upload-placeholder">
               <i class="fa-regular fa-image"></i>
             </div>
+            <input type="file" id="p-image" accept="image/*" style="display:none">
             <button class="btn-upload"><i class="fa-solid fa-upload"></i> Thay đổi ảnh</button>
             <span class="help-text">JPG, PNG, WebP (Max 2MB)</span>
           </div>
@@ -149,7 +145,7 @@
 
         <div class="form-group">
           <label>Mô tả ngắn</label>
-          <textarea id="p-desc" rows="3">Set đồ chơi cho bé trai với thiết kế phong cách Hàn Quốc, chất liệu cotton mềm mại...</textarea>
+          <textarea id="p-desc" rows="3" placeholder="Mô tả sản phẩm..."></textarea>
         </div>
 
         <div class="form-row">
@@ -170,12 +166,11 @@
     
     <div class="offcanvas-footer">
       <button class="btn btn-outline" id="btnCancelOffcanvas">Hủy</button>
-      <button class="btn btn-primary">Cập nhật</button>
+      <button class="btn btn-primary" id="btn-save-product">Lưu</button>
     </div>
   </div>
 
   <footer></footer>
-  <script src="../js/layout.js"></script>
   <script src="../js/admin.js"></script>
   <script src="../js/admin-products.js"></script>
 </body>

@@ -20,36 +20,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (currentPath.includes('product-detail.html')) {
 
-        const id = parseInt(getQueryParam('id')) || 1; 
+        const id = parseInt(getQueryParam('id')) || 1;
         const product = mockProducts.find(p => p.id === id);
-        
+
         if (product) {
             document.querySelector('.product-info h1').textContent = `Tên Sản Phẩm: ${product.name}`;
             document.querySelector('.product-info .price').textContent = `Giá: ${formatPrice(product.price)}`;
             document.querySelector('.product-gallery > img').src = product.img;
-            document.title = product.name; 
+            document.title = product.name;
         }
 
         const mainImage = document.querySelector('.product-gallery > img');
         const thumbnails = document.querySelectorAll('.thumbnails img');
-        
+
         thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', function() {
-                mainImage.src = this.src; 
+            thumb.addEventListener('click', function () {
+                mainImage.src = this.src;
             });
         });
         const addToCartBtn = document.querySelector('.product-info form button');
         const quantityInput = document.getElementById('quantity');
-        
+
         if (addToCartBtn && product) {
             addToCartBtn.addEventListener('click', (e) => {
-                e.preventDefault(); 
+                e.preventDefault();
                 const qty = parseInt(quantityInput.value);
-                
+
                 let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-                
+
                 const existingProductIndex = cart.findIndex(item => item.id === product.id);
-                
+
                 if (existingProductIndex !== -1) {
                     cart[existingProductIndex].quantity += qty;
                 } else {
@@ -71,11 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (reviewForm) {
             reviewForm.addEventListener('submit', (e) => {
-                e.preventDefault();  
+                e.preventDefault();
                 const reviewText = document.getElementById('reviewText').value;
                 const newReview = document.createElement('li');
                 newReview.innerHTML = `<strong>Khách hàng:</strong> ${reviewText} (5 sao)`;
-                
+
                 reviewList.appendChild(newReview);
                 reviewForm.reset();
             });

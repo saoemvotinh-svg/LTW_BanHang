@@ -78,7 +78,7 @@ if (!localStorage.getItem(CART_KEY)) {
 
 let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
-function formatPrice(price){
+function formatPrice(price) {
     return price.toLocaleString("vi-VN") + " VNĐ";
 }
 
@@ -88,12 +88,12 @@ function saveCart() {
 
 
 // RENDER
-function renderCart(){
+function renderCart() {
     const cartList = document.getElementById("cart-list");
 
     cartList.innerHTML = "";
-    if(cart.length === 0){
-        cartList.innerHTML =  `
+    if (cart.length === 0) {
+        cartList.innerHTML = `
             <p class="empty-cart">
                 Giỏ hàng đang trống.
             </p>
@@ -103,7 +103,7 @@ function renderCart(){
     }
     cart.forEach(cartItem => {
         const product = testProducts.find(item => item.id === cartItem.product_id);
-        if (!product) { return;}
+        if (!product) { return; }
         const category = testCategories.find(item => item.id === product.category_id);
         const productImage = testProductImages.find(image =>
             image.product_id === product.id && image.is_primary === true);
@@ -144,7 +144,7 @@ function renderCart(){
     handleClearCart();
 }
 
-function updateCartTotal(){
+function updateCartTotal() {
     let subtotal = 0;
     cart.forEach(cartItem => {
         const product = testProducts.find(
@@ -162,7 +162,8 @@ function updateCartTotal(){
 
 function handleQuantityChange() {
     const quantityInputs = document.querySelectorAll(".cart-quantity input");
-    quantityInputs.forEach(input => { input.addEventListener("change", function () {
+    quantityInputs.forEach(input => {
+        input.addEventListener("change", function () {
             const cartItemId = Number(this.dataset.id);
             let quantity = Number(this.value);
 
@@ -220,12 +221,12 @@ function handleClearCart() {
 // FORM ĐẶT HÀNG
 function handleOrder() {
     const orderForm = document.querySelector(".order-form");
-    orderForm.addEventListener("submit", function(event) {
+    orderForm.addEventListener("submit", function (event) {
         event.preventDefault();
         const fullname = document.getElementById("fullname").value.trim();
         const phone = document.getElementById("phone").value.trim();
         const address = document.getElementById("address").value.trim();
-        
+
         if (fullname === "") {
             alert("Vui lòng nhập họ và tên.");
             return;

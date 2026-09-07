@@ -6,7 +6,6 @@
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/database.php';
 
 
@@ -319,7 +318,7 @@ try {
         'message' => 'Lỗi máy chủ',
 
         // Khi debug có thể dùng:
-         'error' => $e->getMessage()
+        'error' => $e->getMessage()
 
     ]);
 

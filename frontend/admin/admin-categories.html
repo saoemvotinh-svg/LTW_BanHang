@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý danh mục - Bảng điều khiển quản trị</title>
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-products.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/home.css">
+  <style>
+    /* Style riêng cho categories modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 480px;
+      max-width: 90vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .cat-count-badge {
+      background: #eff6ff;
+      color: #2563eb;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <header></header>
+  <aside></aside>
+  <main>
+    <div class="products-container">
+      <!-- HEADER -->
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Quản lý danh mục</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" id="btnAddCategory">
+            <i class="fa-solid fa-plus"></i> Thêm danh mục
+          </button>
+          <button class="btn btn-outline" onclick="location.reload()">
+            <i class="fa-solid fa-rotate-right"></i> Làm mới
+          </button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-container">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th width="60">ID</th>
+              <th>Tên danh mục</th>
+              <th>Mô tả</th>
+              <th width="120">Số sản phẩm</th>
+              <th width="140">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="categories-tbody">
+            <!-- Render via JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODAL THÊM / SỬA DANH MỤC -->
+  <div class="modal-overlay" id="category-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Thêm danh mục</h2>
+        <button class="btn-close" id="btnCloseModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="form-group">
+        <label>Tên danh mục <span>*</span></label>
+        <input type="text" id="cat-name" placeholder="Nhập tên danh mục">
+      </div>
+
+      <div class="form-group" style="margin-top:14px">
+        <label>Mô tả</label>
+        <textarea id="cat-desc" rows="3" placeholder="Mô tả danh mục (không bắt buộc)"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="btnCancelModal">Hủy</button>
+        <button class="btn btn-primary" id="btn-save-category">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <footer></footer>
+  <script src="../js/admin.js"></script>
+  <script src="../js/admin-categories.js"></script>
+</body>
+</html>

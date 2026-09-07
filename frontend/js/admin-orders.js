@@ -1,127 +1,426 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // === MOCK DATA ===
-    const mockOrders = [
-        { id: 10025, customer: 'Nguyễn Văn An', email: 'an.nguyen@email.com', phone: '0901 234 567', total: 1250000, status: 'pending', date: '25/05/2024 10:30', address: '123 Đường ABC, Phường 1, Quận 1, TP. Hồ Chí Minh' },
-        { id: 10024, customer: 'Trần Thị Bình', email: 'binh.tran@email.com', phone: '0912 345 678', total: 850000, status: 'confirmed', date: '25/05/2024 09:15', address: '456 Đường DEF, Phường 2, Quận 3, TP. Hồ Chí Minh' },
-        { id: 10023, customer: 'Lê Minh Cường', email: 'cuong.le@email.com', phone: '0932 456 789', total: 2450000, status: 'shipping', date: '24/05/2024 16:45', address: '789 Đường GHI, Phường 3, Quận 10, TP. Hồ Chí Minh' },
-        { id: 10022, customer: 'Phạm Thị Dung', email: 'dung.pham@email.com', phone: '0945 678 901', total: 560000, status: 'completed', date: '24/05/2024 14:20', address: '101 Đường JKL, Phường 4, Quận 5, TP. Hồ Chí Minh' },
-        { id: 10021, customer: 'Hoàng Văn E', email: 'e.hoang@email.com', phone: '0967 890 123', total: 1090000, status: 'cancelled', date: '23/05/2024 11:05', address: '202 Đường MNO, Phường 5, Quận 7, TP. Hồ Chí Minh' },
-    ];
+// admin-orders.js — Quản lý đơn hàng, kết nối API thật
 
-    const tbody = document.getElementById('orders-tbody');
-    
-    function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN') + ' ₫';
+const BASE_URL = "http://localhost:8080/";
+const ORDERS_LIST_URL          = BASE_URL + "api/admin/orders/list.php";
+const ORDERS_DETAIL_URL        = BASE_URL + "api/admin/orders/detail.php";
+const ORDERS_UPDATE_STATUS_URL = BASE_URL + "api/admin/orders/update_status.php";
+
+function getAuthToken() {
+    return localStorage.getItem('auth_token') || '';
+}
+
+function authHeaders() {
+    return { 'Authorization': 'Bearer ' + getAuthToken() };
+}
+
+function formatCurrency(amount) {
+    return Number(amount).toLocaleString('vi-VN') + ' ₫';
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'pending':   { text: 'Chờ xử lý',   bg: '#fef08a', color: '#a16207' },
+        'confirmed': { text: 'Đã xác nhận', bg: '#bfdbfe', color: '#1d4ed8' },
+        'shipping':  { text: 'Đang giao',   bg: '#e9d5ff', color: '#7e22ce' },
+        'completed': { text: 'Đã giao',     bg: '#bbf7d0', color: '#15803d' },
+        'cancelled': { text: 'Đã hủy',      bg: '#fecaca', color: '#b91c1c' },
+    };
+    const s = map[status] || { text: status, bg: '#e5e7eb', color: '#374151' };
+    return `<span class="status-badge" style="background:${s.bg};color:${s.color};padding:4px 8px;border-radius:4px;font-size:12px;font-weight:500">${s.text}</span>`;
+}
+
+function getStatusText(status) {
+    const map = {
+        'pending': 'Chờ xử lý', 'confirmed': 'Đã xác nhận',
+        'shipping': 'Đang giao', 'completed': 'Đã giao', 'cancelled': 'Đã hủy'
+    };
+    return map[status] || status;
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPage  = 1;
+let totalPages   = 1;
+let currentLimit = 15;
+let openOrderId  = null;
+
+let searchTimeout = null;
+
+// ============================================================
+// LOAD ORDERS
+// ============================================================
+async function loadOrders() {
+    const tbody     = document.getElementById('orders-tbody');
+    const searchVal = document.getElementById('orders-search')?.value.trim() || '';
+    const statusVal = document.getElementById('status-filter')?.value || '';
+
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#6b7280">Đang tải...</td></tr>';
     }
 
-    function getStatusBadge(status) {
-        switch(status) {
-            case 'pending': return '<span class="status-badge" style="background-color: #fef08a; color: #a16207; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Chờ xử lý</span>';
-            case 'confirmed': return '<span class="status-badge" style="background-color: #bfdbfe; color: #1d4ed8; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Đã xác nhận</span>';
-            case 'shipping': return '<span class="status-badge" style="background-color: #e9d5ff; color: #7e22ce; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Đang giao</span>';
-            case 'completed': return '<span class="status-badge" style="background-color: #bbf7d0; color: #15803d; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Đã giao</span>';
-            case 'cancelled': return '<span class="status-badge" style="background-color: #fecaca; color: #b91c1c; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">Đã hủy</span>';
-            default: return '';
-        }
-    }
+    const params = new URLSearchParams({
+        page:   currentPage,
+        limit:  currentLimit,
+        search: searchVal,
+        status: statusVal,
+    });
 
-    function getStatusText(status) {
-        switch(status) {
-            case 'pending': return 'Chờ xử lý';
-            case 'confirmed': return 'Đã xác nhận';
-            case 'shipping': return 'Đang giao';
-            case 'completed': return 'Đã giao';
-            case 'cancelled': return 'Đã hủy';
-            default: return '';
-        }
-    }
-
-    function renderTable() {
-        if (!tbody) return;
-        let html = '';
-        mockOrders.forEach(order => {
-            html += `
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>#${order.id}</td>
-                    <td>
-                        <div class="product-name-col">
-                            <strong>${order.customer}</strong>
-                            <span>${order.email}</span>
-                        </div>
-                    </td>
-                    <td>${order.phone}</td>
-                    <td style="color: #2563eb; font-weight: 600;">${formatCurrency(order.total)}</td>
-                    <td>${getStatusBadge(order.status)}</td>
-                    <td>
-                        <div class="product-name-col">
-                            <span>${order.date.split(' ')[0]}</span>
-                            <span>${order.date.split(' ')[1]}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="btn-icon view" onclick="openOrderOffcanvas(${order.id})" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
-                            <button class="btn-icon delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+    try {
+        const response = await fetch(ORDERS_LIST_URL + '?' + params, {
+            credentials: 'include',
+            headers: authHeaders()
         });
-        tbody.innerHTML = html;
+
+        const result = await response.json();
+
+        if (!result.success) {
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#dc2626">${result.message}</td></tr>`;
+            }
+            return;
+        }
+
+        // Cập nhật summary cards
+        renderSummaryCards(result.summary || {});
+
+        totalPages = result.pagination.total_pages;
+        renderTable(result.data);
+        renderPagination(result.pagination);
+
+    } catch (err) {
+        console.error('Lỗi load đơn hàng:', err);
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#dc2626">Không thể kết nối server</td></tr>';
+        }
+    }
+}
+
+// ============================================================
+// SUMMARY CARDS
+// ============================================================
+function renderSummaryCards(summary) {
+    const cards = document.querySelectorAll('.summary-card .info strong');
+    if (cards.length < 5) return;
+
+    const total     = Object.values(summary).reduce((a, b) => a + b, 0);
+    const pending   = summary['pending']   || 0;
+    const shipping  = summary['shipping']  || 0;
+    const completed = summary['completed'] || 0;
+    const cancelled = summary['cancelled'] || 0;
+
+    cards[0].textContent = total;
+    cards[1].textContent = pending;
+    cards[2].textContent = shipping;
+    cards[3].textContent = completed;
+    cards[4].textContent = cancelled;
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable(orders) {
+    const tbody = document.getElementById('orders-tbody');
+    if (!tbody) return;
+
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Không có đơn hàng nào</td></tr>';
+        return;
     }
 
-    renderTable();
+    let html = '';
+    orders.forEach(order => {
+        html += `
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>#${order.id}</td>
+                <td>
+                    <div class="product-name-col">
+                        <strong>${order.customer_name}</strong>
+                        <span>${order.user_email || ''}</span>
+                    </div>
+                </td>
+                <td>${order.phone}</td>
+                <td style="color:#2563eb;font-weight:600">${formatCurrency(order.total_amount)}</td>
+                <td>${getStatusBadge(order.status)}</td>
+                <td>
+                    <div class="product-name-col">
+                        <span>${formatDate(order.created_at).split(' ')[0]}</span>
+                        <span>${formatDate(order.created_at).split(' ')[1] || ''}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-icon view" onclick="openOrderPanel(${order.id})" title="Xem chi tiết">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
 
-    // === DETAILS PANEL INTERACTION ===
-    const detailsPanel = document.getElementById('order-details-panel');
-    const btnClose = document.getElementById('closeOrderPanel');
-    const btnCancel = document.getElementById('btnCancelPanel');
-    
-    window.openOrderOffcanvas = function(orderId) {
-        const order = mockOrders.find(o => o.id === orderId);
-        if(order) {
-            document.getElementById('o-id').innerText = 'Đơn hàng #' + order.id;
-            document.getElementById('o-status').outerHTML = getStatusBadge(order.status).replace('>', ' id="o-status">');
-            document.getElementById('o-date').innerText = order.date;
-            document.getElementById('c-name').innerText = order.customer;
-            document.getElementById('c-phone').innerText = order.phone;
-            document.getElementById('c-email').innerText = order.email;
-            document.getElementById('c-address').innerText = order.address;
-            document.getElementById('o-subtotal').innerText = formatCurrency(order.total - 30000);
-            document.getElementById('o-shipping').innerText = formatCurrency(30000);
-            document.getElementById('o-discount').innerText = formatCurrency(0);
-            document.getElementById('o-total-price').innerText = formatCurrency(order.total);
-            
-            const select = document.querySelector('.status-select');
-            if (select) {
-                select.value = getStatusText(order.status);
-            }
-            
-            // Mock products for the order
-            const productsList = document.getElementById('o-products-list');
-            productsList.innerHTML = `
-                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                    <img src="https://placehold.co/60x60/e2e8f0/475569?text=SP" style="width: 60px; height: 60px; border-radius: 6px; object-fit: cover;">
-                    <div style="flex: 1;">
-                        <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">Sản phẩm mẫu 1</div>
-                        <div style="font-size: 12px; color: #6b7280;">Phân loại: Đỏ / M</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 12px; color: #6b7280;">x1</div>
-                        <div style="font-weight: 500; font-size: 14px;">${formatCurrency(order.total - 30000)}</div>
-                    </div>
-                </div>
-            `;
+    tbody.innerHTML = html;
+}
+
+// ============================================================
+// PAGINATION
+// ============================================================
+function renderPagination(pagination) {
+    const controls = document.querySelector('.pagination-controls');
+    if (!controls) return;
+
+    const { current_page, total_pages } = pagination;
+
+    let html = `
+        <button class="btn-page" ${current_page <= 1 ? 'disabled' : ''} onclick="changePage(1)">
+            <i class="fa-solid fa-angles-left"></i>
+        </button>
+        <button class="btn-page" ${current_page <= 1 ? 'disabled' : ''} onclick="changePage(${current_page - 1})">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    `;
+
+    let startPage = Math.max(1, current_page - 2);
+    let endPage   = Math.min(total_pages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="btn-page ${i === current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+    }
+
+    html += `
+        <button class="btn-page" ${current_page >= total_pages ? 'disabled' : ''} onclick="changePage(${current_page + 1})">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button class="btn-page" ${current_page >= total_pages ? 'disabled' : ''} onclick="changePage(${total_pages})">
+            <i class="fa-solid fa-angles-right"></i>
+        </button>
+    `;
+
+    controls.innerHTML = html;
+}
+
+function changePage(page) {
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    loadOrders();
+}
+
+// ============================================================
+// CHI TIẾT ĐƠN HÀNG
+// ============================================================
+window.openOrderPanel = async function(orderId) {
+    openOrderId = orderId;
+    const panel = document.getElementById('order-details-panel');
+
+    // Reset nội dung
+    document.getElementById('o-id').textContent    = `Đơn hàng #${orderId}`;
+    document.getElementById('o-products-list').innerHTML = '<div style="padding:10px;color:#6b7280">Đang tải...</div>';
+
+    if (panel) panel.classList.add('active');
+
+    try {
+        const response = await fetch(ORDERS_DETAIL_URL + '?id=' + orderId, {
+            credentials: 'include',
+            headers: authHeaders()
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            showToast(result.message, 'error');
+            return;
         }
-        
-        if (detailsPanel) detailsPanel.classList.add('active');
+
+        const { order, items } = result.data;
+
+        // Điền thông tin đơn
+        document.getElementById('o-id').textContent      = `Đơn hàng #${order.id}`;
+        document.getElementById('o-date').textContent    = formatDate(order.created_at);
+        document.getElementById('c-name').textContent    = order.customer_name;
+        document.getElementById('c-phone').textContent   = order.phone;
+        document.getElementById('c-email').textContent   = order.user_email || '—';
+        document.getElementById('c-address').textContent = order.address || '—';
+        document.getElementById('o-total-price').textContent = formatCurrency(order.total_amount);
+        document.getElementById('o-subtotal').textContent    = formatCurrency(order.total_amount);
+        document.getElementById('o-shipping').textContent    = formatCurrency(0);
+        document.getElementById('o-discount').textContent    = formatCurrency(0);
+
+        // Status badge
+        const oStatus = document.getElementById('o-status');
+        if (oStatus) {
+            oStatus.textContent    = getStatusText(order.status);
+            oStatus.style.cssText += `;background:${getStatusBg(order.status)};color:${getStatusColor(order.status)}`;
+        }
+
+        // Select status
+        const statusSelect = document.querySelector('.status-select');
+        if (statusSelect) {
+            statusSelect.value = order.status;
+        }
+
+        // Sản phẩm trong đơn
+        const productsList = document.getElementById('o-products-list');
+        if (items && items.length > 0) {
+            let itemsHtml = '';
+            items.forEach(item => {
+                const imgSrc = item.image || 'https://placehold.co/60x60/e2e8f0/94a3b8?text=SP';
+                itemsHtml += `
+                    <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center">
+                        <img src="${imgSrc}" style="width:60px;height:60px;border-radius:6px;object-fit:cover"
+                             onerror="this.src='https://placehold.co/60x60/e2e8f0/94a3b8?text=SP'">
+                        <div style="flex:1">
+                            <div style="font-weight:500;font-size:14px;margin-bottom:4px">${item.product_name}</div>
+                            <div style="font-size:12px;color:#6b7280">x${item.quantity} — ${formatCurrency(item.unit_price)}/cái</div>
+                        </div>
+                        <div style="text-align:right;font-weight:500;font-size:14px">${formatCurrency(item.subtotal)}</div>
+                    </div>
+                `;
+            });
+            productsList.innerHTML = itemsHtml;
+        } else {
+            productsList.innerHTML = '<p style="color:#6b7280;font-size:14px">Không có sản phẩm</p>';
+        }
+
+    } catch (err) {
+        console.error('Lỗi load chi tiết đơn:', err);
+        showToast('Không thể kết nối server', 'error');
+    }
+};
+
+function getStatusBg(status) {
+    const map = { pending:'#fef08a', confirmed:'#bfdbfe', shipping:'#e9d5ff', completed:'#bbf7d0', cancelled:'#fecaca' };
+    return map[status] || '#e5e7eb';
+}
+function getStatusColor(status) {
+    const map = { pending:'#a16207', confirmed:'#1d4ed8', shipping:'#7e22ce', completed:'#15803d', cancelled:'#b91c1c' };
+    return map[status] || '#374151';
+}
+
+// ============================================================
+// CẬP NHẬT TRẠNG THÁI ĐƠN
+// ============================================================
+async function updateOrderStatus() {
+    if (!openOrderId) return;
+
+    const statusSelect = document.querySelector('.status-select');
+    if (!statusSelect) return;
+
+    const newStatus = statusSelect.value;
+
+    const updateBtn = document.getElementById('btn-update-order');
+    if (updateBtn) {
+        updateBtn.disabled    = true;
+        updateBtn.textContent = 'Đang lưu...';
+    }
+
+    try {
+        const response = await fetch(ORDERS_UPDATE_STATUS_URL, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: openOrderId, status: newStatus })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast(result.message, 'success');
+            loadOrders();
+
+            // Cập nhật badge trong panel
+            const oStatus = document.getElementById('o-status');
+            if (oStatus) {
+                oStatus.textContent    = getStatusText(newStatus);
+                oStatus.style.background = getStatusBg(newStatus);
+                oStatus.style.color      = getStatusColor(newStatus);
+            }
+        } else {
+            showToast(result.message, 'error');
+        }
+
+    } catch (err) {
+        console.error('Lỗi cập nhật trạng thái:', err);
+        showToast('Không thể kết nối server', 'error');
+    } finally {
+        if (updateBtn) {
+            updateBtn.disabled    = false;
+            updateBtn.textContent = 'Cập nhật';
+        }
+    }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(message, type = 'success') {
+    let toast = document.getElementById('admin-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-toast';
+        toast.style.cssText = `
+            position:fixed;bottom:24px;right:24px;z-index:9999;
+            padding:12px 20px;border-radius:8px;color:#fff;
+            font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);
+            transition:opacity 0.3s;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.style.background = type === 'success' ? '#16a34a' : '#dc2626';
+    toast.textContent      = message;
+    toast.style.opacity    = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+}
+
+// ============================================================
+// KHỞI TẠO
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    loadOrders();
+
+    // Đóng panel
+    const btnClose  = document.getElementById('closeOrderPanel');
+    const btnCancel = document.getElementById('btnCancelPanel');
+    const closePanel = () => {
+        const panel = document.getElementById('order-details-panel');
+        if (panel) panel.classList.remove('active');
+        openOrderId = null;
     };
 
-    function closePanel() {
-        if (detailsPanel) detailsPanel.classList.remove('active');
+    if (btnClose)  btnClose.addEventListener('click', closePanel);
+    if (btnCancel) btnCancel.addEventListener('click', closePanel);
+
+    // Nút cập nhật trạng thái
+    const updateBtn = document.getElementById('btn-update-order');
+    if (updateBtn) updateBtn.addEventListener('click', updateOrderStatus);
+
+    // Search debounce
+    const searchInput = document.getElementById('orders-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentPage = 1;
+                loadOrders();
+            }, 400);
+        });
     }
 
-    if(btnClose) btnClose.addEventListener('click', closePanel);
-    if(btnCancel) btnCancel.addEventListener('click', closePanel);
+    // Filter status
+    const statusFilter = document.getElementById('status-filter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', () => {
+            currentPage = 1;
+            loadOrders();
+        });
+    }
 });

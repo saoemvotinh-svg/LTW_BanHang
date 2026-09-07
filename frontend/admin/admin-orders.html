@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -78,20 +78,20 @@
             <div class="filter-group search-group">
               <label>Tìm kiếm</label>
               <div class="search-box">
-                <input type="text" placeholder="Tên khách hàng, SĐT, ID...">
+                <input type="text" id="orders-search" placeholder="Tên khách hàng, SĐT, ID...">
                 <i class="fa-solid fa-magnifying-glass"></i>
               </div>
             </div>
 
             <div class="filter-group">
               <label>Trạng thái</label>
-              <select>
-                <option>Tất cả trạng thái</option>
-                <option>Chờ xử lý</option>
-                <option>Đã xác nhận</option>
-                <option>Đang giao</option>
-                <option>Đã giao</option>
-                <option>Đã hủy</option>
+              <select id="status-filter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Chờ xử lý</option>
+                <option value="confirmed">Xác nhận</option>
+                <option value="shipping">Đang giao</option>
+                <option value="completed">Đã giao</option>
+                <option value="cancelled">Đã hủy</option>
               </select>
             </div>
 
@@ -211,11 +211,11 @@
             <div class="form-group" style="margin-top: 20px;">
               <label>Trạng thái đơn hàng</label>
               <select class="status-select">
-                <option>Chờ xử lý</option>
-                <option>Đã xác nhận</option>
-                <option>Đang giao</option>
-                <option>Đã giao</option>
-                <option>Đã hủy</option>
+                <option value="pending">Chờ xử lý</option>
+                <option value="confirmed">Đã xác nhận</option>
+                <option value="shipping">Đang giao</option>
+                <option value="completed">Đã giao</option>
+                <option value="cancelled">Đã hủy</option>
               </select>
             </div>
 
@@ -226,8 +226,8 @@
           </div>
           
           <div class="panel-footer">
-            <button class="btn btn-outline" id="btnCancelPanel">Đóng</button>
-            <button class="btn btn-primary" style="flex: 1"><i class="fa-regular fa-floppy-disk"></i> Cập nhật</button>
+            <button class="btn btn-outline" id="btnCancelPanel">Dóng</button>
+            <button class="btn btn-primary" id="btn-update-order" style="flex: 1"><i class="fa-regular fa-floppy-disk"></i> Cập nhật</button>
           </div>
         </div>
       </div>
@@ -236,7 +236,6 @@
 
   <footer></footer>
 
-  <script src="../js/layout.js"></script>
   <script src="../js/admin.js"></script>
   <script src="../js/admin-orders.js"></script>
 </body>

@@ -1,48 +1,94 @@
-// --- MOCK DATA ---
-const mockStats = {
-    revenue: { value: 125420000, change: 12.5, type: 'up' },
-    orders: { value: 1248, change: 8.2, type: 'up' },
-    products: { value: 356, change: 5.1, type: 'up' },
-    customers: { value: 1086, change: 7.3, type: 'up' }
-};
+// admin-dashboard.js — Kết nối API thật từ backend
 
-const mockTopProducts = [
-    { id: 1, name: "Set sơ mi tổng hợp nhiều họa tiết bé trai", sold: 245 },
-    { id: 2, name: "Set bộ sơ mi denim cho bé trai phối túi", sold: 189 },
-    { id: 3, name: "Áo sơ mi tay ngắn thêu khủng long", sold: 156 },
-    { id: 4, name: "Quần short jean denim ngắn cho bé trai", sold: 132 },
-    { id: 5, name: "Set bộ áo thun tay dài Dragon Street", sold: 98 }
-];
+const BASE_URL = "http://localhost:8080/";
+const ADMIN_DASHBOARD_URL = BASE_URL + "api/admin/dashboard.php";
 
-const mockOrders = [
-    { id: "34401", customer_name: "Bùi Hoàng Lan", total_amount: 204400, status: "processing", status_text: "Đang xử lý", created_at: "19/01/2026 06:00" },
-    { id: "34201", customer_name: "Đinh Bích Linh", total_amount: 79000, status: "delivered", status_text: "Đã giao", created_at: "03/04/2024 19:00" },
-    { id: "33801", customer_name: "Đinh Thành Phúc", total_amount: 501800, status: "delivered", status_text: "Đã giao", created_at: "16/08/2025 02:06" },
-    { id: "34001", customer_name: "Trần Thúy Hằng", total_amount: 119000, status: "pending", status_text: "Chờ xác nhận", created_at: "07/10/2024 22:31" },
-    { id: "32401", customer_name: "Ngô Thu Hiền", total_amount: 711200, status: "cancelled", status_text: "Đã hủy", created_at: "05/11/2025 12:47" }
-];
-
-const mockCategories = [
-    { name: "Set đồ / Đồ bộ", percentage: 35 },
-    { name: "Váy / Đầm", percentage: 25 },
-    { name: "Áo sơ mi", percentage: 20 },
-    { name: "Áo thun / Polo", percentage: 10 },
-    { name: "Quần", percentage: 10 }
-];
-
-const mockActivities = [
-    { icon: "fa-cart-shopping", text: "Đơn hàng #34401 đã được cập nhật trạng thái", time: "5 phút trước" },
-    { icon: "fa-user", text: "Bùi Hoàng Lan đã đăng ký tài khoản mới", time: "15 phút trước" },
-    { icon: "fa-box", text: 'Sản phẩm "Set sơ mi tổng hợp" đã được cập nhật', time: "30 phút trước" },
-    { icon: "fa-tag", text: "Chương trình khuyến mãi mùa hè đã được tạo", time: "1 giờ trước" }
-];
-
-// --- RENDER FUNCTIONS ---
-function formatCurrency(amount) {
-    return amount.toLocaleString('vi-VN') + ' ₫';
+// Lấy token từ localStorage
+function getAuthToken() {
+    return localStorage.getItem('auth_token') || '';
 }
 
-function renderDashboardStats() {
+// Format số tiền sang VND
+function formatCurrency(amount) {
+    return Number(amount).toLocaleString('vi-VN') + ' ₫';
+}
+
+// Format ngày giờ
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// Map trạng thái đơn hàng
+function getStatusBadge(status) {
+    const map = {
+        'pending':   { text: 'Chờ xử lý',   color: '#fef08a', textColor: '#a16207' },
+        'confirmed': { text: 'Đã xác nhận', color: '#bfdbfe', textColor: '#1d4ed8' },
+        'shipping':  { text: 'Đang giao',   color: '#e9d5ff', textColor: '#7e22ce' },
+        'completed': { text: 'Đã giao',     color: '#bbf7d0', textColor: '#15803d' },
+        'cancelled': { text: 'Đã hủy',      color: '#fecaca', textColor: '#b91c1c' },
+    };
+    const s = map[status] || { text: status, color: '#e5e7eb', textColor: '#374151' };
+    return `<span class="order-status" style="background:${s.color};color:${s.textColor};padding:3px 8px;border-radius:4px;font-size:12px;font-weight:500">${s.text}</span>`;
+}
+
+// ============================================================
+// FETCH DATA TỪ BACKEND
+// ============================================================
+async function loadDashboard() {
+    showLoading();
+
+    try {
+        const response = await fetch(ADMIN_DASHBOARD_URL, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + getAuthToken()
+            }
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            showError(result.message || 'Không thể tải dữ liệu');
+            return;
+        }
+
+        const data = result.data;
+
+        renderStats(data.stats);
+        renderTopProducts(data.top_products);
+        renderRecentOrders(data.recent_orders);
+        renderCategoryStats(data.category_stats);
+        renderActivities(data.recent_orders);
+        renderCharts(data.revenue_chart, data.category_stats);
+
+    } catch (err) {
+        console.error('Lỗi tải dashboard:', err);
+        showError('Không thể kết nối server. Vui lòng kiểm tra XAMPP.');
+    }
+}
+
+function showLoading() {
+    const statsContainer = document.getElementById('dashboard-stats');
+    if (statsContainer) {
+        statsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#6b7280">Đang tải dữ liệu...</div>';
+    }
+}
+
+function showError(msg) {
+    const statsContainer = document.getElementById('dashboard-stats');
+    if (statsContainer) {
+        statsContainer.innerHTML = `<div style="padding:20px;text-align:center;color:#dc2626">${msg}</div>`;
+    }
+}
+
+// ============================================================
+// RENDER STATS CARDS
+// ============================================================
+function renderStats(stats) {
     const statsContainer = document.getElementById('dashboard-stats');
     if (!statsContainer) return;
 
@@ -51,143 +97,186 @@ function renderDashboardStats() {
           <div class="stat-icon revenue-icon"><i class="fa-solid fa-dollar-sign"></i></div>
           <div class="stat-info">
             <span class="stat-label">Doanh thu</span>
-            <strong class="stat-value">${formatCurrency(mockStats.revenue.value)}</strong>
-            <span class="stat-change">↑ ${mockStats.revenue.change}% so với tháng trước</span>
+            <strong class="stat-value">${formatCurrency(stats.total_revenue)}</strong>
+            <span class="stat-change">Tổng doanh thu</span>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon orders-icon"><i class="fa-solid fa-cart-shopping"></i></div>
           <div class="stat-info">
             <span class="stat-label">Đơn hàng</span>
-            <strong class="stat-value">${mockStats.orders.value.toLocaleString('vi-VN')}</strong>
-            <span class="stat-change">↑ ${mockStats.orders.change}% so với tháng trước</span>
+            <strong class="stat-value">${Number(stats.total_orders).toLocaleString('vi-VN')}</strong>
+            <span class="stat-change">Tổng đơn hàng</span>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon products-icon"><i class="fa-solid fa-box"></i></div>
           <div class="stat-info">
             <span class="stat-label">Sản phẩm</span>
-            <strong class="stat-value">${mockStats.products.value}</strong>
-            <span class="stat-change">↑ ${mockStats.products.change}% so với tháng trước</span>
+            <strong class="stat-value">${stats.total_products}</strong>
+            <span class="stat-change">Tổng sản phẩm</span>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon customers-icon"><i class="fa-solid fa-users"></i></div>
           <div class="stat-info">
             <span class="stat-label">Khách hàng</span>
-            <strong class="stat-value">${mockStats.customers.value.toLocaleString('vi-VN')}</strong>
-            <span class="stat-change">↑ ${mockStats.customers.change}% so với tháng trước</span>
+            <strong class="stat-value">${Number(stats.total_users).toLocaleString('vi-VN')}</strong>
+            <span class="stat-change">Tổng người dùng</span>
           </div>
         </div>
     `;
 }
 
-function renderTopProducts() {
-    const topProductsContainer = document.getElementById('top-products-list');
-    if (!topProductsContainer) return;
+// ============================================================
+// RENDER TOP PRODUCTS
+// ============================================================
+function renderTopProducts(topProducts) {
+    const container = document.getElementById('top-products-list');
+    if (!container) return;
+
+    if (!topProducts || topProducts.length === 0) {
+        container.innerHTML = '<p style="color:#6b7280;padding:10px">Chưa có dữ liệu</p>';
+        return;
+    }
+
+    const maxSold = Math.max(...topProducts.map(p => parseInt(p.total_sold) || 0), 1);
 
     let html = '';
-    mockTopProducts.forEach((product, index) => {
+    topProducts.forEach((product, index) => {
+        const sold = parseInt(product.total_sold) || 0;
+        const percent = Math.round((sold / maxSold) * 100);
+
         html += `
             <div class="top-product">
               <span class="product-rank">${index + 1}</span>
               <div class="product-info">
                 <span class="product-name">${product.name}</span>
-                <div class="product-progress"><span></span></div>
+                <div class="product-progress"><span style="width:${percent}%"></span></div>
               </div>
-              <strong class="product-sold">${product.sold}</strong>
+              <strong class="product-sold">${sold}</strong>
             </div>
         `;
     });
-    topProductsContainer.innerHTML = html;
+
+    container.innerHTML = html;
 }
 
-function renderRecentOrders() {
-    const recentOrdersContainer = document.getElementById('recent-orders-tbody');
-    if (!recentOrdersContainer) return;
+// ============================================================
+// RENDER RECENT ORDERS
+// ============================================================
+function renderRecentOrders(recentOrders) {
+    const tbody = document.getElementById('recent-orders-tbody');
+    if (!tbody) return;
+
+    if (!recentOrders || recentOrders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7280;padding:20px">Chưa có đơn hàng</td></tr>';
+        return;
+    }
 
     let html = '';
-    mockOrders.forEach(order => {
+    recentOrders.forEach(order => {
         html += `
             <tr>
               <td>#${order.id}</td>
               <td>${order.customer_name}</td>
-              <td>${formatCurrency(order.total_amount)}</td>
-              <td><span class="order-status ${order.status}">${order.status_text}</span></td>
-              <td>${order.created_at}</td>
+              <td style="color:#2563eb;font-weight:600">${formatCurrency(order.total_amount)}</td>
+              <td>${getStatusBadge(order.status)}</td>
+              <td>${formatDate(order.created_at)}</td>
             </tr>
         `;
     });
-    recentOrdersContainer.innerHTML = html;
+
+    tbody.innerHTML = html;
 }
 
-function renderCategories() {
-    const categoryContainer = document.getElementById('category-list');
-    if (!categoryContainer) return;
+// ============================================================
+// RENDER CATEGORY STATS
+// ============================================================
+function renderCategoryStats(categoryStats) {
+    const container = document.getElementById('category-list');
+    if (!container) return;
+
+    if (!categoryStats || categoryStats.length === 0) {
+        container.innerHTML = '<p style="color:#6b7280;padding:10px">Chưa có danh mục</p>';
+        return;
+    }
+
+    const total = categoryStats.reduce((sum, c) => sum + parseInt(c.product_count), 0) || 1;
 
     let html = '';
-    mockCategories.forEach(cat => {
+    categoryStats.forEach(cat => {
+        const percent = total > 0 ? Math.round((parseInt(cat.product_count) / total) * 100) : 0;
         html += `
             <div class="category-item">
               <span class="category-name">${cat.name}</span>
-              <strong>${cat.percentage}%</strong>
+              <strong>${percent}% (${cat.product_count} sp)</strong>
             </div>
         `;
     });
-    categoryContainer.innerHTML = html;
+
+    container.innerHTML = html;
 }
 
-function renderActivities() {
-    const activityContainer = document.getElementById('activity-list');
-    if (!activityContainer) return;
+// ============================================================
+// RENDER ACTIVITIES (dùng đơn hàng mới nhất)
+// ============================================================
+function renderActivities(recentOrders) {
+    const container = document.getElementById('activity-list');
+    if (!container) return;
+
+    if (!recentOrders || recentOrders.length === 0) {
+        container.innerHTML = '<p style="color:#6b7280;padding:10px">Chưa có hoạt động</p>';
+        return;
+    }
 
     let html = '';
-    mockActivities.forEach(activity => {
+    recentOrders.slice(0, 5).forEach(order => {
         html += `
             <div class="activity-item">
-              <div class="activity-icon"><i class="fa-solid ${activity.icon}"></i></div>
+              <div class="activity-icon"><i class="fa-solid fa-cart-shopping"></i></div>
               <div class="activity-content">
-                <p>${activity.text}</p>
-                <span>${activity.time}</span>
+                <p>Đơn hàng #${order.id} — ${order.customer_name} — ${formatCurrency(order.total_amount)}</p>
+                <span>${formatDate(order.created_at)}</span>
               </div>
             </div>
         `;
     });
-    activityContainer.innerHTML = html;
+
+    container.innerHTML = html;
 }
 
-// --- CHARTS MOCK DATA ---
-const mockChartData = {
-    labels: ['01/05', '06/05', '11/05', '16/05', '21/05', '26/05', '31/05'],
-    revenue: [50000000, 80000000, 30000000, 70000000, 50000000, 85000000, 60000000],
-    orders: [50, 100, 40, 120, 80, 140, 100]
-};
-
-function renderCharts() {
-    // Kiểm tra nếu Chart.js đã tải
+// ============================================================
+// CHARTS (Chart.js)
+// ============================================================
+function renderCharts(revenueChart, categoryStats) {
     if (typeof Chart === 'undefined') return;
 
-    // Biểu đồ Doanh thu & Đơn hàng
+    // Biểu đồ doanh thu
     const revenueCtx = document.getElementById('revenueChart');
-    if (revenueCtx) {
+    if (revenueCtx && revenueChart && revenueChart.length > 0) {
+        const labels  = revenueChart.map(r => r.date);
+        const revenue = revenueChart.map(r => parseFloat(r.revenue));
+        const orders  = revenueChart.map(r => parseInt(r.order_count));
+
         new Chart(revenueCtx, {
             type: 'line',
             data: {
-                labels: mockChartData.labels,
+                labels,
                 datasets: [
                     {
                         label: 'Doanh thu (đ)',
-                        data: mockChartData.revenue,
-                        borderColor: '#2962ff', // Xanh dương
-                        backgroundColor: 'rgba(41, 98, 255, 0.1)',
+                        data: revenue,
+                        borderColor: '#2962ff',
+                        backgroundColor: 'rgba(41,98,255,0.1)',
                         borderWidth: 2,
                         tension: 0.4,
                         yAxisID: 'y'
                     },
                     {
                         label: 'Đơn hàng',
-                        data: mockChartData.orders,
-                        borderColor: '#00c853', // Xanh lá
+                        data: orders,
+                        borderColor: '#00c853',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
                         tension: 0.4,
@@ -198,60 +287,36 @@ function renderCharts() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    legend: {
-                        display: false // HTML template đã có custom legend (nếu cần thì bật lên, hiện tại template có custom legend ở trên biểu đồ không? Template chỉ có chữ "Doanh thu (đ)" và "Đơn hàng" giả lập bằng span. Thôi cứ bật legend ở trong Chart cho giống ảnh)
-                    }
-                },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: true } },
                 scales: {
-                    x: {
-                        grid: { display: false }
-                    },
+                    x: { grid: { display: false } },
                     y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
+                        type: 'linear', display: true, position: 'left',
                         grid: { borderDash: [5, 5] },
-                        ticks: {
-                            callback: function(value) {
-                                return (value / 1000000) + 'M';
-                            }
-                        }
+                        ticks: { callback: v => (v / 1000000) + 'M' }
                     },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        grid: { display: false }
-                    }
+                    y1: { type: 'linear', display: true, position: 'right', grid: { display: false } }
                 }
             }
         });
+    } else if (revenueCtx) {
+        // Không có dữ liệu — vẽ biểu đồ rỗng có message
+        revenueCtx.parentElement.innerHTML = '<p style="text-align:center;padding:40px;color:#6b7280">Chưa có đơn hàng hoàn thành trong 7 ngày qua</p>';
     }
 
-    // Biểu đồ Danh mục (Doughnut)
+    // Biểu đồ danh mục (Doughnut)
     const categoryCtx = document.getElementById('categoryChart');
-    if (categoryCtx) {
-        const categoryLabels = mockCategories.map(c => c.name);
-        const categoryData = mockCategories.map(c => c.percentage);
-        
+    if (categoryCtx && categoryStats && categoryStats.length > 0) {
+        const colors = ['#2962ff','#00c853','#ffd600','#aa00ff','#ff6d00','#b0bec5'];
+
         new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
-                labels: categoryLabels,
+                labels: categoryStats.map(c => c.name),
                 datasets: [{
-                    data: categoryData,
-                    backgroundColor: [
-                        '#2962ff', // Thời trang nam
-                        '#00c853', // Thời trang nữ
-                        '#ffd600', // Giày dép
-                        '#aa00ff', // Phụ kiện
-                        '#b0bec5'  // Khác
-                    ],
+                    data: categoryStats.map(c => parseInt(c.product_count)),
+                    backgroundColor: colors.slice(0, categoryStats.length),
                     borderWidth: 0,
                     hoverOffset: 4
                 }]
@@ -261,14 +326,10 @@ function renderCharts() {
                 maintainAspectRatio: false,
                 cutout: '70%',
                 plugins: {
-                    legend: {
-                        display: false // Ẩn legend vì đã có list custom HTML bên cạnh
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
-                                return ' ' + context.label + ': ' + context.raw + '%';
-                            }
+                            label: ctx => ` ${ctx.label}: ${ctx.raw} sản phẩm`
                         }
                     }
                 }
@@ -277,14 +338,9 @@ function renderCharts() {
     }
 }
 
-// Khởi tạo render
+// ============================================================
+// KHỞI TẠO
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    renderDashboardStats();
-    renderTopProducts();
-    renderRecentOrders();
-    renderCategories();
-    renderActivities();
-    
-    // Đợi 1 chút để đảm bảo script Chart.js load xong nếu nó được load sau
-    setTimeout(renderCharts, 100);
+    loadDashboard();
 });

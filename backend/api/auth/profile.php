@@ -7,7 +7,6 @@
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/../../config/config.php';
 
 require_once __DIR__ . '/../../config/database.php';
 
@@ -37,7 +36,7 @@ $userId = null;
 
 try {
 
-    $db   = new Database();
+    $db = new Database();
     $conn = $db->connect();
 
     /*
@@ -151,12 +150,12 @@ try {
             'success' => true,
 
             'user' => [
-                'id'         => $user['id'],
-                'full_name'  => $user['full_name'],
-                'email'      => $user['email'],
-                'phone'      => $user['phone'],
-                'address'    => $user['address'],
-                'role'       => $user['role'],
+                'id' => $user['id'],
+                'full_name' => $user['full_name'],
+                'email' => $user['email'],
+                'phone' => $user['phone'],
+                'address' => $user['address'],
+                'role' => $user['role'],
                 'created_at' => $user['created_at']
             ]
 
@@ -181,8 +180,8 @@ try {
         );
 
         $fullName = trim($input['full_name'] ?? '');
-        $phone    = trim($input['phone']     ?? '');
-        $address  = trim($input['address']   ?? '');
+        $phone = trim($input['phone'] ?? '');
+        $address = trim($input['address'] ?? '');
 
 
         /*
@@ -220,9 +219,9 @@ try {
 
         $stmt->execute([
             ':full_name' => $fullName,
-            ':phone'     => $phone,
-            ':address'   => $address,
-            ':id'        => $userId
+            ':phone' => $phone,
+            ':address' => $address,
+            ':id' => $userId
         ]);
 
 
@@ -242,10 +241,10 @@ try {
             'message' => 'Cập nhật thông tin thành công',
 
             'user' => [
-                'id'        => $userId,
+                'id' => $userId,
                 'full_name' => $fullName,
-                'phone'     => $phone,
-                'address'   => $address
+                'phone' => $phone,
+                'address' => $address
             ]
 
         ]);
@@ -280,7 +279,7 @@ try {
         'message' => 'Lỗi máy chủ',
 
         // Khi debug có thể dùng:
-         'error' => $e->getMessage()
+        'error' => $e->getMessage()
 
     ]);
 

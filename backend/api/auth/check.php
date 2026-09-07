@@ -5,8 +5,6 @@
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/../../config/config.php';
-
 require_once __DIR__ . '/../../config/database.php';
 
 /*
@@ -85,9 +83,9 @@ try {
     if (empty($tokenToCheck) && !$sessionLoggedIn) {
 
         echo json_encode([
-            'success'   => false,
+            'success' => false,
             'logged_in' => false,
-            'message'   => 'Chưa đăng nhập'
+            'message' => 'Chưa đăng nhập'
         ]);
 
         exit;
@@ -142,9 +140,9 @@ try {
 
             // Token hết hạn hoặc không tồn tại
             echo json_encode([
-                'success'   => false,
+                'success' => false,
                 'logged_in' => false,
-                'message'   => 'Phiên đăng nhập đã hết hạn'
+                'message' => 'Phiên đăng nhập đã hết hạn'
             ]);
 
             exit;
@@ -175,26 +173,26 @@ try {
         |--------------------------------------------------------------------------
         */
 
-        $_SESSION['user_id']   = $row['id'];
+        $_SESSION['user_id'] = $row['id'];
         $_SESSION['full_name'] = $row['full_name'];
-        $_SESSION['email']     = $row['email'];
-        $_SESSION['role']      = $row['role'];
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['role'] = $row['role'];
         $_SESSION['logged_in'] = true;
 
 
         echo json_encode([
 
-            'success'   => true,
+            'success' => true,
 
             'logged_in' => true,
 
             'user' => [
-                'id'        => $row['id'],
+                'id' => $row['id'],
                 'full_name' => $row['full_name'],
-                'email'     => $row['email'],
-                'phone'     => $row['phone'],
-                'address'   => $row['address'],
-                'role'      => $row['role']
+                'email' => $row['email'],
+                'phone' => $row['phone'],
+                'address' => $row['address'],
+                'role' => $row['role']
             ]
 
         ]);
@@ -237,9 +235,9 @@ try {
         session_destroy();
 
         echo json_encode([
-            'success'   => false,
+            'success' => false,
             'logged_in' => false,
-            'message'   => 'Tài khoản không tồn tại'
+            'message' => 'Tài khoản không tồn tại'
         ]);
 
         exit;
@@ -249,17 +247,17 @@ try {
 
     echo json_encode([
 
-        'success'   => true,
+        'success' => true,
 
         'logged_in' => true,
 
         'user' => [
-            'id'        => $user['id'],
+            'id' => $user['id'],
             'full_name' => $user['full_name'],
-            'email'     => $user['email'],
-            'phone'     => $user['phone'],
-            'address'   => $user['address'],
-            'role'      => $user['role']
+            'email' => $user['email'],
+            'phone' => $user['phone'],
+            'address' => $user['address'],
+            'role' => $user['role']
         ]
 
     ]);
@@ -276,7 +274,7 @@ try {
         'message' => 'Lỗi máy chủ',
 
         // Khi debug có thể dùng:
-         'error' => $e->getMessage()
+        'error' => $e->getMessage()
 
     ]);
 
