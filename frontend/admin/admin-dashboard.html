@@ -47,19 +47,18 @@
           <div class="card-header">
             <div>
               <h2>Doanh thu & Đơn hàng</h2>
-              <p>Thống kê theo thời gian</p>
+              <p>Tổng hợp theo thời gian</p>
             </div>
 
-            <select class="chart-filter">
-              <option>Theo ngày</option>
-              <option>Theo tuần</option>
-              <option>Theo tháng</option>
+            <select id="chart-filter" class="chart-filter">
+              <option value="week">Theo tuần</option>
+              <option value="month">Theo tháng</option>
+              <option value="year">Theo năm</option>
             </select>
           </div>
 
           <div class="chart-container">
-            <!-- Sau này JS/Chart.js sẽ vẽ biểu đồ ở đây -->
-            <canvas id="revenueChart"></canvas>
+            <div id="revenueChart"></div>
           </div>
 
         </div>
@@ -126,10 +125,7 @@
           </div>
 
           <div class="category-chart">
-
-            <!-- Sau này JS/Chart.js vẽ biểu đồ -->
-            <canvas id="categoryChart"></canvas>
-
+            <div id="categoryChart"></div>
           </div>
 
           <div class="category-list" id="category-list">
@@ -155,8 +151,8 @@
       </section>
     </div>
   </main>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <footer></footer>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="../js/admin.js"></script>
   <script type="module" src="../js/admin-dashboard.js"></script>
 </body>

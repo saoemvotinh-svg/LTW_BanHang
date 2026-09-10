@@ -34,13 +34,17 @@ function getStatusBadge(status) {
 }
 
 // ============================================================
-// FETCH DATA TỪ BACKEND
+// FETCH DATA Từ BACKEND
 // ============================================================
 async function loadDashboard() {
     showLoading();
 
+    // Đọc period từ select (đặt mặc định 'week')
+    const chartFilter = document.getElementById('chart-filter');
+    const period = chartFilter ? chartFilter.value : 'week';
+
     try {
-        const response = await fetch(ADMIN_DASHBOARD_URL, {
+        const response = await fetch(`${ADMIN_DASHBOARD_URL}?period=${period}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -246,94 +250,221 @@ function renderActivities(recentOrders) {
 }
 
 // ============================================================
-// CHARTS (Chart.js)
+// CHARTS (ApexCharts)
 // ============================================================
-function renderCharts(revenueChart, categoryStats) {
-    if (typeof Chart === 'undefined') return;
+let revenueApexChart   = null;
+let categoryApexChart  = null;
 
-    // Biểu đồ doanh thu
-    const revenueCtx = document.getElementById('revenueChart');
-    if (revenueCtx && revenueChart && revenueChart.length > 0) {
-        const labels  = revenueChart.map(r => r.date);
-        const revenue = revenueChart.map(r => parseFloat(r.revenue));
-        const orders  = revenueChart.map(r => parseInt(r.order_count));
+function renderCharts(revenueChartData, categoryStats) {
+    renderRevenueChart(revenueChartData);
+    renderCategoryChart(categoryStats);
+}
 
-        new Chart(revenueCtx, {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: 'Doanh thu (đ)',
-                        data: revenue,
-                        borderColor: '#2962ff',
-                        backgroundColor: 'rgba(41,98,255,0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Đơn hàng',
-                        data: orders,
-                        borderColor: '#00c853',
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: { legend: { display: true } },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: {
-                        type: 'linear', display: true, position: 'left',
-                        grid: { borderDash: [5, 5] },
-                        ticks: { callback: v => (v / 1000000) + 'M' }
-                    },
-                    y1: { type: 'linear', display: true, position: 'right', grid: { display: false } }
-                }
-            }
-        });
-    } else if (revenueCtx) {
-        // Không có dữ liệu — vẽ biểu đồ rỗng có message
-        revenueCtx.parentElement.innerHTML = '<p style="text-align:center;padding:40px;color:#6b7280">Chưa có đơn hàng hoàn thành trong 7 ngày qua</p>';
+// ── Biểu đồ doanh thu (Area + Line dual-axis) ────────────────
+function renderRevenueChart(revenueChartData) {
+    const el = document.getElementById('revenueChart');
+    if (!el) return;
+
+    // Xóa chart cũ
+    if (revenueApexChart) {
+        revenueApexChart.destroy();
+        revenueApexChart = null;
     }
 
-    // Biểu đồ danh mục (Doughnut)
-    const categoryCtx = document.getElementById('categoryChart');
-    if (categoryCtx && categoryStats && categoryStats.length > 0) {
-        const colors = ['#2962ff','#00c853','#ffd600','#aa00ff','#ff6d00','#b0bec5'];
+    // Empty state
+    if (!revenueChartData || revenueChartData.length === 0) {
+        el.innerHTML = '<p style="text-align:center;padding:60px 20px;color:#9ca3af;font-size:13px">Chưa có đơn hàng hoàn thành trong khoảng thời gian này</p>';
+        return;
+    }
 
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: categoryStats.map(c => c.name),
-                datasets: [{
-                    data: categoryStats.map(c => parseInt(c.product_count)),
-                    backgroundColor: colors.slice(0, categoryStats.length),
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
+    // Đảm bảo el là div sạch
+    el.innerHTML = '';
+
+    const labels  = revenueChartData.map(r => String(r.date));
+    const revenue = revenueChartData.map(r => parseFloat(r.revenue));
+    const orders  = revenueChartData.map(r => parseInt(r.order_count));
+
+    const options = {
+        series: [
+            {
+                name: 'Doanh thu (₫)',
+                type: 'area',
+                data: revenue
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ` ${ctx.label}: ${ctx.raw} sản phẩm`
+            {
+                name: 'Đơn hàng',
+                type: 'line',
+                data: orders
+            }
+        ],
+        chart: {
+            height: 280,
+            type: 'line',
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            fontFamily: "'Inter', sans-serif",
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 500
+            }
+        },
+        stroke: {
+            curve: 'straight',
+            width: [2, 2],
+            dashArray: [0, 4]
+        },
+        fill: {
+            type: ['gradient', 'solid'],
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.35,
+                opacityTo: 0.02,
+                stops: [0, 90, 100]
+            }
+        },
+        colors: ['#2563eb', '#16a34a'],
+        markers: {
+            size: [3, 4],
+            strokeWidth: 0,
+            hover: { size: 5 }
+        },
+        xaxis: {
+            categories: labels,
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+            labels: {
+                style: { fontSize: '11px', colors: '#9ca3af' }
+            }
+        },
+        yaxis: [
+            {
+                seriesName: 'Doanh thu (₫)',
+                title: { text: undefined },
+                labels: {
+                    style: { fontSize: '11px', colors: '#9ca3af' },
+                    formatter: v => {
+                        if (v >= 1000000) return (v / 1000000).toFixed(0) + 'M';
+                        if (v >= 1000)    return (v / 1000).toFixed(0) + 'K';
+                        return v;
+                    }
+                }
+            },
+            {
+                seriesName: 'Đơn hàng',
+                opposite: true,
+                title: { text: undefined },
+                labels: {
+                    style: { fontSize: '11px', colors: '#9ca3af' },
+                    formatter: v => Math.round(v)
+                }
+            }
+        ],
+        grid: {
+            borderColor: '#f3f4f6',
+            strokeDashArray: 4,
+            xaxis: { lines: { show: false } }
+        },
+        tooltip: {
+            shared: true,
+            intersect: false,
+            y: [
+                { formatter: v => Number(v).toLocaleString('vi-VN') + ' ₫' },
+                { formatter: v => Math.round(v) + ' đơn' }
+            ]
+        },
+        legend: {
+            show: true,
+            position: 'top',
+            horizontalAlign: 'right',
+            fontSize: '12px',
+            markers: { size: 6, shape: 'circle' },
+            itemMargin: { horizontal: 12 }
+        },
+        dataLabels: { enabled: false }
+    };
+
+    revenueApexChart = new ApexCharts(el, options);
+    revenueApexChart.render();
+}
+
+// ── Biểu đồ danh mục (Donut) ─────────────────────────────────
+function renderCategoryChart(categoryStats) {
+    const el = document.getElementById('categoryChart');
+    if (!el || !categoryStats || categoryStats.length === 0) return;
+
+    if (categoryApexChart) {
+        categoryApexChart.destroy();
+        categoryApexChart = null;
+    }
+
+    el.innerHTML = '';
+
+    const colors = ['#2563eb','#16a34a','#d97706','#7c3aed','#db2777','#6b7280','#0891b2'];
+
+    const options = {
+        series: categoryStats.map(c => parseInt(c.product_count)),
+        chart: {
+            type: 'donut',
+            height: 180,
+            toolbar: { show: false },
+            fontFamily: "'Inter', sans-serif",
+            animations: { enabled: true, speed: 400 }
+        },
+        labels: categoryStats.map(c => c.name),
+        colors: colors.slice(0, categoryStats.length),
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: '70%',
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: 'Tổng SP',
+                            fontSize: '12px',
+                            color: '#6b7280',
+                            formatter: w => w.globals.seriesTotals.reduce((a, b) => a + b, 0)
                         }
                     }
                 }
             }
+        },
+        dataLabels: { enabled: false },
+        legend: { show: false },
+        tooltip: {
+            y: { formatter: v => v + ' sản phẩm' }
+        },
+        stroke: { width: 0 }
+    };
+
+    categoryApexChart = new ApexCharts(el, options);
+    categoryApexChart.render();
+}
+
+// ── Fetch lại chart theo period ───────────────────────────────
+async function reloadChart(period) {
+    const el = document.getElementById('revenueChart');
+    if (!el) return;
+
+    el.style.opacity = '0.4';
+    el.style.pointerEvents = 'none';
+
+    try {
+        const res = await fetch(`${ADMIN_DASHBOARD_URL}?period=${period}`, {
+            credentials: 'include',
+            headers: { 'Authorization': 'Bearer ' + getAuthToken() }
         });
+        const result = await res.json();
+
+        if (result.success) {
+            renderRevenueChart(result.data.revenue_chart || []);
+        }
+    } catch (e) {
+        console.error('Lỗi tải chart:', e);
+    } finally {
+        el.style.opacity = '1';
+        el.style.pointerEvents = '';
     }
 }
 
@@ -342,4 +473,13 @@ function renderCharts(revenueChart, categoryStats) {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     loadDashboard();
+
+    // Lắng nghe sự kiện đổi period của biểu đồ
+    const chartFilter = document.getElementById('chart-filter');
+    if (chartFilter) {
+        chartFilter.addEventListener('change', () => {
+            reloadChart(chartFilter.value);
+        });
+    }
 });
+

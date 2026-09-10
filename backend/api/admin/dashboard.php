@@ -97,19 +97,107 @@ try {
     ");
     $categoryStats = $stmt->fetchAll();
 
-    // --- 9. Doanh thu 7 ngày gần nhất ---
-    $stmt = $conn->query("
-        SELECT
-            DATE(created_at) AS date,
-            COUNT(*) AS order_count,
-            COALESCE(SUM(total_amount), 0) AS revenue
-        FROM orders
-        WHERE status = 'completed'
-          AND created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
-        GROUP BY DATE(created_at)
-        ORDER BY date ASC
-    ");
-    $revenueChart = $stmt->fetchAll();
+    // --- 9. Doanh thu theo period (week / month / year) ---
+    $period = $_GET['period'] ?? 'week';
+    $chartData = [];
+
+    if ($period === 'month') {
+        // Tạo sẵn mảng 12 tháng gần nhất (để tránh bị khuyết tháng trên chart)
+        for ($i = 11; $i >= 0; $i--) {
+            $ts = strtotime("first day of -$i month");
+            $sortKey = date('Ym', $ts);
+            $chartData[$sortKey] = [
+                'date' => date('m/Y', $ts),
+                'sort_key' => $sortKey,
+                'order_count' => 0,
+                'revenue' => 0
+            ];
+        }
+
+        $stmt = $conn->query("
+            SELECT
+                DATE_FORMAT(created_at, '%Y%m') AS sort_key,
+                COUNT(*) AS order_count,
+                COALESCE(SUM(total_amount), 0) AS revenue
+            FROM orders
+            WHERE status = 'completed'
+              AND created_at >= DATE_SUB(CURDATE(), INTERVAL 11 MONTH)
+            GROUP BY DATE_FORMAT(created_at, '%Y%m')
+        ");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $r) {
+            if (isset($chartData[$r['sort_key']])) {
+                $chartData[$r['sort_key']]['order_count'] = $r['order_count'];
+                $chartData[$r['sort_key']]['revenue'] = $r['revenue'];
+            }
+        }
+    } elseif ($period === 'year') {
+        // Tạo sẵn mảng 5 năm gần nhất
+        $currentYear = (int)date('Y');
+        for ($i = 4; $i >= 0; $i--) {
+            $y = (string)($currentYear - $i);
+            $chartData[$y] = [
+                'date' => $y,
+                'sort_key' => $y,
+                'order_count' => 0,
+                'revenue' => 0
+            ];
+        }
+
+        $stmt = $conn->query("
+            SELECT
+                YEAR(created_at) AS sort_key,
+                COUNT(*) AS order_count,
+                COALESCE(SUM(total_amount), 0) AS revenue
+            FROM orders
+            WHERE status = 'completed'
+              AND created_at >= DATE_SUB(CURDATE(), INTERVAL 4 YEAR)
+            GROUP BY YEAR(created_at)
+        ");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $r) {
+            if (isset($chartData[$r['sort_key']])) {
+                $chartData[$r['sort_key']]['order_count'] = $r['order_count'];
+                $chartData[$r['sort_key']]['revenue'] = $r['revenue'];
+            }
+        }
+    } else {
+        // Mặc định: Tạo sẵn mảng 8 tuần gần nhất
+        for ($i = 7; $i >= 0; $i--) {
+            $ts = strtotime("-$i week");
+            $w = date('W', $ts);
+            $y = date('o', $ts);
+            $sortKey = $y . $w;
+            $chartData[$sortKey] = [
+                'date' => "T$w/$y",
+                'sort_key' => $sortKey,
+                'order_count' => 0,
+                'revenue' => 0
+            ];
+        }
+
+        $stmt = $conn->query("
+            SELECT
+                YEARWEEK(created_at, 1) AS sort_key,
+                COUNT(*) AS order_count,
+                COALESCE(SUM(total_amount), 0) AS revenue
+            FROM orders
+            WHERE status = 'completed'
+              AND created_at >= DATE_SUB(CURDATE(), INTERVAL 7 WEEK)
+            GROUP BY YEARWEEK(created_at, 1)
+        ");
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $r) {
+            if (isset($chartData[$r['sort_key']])) {
+                $chartData[$r['sort_key']]['order_count'] = $r['order_count'];
+                $chartData[$r['sort_key']]['revenue'] = $r['revenue'];
+            }
+        }
+    }
+
+    // Chuyển chartData (associative array) thành mảng tuần tự
+    $revenueChart = array_values($chartData);
+
 
 
     echo json_encode([
