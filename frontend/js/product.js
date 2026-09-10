@@ -1,10 +1,4 @@
-const mockProducts = [
-    { id: 1, name: "Quần áo mùa hè cute", price: 90000, category: "Quần áo", img: "../assets/images/demo1.jpg", isNew: true },
-    { id: 2, name: "Váy xòe trái tim", price: 70000, category: "Váy", img: "../assets/images/demo2.jpg", isNew: false },
-    { id: 3, name: "Khủng long nhỏ", price: 80000, category: "Quần áo", img: "../assets/images/khung-long.jpg", isNew: true },
-    { id: 4, name: "Đồ bộ cho bé", price: 200000, category: "Quần áo", img: "../assets/images/do-bo.jpg", isNew: false },
-    { id: 5, name: "Váy công chúa", price: 150000, category: "Váy", img: "../assets/images/vay-cong-chua.jpg", isNew: true }
-];
+import { GET_PRODUCT_DETAIL_URL, BASE_URL } from "./configs.js"; 
 
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price) + ' VNĐ';
@@ -15,69 +9,133 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const currentPath = window.location.pathname;
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.location.pathname.includes('product-detail.html')) {
+        const productId = parseInt(getQueryParam('id')) || 0;
+        let productData = null;
 
-    if (currentPath.includes('product-detail.html')) {
+        try {
+            const response = await fetch(`${GET_PRODUCT_DETAIL_URL}?id=${productId}`);
+            const result = await response.json();
 
-        const id = parseInt(getQueryParam('id')) || 1;
-        const product = mockProducts.find(p => p.id === id);
+            if (result.success) {
+                productData = result.data.product;
+                const images = result.data.images;
+                const reviews = result.data.reviews;
 
-        if (product) {
-            document.querySelector('.product-info h1').textContent = `Tên Sản Phẩm: ${product.name}`;
-            document.querySelector('.product-info .price').textContent = `Giá: ${formatPrice(product.price)}`;
-            document.querySelector('.product-gallery > img').src = product.img;
-            document.title = product.name;
+                document.querySelector('.product-info h1').textContent = `Tên Sản Phẩm: ${productData.name}`;
+                document.querySelector('.product-info .price').textContent = `Giá: ${formatPrice(productData.price)}`;
+                document.title = productData.name;
+
+                if (images && images.length > 0) {
+                    const mainImg = document.querySelector('.product-gallery > img');
+                    mainImg.src = images[0].image_url; 
+                    
+                    let thumbHtml = '';
+                    images.forEach(img => {
+                        thumbHtml += `<img src="${img.image_url}" alt="Thumbnail" onerror="this.src='../assets/images/shopping.webp'">`;
+                    });
+                    const thumbContainer = document.querySelector('.thumbnails');
+                    thumbContainer.innerHTML = thumbHtml;
+
+                    thumbContainer.querySelectorAll('img').forEach(thumb => {
+                        thumb.addEventListener('click', function() {
+                            mainImg.src = this.src;
+                        });
+                    });
+                }
+
+                const reviewList = document.querySelector('.product-reviews ul');
+                if (reviews && reviews.length > 0) {
+                    let reviewHtml = '';
+                    reviews.forEach(rev => {
+                        reviewHtml += `<li><strong>${rev.full_name}:</strong> ${rev.comment} (${rev.rating} sao)</li>`;
+                    });
+                    reviewList.innerHTML = reviewHtml;
+                } else {
+                    reviewList.innerHTML = '<li style="list-style: none;">Chưa có đánh giá nào cho sản phẩm này.</li>';
+                }
+
+            } else {
+                alert(result.message);
+                window.location.href = 'products.html'; 
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải chi tiết sản phẩm:", error);
+            alert("Lỗi kết nối đến máy chủ!");
         }
 
-        const mainImage = document.querySelector('.product-gallery > img');
-        const thumbnails = document.querySelectorAll('.thumbnails img');
-
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', function () {
-                mainImage.src = this.src;
-            });
-        });
         const addToCartBtn = document.querySelector('.product-info form button');
         const quantityInput = document.getElementById('quantity');
 
-        if (addToCartBtn && product) {
+        if (addToCartBtn && productData) {
             addToCartBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    alert("Vui lòng đăng nhập để thêm vào giỏ hàng!");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
                 const qty = parseInt(quantityInput.value);
-
-                let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-
-                const existingProductIndex = cart.findIndex(item => item.id === product.id);
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const existingProductIndex = cart.findIndex(item => item.product_id === productData.id);
 
                 if (existingProductIndex !== -1) {
                     cart[existingProductIndex].quantity += qty;
                 } else {
                     cart.push({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        img: product.img,
-                        category: product.category,
+                        id: Date.now(), 
+                        product_id: productData.id,
                         quantity: qty
                     });
                 }
-                localStorage.setItem('cartItems', JSON.stringify(cart));
-                alert(`Tuyệt vời! Đã thêm ${qty} sản phẩm "${product.name}" vào giỏ hàng.`);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert(`Đã thêm ${qty} sản phẩm "${productData.name}" vào giỏ hàng.`);
             });
         }
         const reviewForm = document.getElementById('reviewForm');
-        const reviewList = document.querySelector('.product-reviews ul');
-
         if (reviewForm) {
-            reviewForm.addEventListener('submit', (e) => {
+            reviewForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const reviewText = document.getElementById('reviewText').value;
-                const newReview = document.createElement('li');
-                newReview.innerHTML = `<strong>Khách hàng:</strong> ${reviewText} (5 sao)`;
+                
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    alert('Bạn cần đăng nhập để thực hiện đánh giá!');
+                    window.location.href = 'login.html';
+                    return;
+                }
 
-                reviewList.appendChild(newReview);
-                reviewForm.reset();
+                const reviewText = document.getElementById('reviewText').value;
+                const submitBtn = reviewForm.querySelector('button');
+                submitBtn.innerText = 'Đang gửi...';
+
+                try {
+                    const response = await fetch(`${BASE_URL}api/reviews/add.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` 
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            comment: reviewText
+                        })
+                    });
+
+                    const result = await response.json();
+                    alert(result.message);
+
+                    if (result.success) {
+                        location.reload(); 
+                    }
+                } catch (error) {
+                    console.error("Lỗi gửi đánh giá:", error);
+                } finally {
+                    submitBtn.innerText = 'Gửi đánh giá';
+                }
             });
         }
     }
