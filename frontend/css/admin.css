@@ -77,13 +77,13 @@
 }
 
 .sidebar nav a:hover {
-    background: #f1f5f9;
-    color: #111827;
+    background: #F5F5F5;
+    color: #222222;
 }
 
 .sidebar nav a.active {
-    background: #eff6ff;
-    color: #2563eb;
+    background: #ECFDF5;
+    color: #10B981;
 }
 
 

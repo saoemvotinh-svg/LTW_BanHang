@@ -83,8 +83,8 @@
 }
 
 .date-filter:hover {
-    border-color: #2563eb;
-    color: #2563eb;
+    border-color: #10B981;
+    color: #10B981;
 }
 
 
@@ -155,28 +155,28 @@
 }
 
 .revenue-icon {
-    background: #eff6ff;
-    color: #2563eb;
+    background: #ECFDF5;
+    color: #10B981;
 }
 
 .orders-icon {
-    background: #dcfce7;
-    color: #16a34a;
+    background: #E9F6F5;
+    color: #26AA99;
 }
 
 .products-icon {
-    background: #fef3c7;
-    color: #d97706;
+    background: #FFF8E1;
+    color: #FFB400;
 }
 
 .customers-icon {
-    background: #f3e8ff;
-    color: #9333ea;
+    background: #ECFDF5;
+    color: #10B981;
 }
 
 .profit-icon {
-    background: #fee2e2;
-    color: #dc2626;
+    background: #ECFDF5;
+    color: #10B981;
 }
 
 
@@ -214,7 +214,7 @@
 .stat-change {
     margin-top: 8px;
 
-    color: #16a34a;
+    color: #26AA99;
 
     font-size: 13px;
 }
@@ -294,7 +294,7 @@
 }
 
 .card-header a {
-    color: #2563eb;
+    color: #10B981;
 
     text-decoration: none;
 
@@ -423,7 +423,7 @@
     width: 75%;
     height: 100%;
 
-    background: #2563eb;
+    background: #10B981;
 
     border-radius: 10px;
 }
@@ -526,7 +526,7 @@
 }
 
 .recent-orders-table td:first-child {
-    color: #2563eb;
+    color: #10B981;
 
     font-weight: 500;
 }
@@ -552,23 +552,23 @@
 }
 
 .order-status.delivered {
-    background: #dcfce7;
-    color: #15803d;
+    background: #E9F6F5;
+    color: #26AA99;
 }
 
 .order-status.processing {
-    background: #fef3c7;
-    color: #d97706;
+    background: #FFF8E1;
+    color: #FFB400;
 }
 
 .order-status.shipping {
-    background: #dbeafe;
-    color: #2563eb;
+    background: #ECFDF5;
+    color: #10B981;
 }
 
 .order-status.cancelled {
-    background: #fee2e2;
-    color: #dc2626;
+    background: #ECFDF5;
+    color: #10B981;
 }
 
 
@@ -667,9 +667,9 @@
 
     border-radius: 50%;
 
-    background: #eff6ff;
+    background: #ECFDF5;
 
-    color: #2563eb;
+    color: #10B981;
 
     font-size: 12px;
 }

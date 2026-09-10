@@ -36,7 +36,7 @@ try {
     $stmt = $conn->query("
         SELECT COALESCE(SUM(total_amount), 0) AS total
         FROM orders
-        WHERE status = 'completed'
+        WHERE status IN ('completed', 'delivered')
     ");
     $totalRevenue = (float) $stmt->fetch()['total'];
 
@@ -70,6 +70,16 @@ try {
     ");
     $recentOrders = $stmt->fetchAll();
 
+    $dbToFrontend = [
+        'processing' => 'confirmed',
+        'shipped' => 'shipping',
+        'delivered' => 'completed',
+    ];
+    foreach ($recentOrders as &$ro) {
+        $ro['status'] = $dbToFrontend[$ro['status']] ?? $ro['status'];
+    }
+    unset($ro);
+
     // --- 7. Thống kê đơn hàng theo trạng thái ---
     $stmt = $conn->query("
         SELECT status, COUNT(*) AS count
@@ -80,8 +90,15 @@ try {
 
     // Chuyển thành dạng key => count để JS dễ đọc
     $orderStatusMap = [];
+    $dbToFrontend = [
+        'processing' => 'confirmed',
+        'shipped' => 'shipping',
+        'delivered' => 'completed',
+    ];
     foreach ($ordersByStatus as $row) {
-        $orderStatusMap[$row['status']] = (int) $row['count'];
+        $st = $row['status'];
+        $mapped = $dbToFrontend[$st] ?? $st;
+        $orderStatusMap[$mapped] = ($orderStatusMap[$mapped] ?? 0) + (int) $row['count'];
     }
 
     // --- 8. Thống kê sản phẩm theo danh mục ---
@@ -120,7 +137,7 @@ try {
                 COUNT(*) AS order_count,
                 COALESCE(SUM(total_amount), 0) AS revenue
             FROM orders
-            WHERE status = 'completed'
+            WHERE status IN ('completed', 'delivered')
               AND created_at >= DATE_SUB(CURDATE(), INTERVAL 11 MONTH)
             GROUP BY DATE_FORMAT(created_at, '%Y%m')
         ");
@@ -150,7 +167,7 @@ try {
                 COUNT(*) AS order_count,
                 COALESCE(SUM(total_amount), 0) AS revenue
             FROM orders
-            WHERE status = 'completed'
+            WHERE status IN ('completed', 'delivered')
               AND created_at >= DATE_SUB(CURDATE(), INTERVAL 4 YEAR)
             GROUP BY YEAR(created_at)
         ");
@@ -182,7 +199,7 @@ try {
                 COUNT(*) AS order_count,
                 COALESCE(SUM(total_amount), 0) AS revenue
             FROM orders
-            WHERE status = 'completed'
+            WHERE status IN ('completed', 'delivered')
               AND created_at >= DATE_SUB(CURDATE(), INTERVAL 7 WEEK)
             GROUP BY YEARWEEK(created_at, 1)
         ");

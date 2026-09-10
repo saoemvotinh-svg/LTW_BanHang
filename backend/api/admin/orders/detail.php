@@ -45,6 +45,15 @@ try {
     ");
     $orderStmt->execute([':id' => $id]);
     $order = $orderStmt->fetch();
+    
+    if ($order) {
+        $dbToFrontend = [
+            'processing' => 'confirmed',
+            'shipped'    => 'shipping',
+            'delivered'  => 'completed',
+        ];
+        $order['status'] = $dbToFrontend[$order['status']] ?? $order['status'];
+    }
 
     if (!$order) {
         echo json_encode(['success' => false, 'message' => 'Không tìm thấy đơn hàng']);

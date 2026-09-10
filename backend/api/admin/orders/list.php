@@ -40,8 +40,23 @@ try {
 
     $validStatuses = ['pending', 'confirmed', 'shipping', 'completed', 'cancelled'];
     if ($status !== '' && in_array($status, $validStatuses)) {
-        $whereClauses[] = "o.status = :status";
-        $params[':status'] = $status;
+        $dbStatusMap = [
+            'confirmed' => 'processing',
+            'shipping'  => 'shipped',
+            'completed' => 'delivered',
+            'pending'   => 'pending',
+            'cancelled' => 'cancelled'
+        ];
+        // Allow querying both just in case there's old data
+        $mappedStatus = $dbStatusMap[$status];
+        if ($mappedStatus !== $status) {
+            $whereClauses[] = "o.status IN (:status1, :status2)";
+            $params[':status1'] = $status;
+            $params[':status2'] = $mappedStatus;
+        } else {
+            $whereClauses[] = "o.status = :status";
+            $params[':status'] = $status;
+        }
     }
 
     if ($date_from !== '') {
@@ -93,6 +108,16 @@ try {
     $stmtData->execute();
     $orders = $stmtData->fetchAll();
 
+    $dbToFrontend = [
+        'processing' => 'confirmed',
+        'shipped'    => 'shipping',
+        'delivered'  => 'completed',
+    ];
+    foreach ($orders as &$order) {
+        $order['status'] = $dbToFrontend[$order['status']] ?? $order['status'];
+    }
+    unset($order);
+
     // --- Thống kê theo trạng thái (cho summary cards) ---
     $summaryStmt = $conn->query("
         SELECT status, COUNT(*) AS count
@@ -102,7 +127,9 @@ try {
     $summaryRows = $summaryStmt->fetchAll();
     $summary = [];
     foreach ($summaryRows as $row) {
-        $summary[$row['status']] = (int) $row['count'];
+        $st = $row['status'];
+        $mapped = $dbToFrontend[$st] ?? $st;
+        $summary[$mapped] = ($summary[$mapped] ?? 0) + (int) $row['count'];
     }
 
     echo json_encode([

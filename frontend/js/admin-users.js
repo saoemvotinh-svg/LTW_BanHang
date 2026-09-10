@@ -1,6 +1,10 @@
 // admin-users.js — Quản lý người dùng, kết nối API thật
 
-import { ADMIN_USERS_LIST_URL as USERS_LIST_URL, ADMIN_USERS_DETAIL_URL as USERS_DETAIL_URL } from "./configs.js";
+import { 
+    ADMIN_USERS_LIST_URL as USERS_LIST_URL, 
+    ADMIN_USERS_DETAIL_URL as USERS_DETAIL_URL,
+    ADMIN_USERS_CHANGE_PASSWORD_URL as USERS_CHANGE_PASSWORD_URL
+} from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -186,6 +190,75 @@ window.changePage = function(page) {
     currentPage = page;
     loadUsers();
 }
+
+// ============================================================
+// ĐỔI MẬT KHẨU
+// ============================================================
+window.openChangePasswordModal = function() {
+    const userId = document.getElementById('u-id')?.textContent;
+    if (!userId) {
+        showToast('Vui lòng chọn người dùng trước', 'error');
+        return;
+    }
+    
+    const cpUserIdEl = document.getElementById('cp-user-id');
+    const cpNewPasswordEl = document.getElementById('cp-new-password');
+    if (cpUserIdEl) cpUserIdEl.value = userId;
+    if (cpNewPasswordEl) cpNewPasswordEl.value = '';
+    
+    const modal = document.getElementById('change-password-modal');
+    if (modal) modal.classList.add('active');
+};
+
+window.closeChangePasswordModal = function() {
+    const modal = document.getElementById('change-password-modal');
+    if (modal) modal.classList.remove('active');
+};
+
+window.submitChangePassword = async function() {
+    const userId = document.getElementById('cp-user-id').value;
+    const newPassword = document.getElementById('cp-new-password').value;
+
+    if (!newPassword || newPassword.length < 6) {
+        showToast('Mật khẩu phải có ít nhất 6 ký tự', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btn-submit-cp');
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(USERS_CHANGE_PASSWORD_URL, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                ...authHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                new_password: newPassword
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('Đổi mật khẩu thành công', 'success');
+            closeChangePasswordModal();
+        } else {
+            showToast(result.message || 'Lỗi khi đổi mật khẩu', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối server', 'error');
+    } finally {
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    }
+};
 
 // ============================================================
 // CHI TIẾT NGƯỜI DÙNG

@@ -3,14 +3,16 @@
    ========================================================= */
 
 :root {
-  --primary-color: #2563eb; /* Nút xanh */
-  --primary-hover: #1d4ed8;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --bg-light: #f9fafb;
-  --border-color: #e5e7eb;
-  --success-color: #10b981;
-  --danger-color: #ef4444;
+  --primary-color: #10B981;
+  --primary-hover: #059669;
+  --primary-light: #ECFDF5;
+  --text-main: #222222;
+  --text-muted: #757575;
+  --bg-light: #F5F5F5;
+  --border-color: #E8E8E8;
+  --success-color: #26AA99;
+  --warning-color: #FFB400;
+  --danger-color: #EF4444;
   --white: #ffffff;
 }
 
@@ -51,7 +53,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 2px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -236,7 +238,7 @@ body {
 .btn-icon {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 2px;
   border: 1px solid var(--border-color);
   background-color: var(--white);
   display: inline-flex;
@@ -285,7 +287,7 @@ body {
 .btn-page {
   min-width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 2px;
   border: 1px solid var(--border-color);
   background-color: var(--white);
   color: var(--text-main);
@@ -334,11 +336,11 @@ body {
   font-size: 20px;
 }
 
-.icon.blue { background-color: #e0f2fe; color: #0284c7; }
-.icon.green { background-color: #dcfce7; color: #16a34a; }
-.icon.red { background-color: #fee2e2; color: #dc2626; }
+.icon.blue { background-color: var(--primary-light); color: var(--primary-color); }
+.icon.green { background-color: #dcfce7; color: var(--success-color); }
+.icon.red { background-color: #fee2e2; color: var(--danger-color); }
 .icon.teal { background-color: #ccfbf1; color: #0d9488; }
-.icon.light-blue { background-color: #dbeafe; color: #2563eb; }
+.icon.light-blue { background-color: var(--primary-light); color: var(--primary-color); }
 
 .summary-card .info {
   display: flex;
@@ -531,7 +533,7 @@ body {
 
 .image-uploader {
   border: 1px dashed var(--border-color);
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 20px;
   text-align: center;
   background-color: var(--bg-light);
@@ -545,7 +547,7 @@ body {
   width: 64px;
   height: 64px;
   background-color: var(--white);
-  border-radius: 8px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -558,7 +560,7 @@ body {
   background-color: var(--white);
   border: 1px solid var(--border-color);
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -588,7 +590,7 @@ body {
   justify-content: center;
   align-items: center;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 16px;
   background-color: var(--bg-light);
   min-height: 200px;

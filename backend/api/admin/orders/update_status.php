@@ -35,6 +35,15 @@ try {
         exit;
     }
 
+    $frontendToDb = [
+        'confirmed' => 'processing',
+        'shipping'  => 'shipped',
+        'completed' => 'delivered',
+        'pending'   => 'pending',
+        'cancelled' => 'cancelled'
+    ];
+    $dbStatusToUpdate = $frontendToDb[$status];
+
     // Kiểm tra đơn hàng tồn tại
     $checkStmt = $conn->prepare("SELECT id, status FROM orders WHERE id = ? LIMIT 1");
     $checkStmt->execute([$id]);
@@ -45,8 +54,15 @@ try {
         exit;
     }
 
+    $dbToFrontend = [
+        'processing' => 'confirmed',
+        'shipped'    => 'shipping',
+        'delivered'  => 'completed',
+    ];
+    $mappedCurrentStatus = $dbToFrontend[$order['status']] ?? $order['status'];
+
     // Không cho phép thay đổi đơn đã hủy thành trạng thái khác
-    if ($order['status'] === 'cancelled' && $status !== 'cancelled') {
+    if ($mappedCurrentStatus === 'cancelled' && $status !== 'cancelled') {
         echo json_encode([
             'success' => false,
             'message' => 'Không thể thay đổi trạng thái đơn hàng đã hủy'
@@ -60,7 +76,7 @@ try {
         WHERE id = :id
     ");
     $updateStmt->execute([
-        ':status' => $status,
+        ':status' => $dbStatusToUpdate,
         ':id'     => $id,
     ]);
 

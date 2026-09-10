@@ -55,3 +55,4 @@ export const ADMIN_ORDERS_UPDATE_STATUS_URL = BASE_URL + "api/admin/orders/updat
 
 export const ADMIN_USERS_LIST_URL   = BASE_URL + "api/admin/users/list.php";
 export const ADMIN_USERS_DETAIL_URL = BASE_URL + "api/admin/users/detail.php";
+export const ADMIN_USERS_CHANGE_PASSWORD_URL = BASE_URL + "api/admin/users/change_password.php";
