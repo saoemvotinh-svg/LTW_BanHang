@@ -1,10 +1,6 @@
 // admin-categories.js — Quản lý danh mục, kết nối API thật
 
-const BASE_URL = "http://localhost:8080/";
-const CATEGORIES_LIST_URL   = BASE_URL + "api/admin/categories/list.php";
-const CATEGORIES_CREATE_URL = BASE_URL + "api/admin/categories/create.php";
-const CATEGORIES_UPDATE_URL = BASE_URL + "api/admin/categories/update.php";
-const CATEGORIES_DELETE_URL = BASE_URL + "api/admin/categories/delete.php";
+import { ADMIN_CATEGORIES_LIST_URL as CATEGORIES_LIST_URL, ADMIN_CATEGORIES_CREATE_URL as CATEGORIES_CREATE_URL, ADMIN_CATEGORIES_UPDATE_URL as CATEGORIES_UPDATE_URL, ADMIN_CATEGORIES_DELETE_URL as CATEGORIES_DELETE_URL } from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -213,7 +209,7 @@ function showToast(message, type = 'success') {
         toast = document.createElement('div');
         toast.id = 'admin-toast';
         toast.style.cssText = `
-            position:fixed;bottom:24px;right:24px;z-index:9999;
+            position:fixed;top:24px;right:24px;z-index:9999;
             padding:12px 20px;border-radius:8px;color:#fff;
             font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);
             transition:opacity 0.3s;

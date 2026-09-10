@@ -1,7 +1,6 @@
 // admin-dashboard.js — Kết nối API thật từ backend
 
-const BASE_URL = "http://localhost:8080/";
-const ADMIN_DASHBOARD_URL = BASE_URL + "api/admin/dashboard.php";
+import { ADMIN_DASHBOARD_URL } from "./configs.js";
 
 // Lấy token từ localStorage
 function getAuthToken() {

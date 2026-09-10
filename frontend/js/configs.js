@@ -37,9 +37,12 @@ export const ORDER_CREATE_URL = BASE_URL + "api/orders/create.php";
 export const ADMIN_DASHBOARD_URL = BASE_URL + "api/admin/dashboard.php";
 
 export const ADMIN_PRODUCTS_LIST_URL   = BASE_URL + "api/admin/products/list.php";
+export const ADMIN_PRODUCTS_DETAIL_URL = BASE_URL + "api/admin/products/detail.php";
 export const ADMIN_PRODUCTS_CREATE_URL = BASE_URL + "api/admin/products/create.php";
 export const ADMIN_PRODUCTS_UPDATE_URL = BASE_URL + "api/admin/products/update.php";
 export const ADMIN_PRODUCTS_DELETE_URL = BASE_URL + "api/admin/products/delete.php";
+export const ADMIN_PRODUCTS_DELETE_IMAGE_URL = BASE_URL + "api/admin/products/delete_image.php";
+export const ADMIN_PRODUCTS_SET_PRIMARY_URL  = BASE_URL + "api/admin/products/set_primary_image.php";
 
 export const ADMIN_CATEGORIES_LIST_URL   = BASE_URL + "api/admin/categories/list.php";
 export const ADMIN_CATEGORIES_CREATE_URL = BASE_URL + "api/admin/categories/create.php";

@@ -69,49 +69,46 @@ try {
         exit;
     }
 
-    // --- Xử lý upload ảnh mới (nếu có) ---
-    $newImageUrl = null;
+    // --- Xử lý upload ảnh mới (nhiều ảnh) ---
+    $uploadedImages = [];
+    $uploadDir = __DIR__ . '/../../../../frontend/assets/images/products/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
 
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $file    = $_FILES['image'];
-        $tmpPath = $file['tmp_name'];
-        $maxSize = 2 * 1024 * 1024;
+    if (isset($_FILES['new_images']) && is_array($_FILES['new_images']['name'])) {
+        $fileCount = count($_FILES['new_images']['name']);
+        for ($i = 0; $i < $fileCount; $i++) {
+            if ($_FILES['new_images']['error'][$i] === UPLOAD_ERR_OK) {
+                $tmpPath = $_FILES['new_images']['tmp_name'][$i];
+                $maxSize = 2 * 1024 * 1024;
 
-        if ($file['size'] > $maxSize) {
-            echo json_encode(['success' => false, 'message' => 'Ảnh quá lớn (tối đa 2MB)']);
-            exit;
+                if ($_FILES['new_images']['size'][$i] > $maxSize) {
+                    continue;
+                }
+
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                $mime = mime_content_type($tmpPath);
+
+                if (!in_array($mime, $allowedMimes)) {
+                    continue;
+                }
+
+                $ext = match($mime) {
+                    'image/jpeg' => 'jpg',
+                    'image/png'  => 'png',
+                    'image/webp' => 'webp',
+                    'image/gif'  => 'gif',
+                    default      => 'jpg',
+                };
+                $newName = uniqid('product_', true) . '.' . $ext;
+                $destPath = $uploadDir . $newName;
+
+                if (move_uploaded_file($tmpPath, $destPath)) {
+                    $uploadedImages[] = '../assets/images/products/' . $newName;
+                }
+            }
         }
-
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        $mime = mime_content_type($tmpPath);
-
-        if (!in_array($mime, $allowedMimes)) {
-            echo json_encode(['success' => false, 'message' => 'Chỉ chấp nhận JPG, PNG, WebP, GIF']);
-            exit;
-        }
-
-        $ext     = match($mime) {
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-            'image/webp' => 'webp',
-            'image/gif'  => 'gif',
-            default      => 'jpg',
-        };
-        $newName = uniqid('product_', true) . '.' . $ext;
-
-        $uploadDir = __DIR__ . '/../../../../frontend/assets/images/products/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        $destPath = $uploadDir . $newName;
-
-        if (!move_uploaded_file($tmpPath, $destPath)) {
-            echo json_encode(['success' => false, 'message' => 'Upload ảnh thất bại']);
-            exit;
-        }
-
-        $newImageUrl = '../assets/images/products/' . $newName;
     }
 
     // --- Transaction: cập nhật sản phẩm + ảnh ---
@@ -136,18 +133,26 @@ try {
         ':id'          => $id,
     ]);
 
-    // Nếu có ảnh mới → cập nhật hoặc tạo mới bản ghi ảnh primary
-    if ($newImageUrl !== null) {
-        // Xóa ảnh primary cũ
-        $delImg = $conn->prepare("DELETE FROM product_images WHERE product_id = ? AND is_primary = 1");
-        $delImg->execute([$id]);
+    // Thêm các ảnh mới (nếu có)
+    if (!empty($uploadedImages)) {
+        // Kiểm tra xem đã có ảnh chính chưa
+        $checkPrimary = $conn->prepare("SELECT id FROM product_images WHERE product_id = ? AND is_primary = 1");
+        $checkPrimary->execute([$id]);
+        $hasPrimary = $checkPrimary->fetch() !== false;
 
-        // Thêm ảnh mới
         $insImg = $conn->prepare("
             INSERT INTO product_images (product_id, image_url, is_primary)
-            VALUES (?, ?, 1)
+            VALUES (?, ?, ?)
         ");
-        $insImg->execute([$id, $newImageUrl]);
+
+        foreach ($uploadedImages as $index => $imgUrl) {
+            $is_primary = 0;
+            if (!$hasPrimary && $index === 0) {
+                $is_primary = 1;
+                $hasPrimary = true;
+            }
+            $insImg->execute([$id, $imgUrl, $is_primary]);
+        }
     }
 
     $conn->commit();

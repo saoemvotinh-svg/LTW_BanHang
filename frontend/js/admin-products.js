@@ -1,11 +1,6 @@
 // admin-products.js — Quản lý sản phẩm, kết nối API thật
 
-const BASE_URL = "http://localhost:8080/";
-const PRODUCTS_LIST_URL   = BASE_URL + "api/admin/products/list.php";
-const PRODUCTS_CREATE_URL = BASE_URL + "api/admin/products/create.php";
-const PRODUCTS_UPDATE_URL = BASE_URL + "api/admin/products/update.php";
-const PRODUCTS_DELETE_URL = BASE_URL + "api/admin/products/delete.php";
-const CATEGORIES_LIST_URL = BASE_URL + "api/admin/categories/list.php";
+import { ADMIN_PRODUCTS_LIST_URL as PRODUCTS_LIST_URL, ADMIN_PRODUCTS_CREATE_URL as PRODUCTS_CREATE_URL, ADMIN_PRODUCTS_UPDATE_URL as PRODUCTS_UPDATE_URL, ADMIN_PRODUCTS_DELETE_URL as PRODUCTS_DELETE_URL, ADMIN_CATEGORIES_LIST_URL as CATEGORIES_LIST_URL, ADMIN_PRODUCTS_DETAIL_URL, ADMIN_PRODUCTS_DELETE_IMAGE_URL, ADMIN_PRODUCTS_SET_PRIMARY_URL } from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -34,6 +29,9 @@ let totalPages   = 1;
 let currentLimit = 15;
 let categories   = [];
 let editingProductId = null; // null = thêm mới, số = đang sửa
+
+let newImageFiles = []; // Lưu trữ các file ảnh mới chuẩn bị upload
+let currentProductImages = []; // Danh sách ảnh lấy từ DB
 
 let searchTimeout = null;
 
@@ -203,7 +201,7 @@ function renderPagination(pagination) {
     controls.innerHTML = html;
 }
 
-function changePage(page) {
+window.changePage = function(page) {
     if (page < 1 || page > totalPages) return;
     currentPage = page;
     loadProducts();
@@ -217,6 +215,8 @@ const offcanvas = document.getElementById('product-offcanvas');
 
 window.openOffcanvas = async function(productId = null) {
     editingProductId = productId;
+    newImageFiles = [];
+    currentProductImages = [];
 
     // Đảm bảo categories đã load
     if (categories.length === 0) {
@@ -229,45 +229,38 @@ window.openOffcanvas = async function(productId = null) {
     document.getElementById('p-stock').value       = '';
     document.getElementById('p-desc').value        = '';
     document.getElementById('p-category').value    = '';
-    document.getElementById('p-image').value       = '';
-    document.getElementById('preview-image').style.display = 'none';
-    document.getElementById('upload-placeholder').style.display = 'flex';
+
+    // Switch to info tab
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs.length > 0) tabs[0].click();
 
     if (productId) {
-        // Sửa: tìm trong table data hoặc gọi API
         document.querySelector('.offcanvas-header h2').textContent = 'Chỉnh sửa sản phẩm';
 
-        // Lấy thông tin từ row trong bảng (nhanh hơn gọi API)
-        const rows = document.querySelectorAll('#products-tbody tr');
-        let found  = false;
-        rows.forEach(row => {
-            const editBtn = row.querySelector('.btn-icon.edit');
-            if (editBtn && editBtn.getAttribute('onclick').includes(`(${productId})`)) {
-                const cells = row.querySelectorAll('td');
-                document.getElementById('p-name').value  = cells[2].querySelector('strong').textContent;
-                document.getElementById('p-price').value = cells[4].textContent.replace(/\./g, '');
-                document.getElementById('p-stock').value = cells[5].textContent.replace(/[^0-9]/g, '');
-
-                // Tìm category_id theo tên
-                const catName = cells[3].textContent;
-                const cat = categories.find(c => c.name === catName);
-                if (cat) document.getElementById('p-category').value = cat.id;
-
-                // Ảnh
-                const img = cells[1].querySelector('img');
-                if (img && !img.src.includes('placehold.co')) {
-                    document.getElementById('preview-image').src = img.src;
-                    document.getElementById('preview-image').style.display = 'block';
-                    document.getElementById('upload-placeholder').style.display = 'none';
-                }
-
-                found = true;
+        try {
+            const res = await fetch(`${ADMIN_PRODUCTS_DETAIL_URL}?id=${productId}`, {
+                credentials: 'include',
+                headers: authHeaders()
+            });
+            const result = await res.json();
+            if (result.success) {
+                const product = result.data;
+                document.getElementById('p-name').value  = product.name;
+                document.getElementById('p-price').value = parseInt(product.price);
+                document.getElementById('p-stock').value = product.stock;
+                document.getElementById('p-desc').value  = product.description || '';
+                document.getElementById('p-category').value = product.category_id;
+                
+                currentProductImages = product.images || [];
             }
-        });
-
+        } catch (e) {
+            console.error('Lỗi lấy chi tiết SP', e);
+        }
     } else {
         document.querySelector('.offcanvas-header h2').textContent = 'Thêm sản phẩm mới';
     }
+
+    renderImages();
 
     overlay.classList.add('active');
     offcanvas.classList.add('active');
@@ -297,6 +290,115 @@ async function loadCategories() {
 }
 
 // ============================================================
+// QUẢN LÝ HÌNH ẢNH (Render & APIs)
+// ============================================================
+function renderImages() {
+    const primaryContainer = document.getElementById('primary-image-container');
+    const galleryContainer = document.getElementById('gallery-images-container');
+    const countSpan = document.getElementById('images-count');
+    const galleryCount = document.getElementById('gallery-count');
+    
+    if (!primaryContainer || !galleryContainer) return;
+
+    let totalImages = currentProductImages.length + newImageFiles.length;
+    if (countSpan) countSpan.textContent = totalImages;
+    if (galleryCount) galleryCount.textContent = `(${totalImages})`;
+
+    let primaryHtml = '<div class="empty-state">Chưa có ảnh chính</div>';
+    let galleryHtml = '';
+
+    currentProductImages.forEach(img => {
+        if (img.is_primary) {
+            primaryHtml = `<img src="${img.image_url}" alt="Primary Image">`;
+        } else {
+            galleryHtml += `
+                <div class="gallery-item">
+                    <img src="${img.image_url}" alt="Gallery Image">
+                    <div class="item-actions">
+                        <button type="button" class="btn-action" onclick="setPrimaryImage(${img.id})">Đặt làm chính</button>
+                        <button type="button" class="btn-action delete" onclick="deleteImage(${img.id})">Xóa</button>
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    newImageFiles.forEach((fileObj, index) => {
+        galleryHtml += `
+            <div class="gallery-item">
+                <img src="${fileObj.preview}" alt="New Image">
+                <div class="item-actions">
+                    <span class="btn-action" style="background:transparent; color:#fff">Chưa lưu</span>
+                    <button type="button" class="btn-action delete" onclick="removeNewImage(${index})">Hủy</button>
+                </div>
+            </div>
+        `;
+    });
+
+    primaryContainer.innerHTML = primaryHtml;
+    galleryContainer.innerHTML = galleryHtml;
+}
+
+window.removeNewImage = function(index) {
+    newImageFiles.splice(index, 1);
+    renderImages();
+};
+
+window.deleteImage = async function(imageId) {
+    if (!confirm('Bạn có chắc chắn muốn xóa ảnh này?')) return;
+    try {
+        const res = await fetch(ADMIN_PRODUCTS_DELETE_IMAGE_URL, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image_id: imageId })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showToast('Xóa ảnh thành công', 'success');
+            if (editingProductId) {
+                const detailRes = await fetch(`${ADMIN_PRODUCTS_DETAIL_URL}?id=${editingProductId}`, { headers: authHeaders() });
+                const detailData = await detailRes.json();
+                if (detailData.success) {
+                    currentProductImages = detailData.data.images || [];
+                    renderImages();
+                }
+            }
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (e) {
+        showToast('Lỗi server', 'error');
+    }
+};
+
+window.setPrimaryImage = async function(imageId) {
+    if (!editingProductId) return;
+    try {
+        const res = await fetch(ADMIN_PRODUCTS_SET_PRIMARY_URL, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product_id: editingProductId, image_id: imageId })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showToast('Đã đổi ảnh chính', 'success');
+            const detailRes = await fetch(`${ADMIN_PRODUCTS_DETAIL_URL}?id=${editingProductId}`, { headers: authHeaders() });
+            const detailData = await detailRes.json();
+            if (detailData.success) {
+                currentProductImages = detailData.data.images || [];
+                renderImages();
+            }
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (e) {
+        showToast('Lỗi server', 'error');
+    }
+};
+
+// ============================================================
 // SUBMIT FORM — Thêm hoặc Sửa
 // ============================================================
 async function saveProduct() {
@@ -305,7 +407,6 @@ async function saveProduct() {
     const price       = document.getElementById('p-price').value.trim();
     const stock       = document.getElementById('p-stock').value.trim();
     const desc        = document.getElementById('p-desc').value.trim();
-    const imageFile   = document.getElementById('p-image').files[0];
 
     if (!name || !category_id || !price || !stock) {
         showToast('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
@@ -318,16 +419,16 @@ async function saveProduct() {
     formData.append('price',       price);
     formData.append('stock',       stock);
     formData.append('description', desc);
-    if (imageFile) {
-        formData.append('image', imageFile);
+
+    if (editingProductId) {
+        formData.append('id', editingProductId);
+        newImageFiles.forEach(f => formData.append('new_images[]', f.file));
+    } else {
+        newImageFiles.forEach(f => formData.append('images[]', f.file));
     }
 
     const url     = editingProductId ? PRODUCTS_UPDATE_URL : PRODUCTS_CREATE_URL;
     const saveBtn = document.getElementById('btn-save-product');
-
-    if (editingProductId) {
-        formData.append('id', editingProductId);
-    }
 
     if (saveBtn) {
         saveBtn.disabled     = true;
@@ -404,7 +505,7 @@ function showToast(message, type = 'success') {
         toast = document.createElement('div');
         toast.id = 'admin-toast';
         toast.style.cssText = `
-            position:fixed; bottom:24px; right:24px; z-index:9999;
+            position:fixed; top:24px; right:24px; z-index:9999;
             padding:12px 20px; border-radius:8px; color:#fff;
             font-size:14px; font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,0.15);
             transition:opacity 0.3s;
@@ -425,31 +526,33 @@ function showToast(message, type = 'success') {
 // IMAGE PREVIEW
 // ============================================================
 function setupImagePreview() {
-    const input   = document.getElementById('p-image');
-    const preview = document.getElementById('preview-image');
-    const placeholder = document.getElementById('upload-placeholder');
-    const btnUpload   = document.querySelector('.btn-upload');
+    const uploadInput = document.getElementById('p-images-upload');
+    const btnAddImages = document.getElementById('btn-add-images');
 
-    if (btnUpload) {
-        btnUpload.addEventListener('click', () => input && input.click());
-    }
-
-    if (input) {
-        input.addEventListener('change', function() {
-            const file = this.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = e => {
-                if (preview) {
-                    preview.src           = e.target.result;
-                    preview.style.display = 'block';
+    if (btnAddImages && uploadInput) {
+        btnAddImages.addEventListener('click', () => uploadInput.click());
+        
+        uploadInput.addEventListener('change', function() {
+            const files = Array.from(this.files);
+            
+            files.forEach(file => {
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast(`File ${file.name} quá lớn (tối đa 2MB)`, 'error');
+                    return;
                 }
-                if (placeholder) {
-                    placeholder.style.display = 'none';
-                }
-            };
-            reader.readAsDataURL(file);
+                
+                const reader = new FileReader();
+                reader.onload = e => {
+                    newImageFiles.push({
+                        file: file,
+                        preview: e.target.result
+                    });
+                    renderImages();
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            this.value = '';
         });
     }
 }

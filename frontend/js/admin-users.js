@@ -1,8 +1,6 @@
 // admin-users.js — Quản lý người dùng, kết nối API thật
 
-const BASE_URL = "http://localhost:8080/";
-const USERS_LIST_URL   = BASE_URL + "api/admin/users/list.php";
-const USERS_DETAIL_URL = BASE_URL + "api/admin/users/detail.php";
+import { ADMIN_USERS_LIST_URL as USERS_LIST_URL, ADMIN_USERS_DETAIL_URL as USERS_DETAIL_URL } from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -183,7 +181,7 @@ function renderPagination(pagination) {
     controls.innerHTML = html;
 }
 
-function changePage(page) {
+window.changePage = function(page) {
     if (page < 1 || page > totalPages) return;
     currentPage = page;
     loadUsers();
@@ -263,7 +261,7 @@ function showToast(message, type = 'success') {
         toast = document.createElement('div');
         toast.id = 'admin-toast';
         toast.style.cssText = `
-            position:fixed;bottom:24px;right:24px;z-index:9999;
+            position:fixed;top:24px;right:24px;z-index:9999;
             padding:12px 20px;border-radius:8px;color:#fff;
             font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);
             transition:opacity 0.3s;

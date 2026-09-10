@@ -58,57 +58,47 @@ try {
     }
 
 
-    // --- Xử lý upload ảnh ---
-    $imageUrl = '';
-
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-
-        $file    = $_FILES['image'];
-        $tmpPath = $file['tmp_name'];
-        $maxSize = 2 * 1024 * 1024; // 2MB
-
-        // Kiểm tra kích thước
-        if ($file['size'] > $maxSize) {
-            echo json_encode(['success' => false, 'message' => 'Ảnh quá lớn (tối đa 2MB)']);
-            exit;
-        }
-
-        // Kiểm tra MIME type thật (không tin vào extension người dùng)
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        $mime = mime_content_type($tmpPath);
-
-        if (!in_array($mime, $allowedMimes)) {
-            echo json_encode(['success' => false, 'message' => 'Chỉ chấp nhận JPG, PNG, WebP, GIF']);
-            exit;
-        }
-
-        // Tạo tên file an toàn
-        $ext     = match($mime) {
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-            'image/webp' => 'webp',
-            'image/gif'  => 'gif',
-            default      => 'jpg',
-        };
-        $newName = uniqid('product_', true) . '.' . $ext;
-
-        // Thư mục lưu ảnh
-        $uploadDir = __DIR__ . '/../../../../frontend/assets/images/products/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        $destPath = $uploadDir . $newName;
-
-        if (!move_uploaded_file($tmpPath, $destPath)) {
-            echo json_encode(['success' => false, 'message' => 'Upload ảnh thất bại']);
-            exit;
-        }
-
-        // Đường dẫn lưu vào database (relative từ frontend)
-        $imageUrl = '../assets/images/products/' . $newName;
+    // --- Xử lý upload ảnh (nhiều ảnh) ---
+    $uploadedImages = [];
+    $uploadDir = __DIR__ . '/../../../../frontend/assets/images/products/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
     }
 
+    if (isset($_FILES['images']) && is_array($_FILES['images']['name'])) {
+        $fileCount = count($_FILES['images']['name']);
+        for ($i = 0; $i < $fileCount; $i++) {
+            if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
+                $tmpPath = $_FILES['images']['tmp_name'][$i];
+                $maxSize = 2 * 1024 * 1024; // 2MB
+
+                if ($_FILES['images']['size'][$i] > $maxSize) {
+                    continue; // Skip large files, or we could error out
+                }
+
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                $mime = mime_content_type($tmpPath);
+
+                if (!in_array($mime, $allowedMimes)) {
+                    continue; // Skip invalid formats
+                }
+
+                $ext = match($mime) {
+                    'image/jpeg' => 'jpg',
+                    'image/png'  => 'png',
+                    'image/webp' => 'webp',
+                    'image/gif'  => 'gif',
+                    default      => 'jpg',
+                };
+                $newName = uniqid('product_', true) . '.' . $ext;
+                $destPath = $uploadDir . $newName;
+
+                if (move_uploaded_file($tmpPath, $destPath)) {
+                    $uploadedImages[] = '../assets/images/products/' . $newName;
+                }
+            }
+        }
+    }
 
     // --- Transaction: tạo sản phẩm + ảnh ---
     $conn->beginTransaction();
@@ -128,16 +118,20 @@ try {
 
     $productId = (int) $conn->lastInsertId();
 
-    // Lưu ảnh nếu có
-    if (!empty($imageUrl)) {
+    // Lưu mảng ảnh vào database
+    if (!empty($uploadedImages)) {
         $insertImage = $conn->prepare("
             INSERT INTO product_images (product_id, image_url, is_primary)
-            VALUES (:product_id, :image_url, 1)
+            VALUES (:product_id, :image_url, :is_primary)
         ");
-        $insertImage->execute([
-            ':product_id' => $productId,
-            ':image_url'  => $imageUrl,
-        ]);
+        foreach ($uploadedImages as $index => $imgUrl) {
+            $is_primary = ($index === 0) ? 1 : 0; // Ảnh đầu tiên là ảnh chính
+            $insertImage->execute([
+                ':product_id' => $productId,
+                ':image_url'  => $imgUrl,
+                ':is_primary' => $is_primary
+            ]);
+        }
     }
 
     $conn->commit();

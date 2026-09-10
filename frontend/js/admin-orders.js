@@ -1,9 +1,6 @@
 // admin-orders.js — Quản lý đơn hàng, kết nối API thật
 
-const BASE_URL = "http://localhost:8080/";
-const ORDERS_LIST_URL          = BASE_URL + "api/admin/orders/list.php";
-const ORDERS_DETAIL_URL        = BASE_URL + "api/admin/orders/detail.php";
-const ORDERS_UPDATE_STATUS_URL = BASE_URL + "api/admin/orders/update_status.php";
+import { ADMIN_ORDERS_LIST_URL as ORDERS_LIST_URL, ADMIN_ORDERS_DETAIL_URL as ORDERS_DETAIL_URL, ADMIN_ORDERS_UPDATE_STATUS_URL as ORDERS_UPDATE_STATUS_URL } from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -208,7 +205,7 @@ function renderPagination(pagination) {
     controls.innerHTML = html;
 }
 
-function changePage(page) {
+window.changePage = function(page) {
     if (page < 1 || page > totalPages) return;
     currentPage = page;
     loadOrders();
@@ -367,7 +364,7 @@ function showToast(message, type = 'success') {
         toast = document.createElement('div');
         toast.id = 'admin-toast';
         toast.style.cssText = `
-            position:fixed;bottom:24px;right:24px;z-index:9999;
+            position:fixed;top:24px;right:24px;z-index:9999;
             padding:12px 20px;border-radius:8px;color:#fff;
             font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);
             transition:opacity 0.3s;

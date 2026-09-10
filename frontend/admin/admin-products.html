@@ -101,23 +101,11 @@
     
     <div class="offcanvas-body">
       <ul class="tabs">
-        <li class="tab active">Thông tin</li>
-        <li class="tab">Hình ảnh (4)</li>
+        <li class="tab active" data-tab="info">Thông tin</li>
+        <li class="tab" data-tab="images">Hình ảnh (<span id="images-count">0</span>)</li>
       </ul>
       
       <div class="tab-content active" id="tab-info">
-        <div class="form-group">
-          <label>Ảnh đại diện</label>
-          <div class="image-uploader">
-            <img id="preview-image" src="" alt="Preview" style="display: none;">
-            <div class="upload-placeholder" id="upload-placeholder">
-              <i class="fa-regular fa-image"></i>
-            </div>
-            <input type="file" id="p-image" accept="image/*" style="display:none">
-            <button class="btn-upload"><i class="fa-solid fa-upload"></i> Thay đổi ảnh</button>
-            <span class="help-text">JPG, PNG, WebP (Max 2MB)</span>
-          </div>
-        </div>
 
         <div class="form-group">
           <label>Tên sản phẩm <span>*</span></label>
@@ -160,6 +148,39 @@
             <label>Ngày tạo</label>
             <input type="text" disabled value="25/05/2024 10:30" class="disabled-input">
           </div>
+      </div>
+      </div>
+      
+      <!-- TAB HÌNH ẢNH -->
+      <div class="tab-content" id="tab-images">
+        <div class="image-management">
+          
+          <div class="primary-image-section">
+            <h3>Ảnh chính</h3>
+            <div id="primary-image-container" class="primary-image-wrapper">
+               <!-- Sẽ render bằng JS -->
+               <div class="empty-state">Chưa có ảnh chính</div>
+            </div>
+          </div>
+          
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;" />
+          
+          <div class="gallery-images-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+              <h3>Ảnh phụ</h3>
+              <div>
+                <button type="button" class="btn btn-outline" id="btn-add-images">
+                  <i class="fa-solid fa-plus"></i> Thêm ảnh
+                </button>
+                <input type="file" id="p-images-upload" multiple accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
+              </div>
+            </div>
+            
+            <div id="gallery-images-container" class="gallery-grid">
+               <!-- Sẽ render bằng JS -->
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -169,10 +190,9 @@
       <button class="btn btn-primary" id="btn-save-product">Lưu</button>
     </div>
   </div>
-
-  <footer></footer>
+<footer></footer>
   <script src="../js/admin.js"></script>
-  <script src="../js/admin-products.js"></script>
+  <script type="module" src="../js/admin-products.js"></script>
 </body>
 </html>
 

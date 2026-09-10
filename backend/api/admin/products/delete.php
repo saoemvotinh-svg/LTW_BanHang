@@ -52,6 +52,21 @@ try {
         exit;
     }
 
+    // --- Lấy thông tin file ảnh để xóa file vật lý ---
+    $imgStmt = $conn->prepare("SELECT image_url FROM product_images WHERE product_id = ?");
+    $imgStmt->execute([$id]);
+    $images = $imgStmt->fetchAll();
+
+    foreach ($images as $img) {
+        if (!empty($img['image_url'])) {
+            $filename = basename($img['image_url']);
+            $physicalPath = __DIR__ . '/../../../../frontend/assets/images/products/' . $filename;
+            if (file_exists($physicalPath)) {
+                unlink($physicalPath);
+            }
+        }
+    }
+
     // --- Xóa sản phẩm (cascade sẽ xóa product_images, reviews, cart_items) ---
     $deleteStmt = $conn->prepare("DELETE FROM products WHERE id = ?");
     $deleteStmt->execute([$id]);
