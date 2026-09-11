@@ -1,4 +1,4 @@
-import { GET_ALL_PRODUCTS_URL } from "./configs.js";
+import { GET_ALL_PRODUCTS_URL, getImageUrl } from "./configs.js";
 
 let currentPage = 1;
 const itemsPerPage = 8;
@@ -30,7 +30,7 @@ function formatCurrency(amount) {
 }
 
 function createProductCard(product) {
-    const imageUrl = product.image || "../assets/images/shopping.webp";
+    const imageUrl = getImageUrl(product.image, "../assets/images/shopping.webp");
     const desc = product.description || "Đang cập nhật mô tả...";
 
     return `

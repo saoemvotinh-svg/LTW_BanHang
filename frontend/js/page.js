@@ -1,11 +1,11 @@
-import { GET_HOME_PRODUCTS_URL } from "./configs.js";
+import { GET_HOME_PRODUCTS_URL, getImageUrl } from "./configs.js";
 
 function formatCurrency(amount) {
     return new Intl.NumberFormat("vi-VN").format(amount) + " VNĐ";
 }
 
 function createProductCard(product, badgeText) {
-    const imageUrl = product.image || './assets/images/default.webp';
+    const imageUrl = getImageUrl(product.image, './assets/images/default.webp');
     const categoryName = product.category_name || "Sản phẩm";
 
     return `
