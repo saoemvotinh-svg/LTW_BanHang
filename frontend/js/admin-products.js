@@ -1,6 +1,16 @@
 // admin-products.js — Quản lý sản phẩm, kết nối API thật
 
-import { ADMIN_PRODUCTS_LIST_URL as PRODUCTS_LIST_URL, ADMIN_PRODUCTS_CREATE_URL as PRODUCTS_CREATE_URL, ADMIN_PRODUCTS_UPDATE_URL as PRODUCTS_UPDATE_URL, ADMIN_PRODUCTS_DELETE_URL as PRODUCTS_DELETE_URL, ADMIN_CATEGORIES_LIST_URL as CATEGORIES_LIST_URL, ADMIN_PRODUCTS_DETAIL_URL, ADMIN_PRODUCTS_DELETE_IMAGE_URL, ADMIN_PRODUCTS_SET_PRIMARY_URL } from "./configs.js";
+import {
+    ADMIN_PRODUCTS_LIST_URL as PRODUCTS_LIST_URL,
+    ADMIN_PRODUCTS_CREATE_URL as PRODUCTS_CREATE_URL,
+    ADMIN_PRODUCTS_UPDATE_URL as PRODUCTS_UPDATE_URL,
+    ADMIN_PRODUCTS_DELETE_URL as PRODUCTS_DELETE_URL,
+    ADMIN_CATEGORIES_LIST_URL as CATEGORIES_LIST_URL,
+    ADMIN_PRODUCTS_DETAIL_URL,
+    ADMIN_PRODUCTS_DELETE_IMAGE_URL,
+    ADMIN_PRODUCTS_SET_PRIMARY_URL,
+    getImageUrl
+} from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -106,7 +116,8 @@ function renderTable(products) {
     products.forEach(product => {
         const stockClass = product.stock > 0 ? 'badge-success' : 'badge-danger';
         const stockText  = product.stock > 0 ? `${product.stock}` : '0';
-        const imgSrc     = product.image || 'https://placehold.co/60x60/e2e8f0/94a3b8?text=SP';
+        // Dùng getImageUrl() — không hard-code localhost trong component
+        const imgSrc     = getImageUrl(product.image);
 
         html += `
             <tr>
@@ -309,11 +320,12 @@ function renderImages() {
 
     currentProductImages.forEach(img => {
         if (img.is_primary) {
-            primaryHtml = `<img src="${img.image_url}" alt="Primary Image">`;
+            // Dùng getImageUrl() — không hard-code localhost
+            primaryHtml = `<img src="${getImageUrl(img.image_url)}" alt="Primary Image">`;
         } else {
             galleryHtml += `
                 <div class="gallery-item">
-                    <img src="${img.image_url}" alt="Gallery Image">
+                    <img src="${getImageUrl(img.image_url)}" alt="Gallery Image">
                     <div class="item-actions">
                         <button type="button" class="btn-action" onclick="setPrimaryImage(${img.id})">Đặt làm chính</button>
                         <button type="button" class="btn-action delete" onclick="deleteImage(${img.id})">Xóa</button>

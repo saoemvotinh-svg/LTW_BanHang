@@ -1,5 +1,67 @@
-// Base URL của backend PHP (chạy bằng XAMPP)
+// =============================================
+// BASE URL — Thay đổi khi deploy lên hosting
+// =============================================
+// Development: "http://localhost:8080/"
+// Production:  "/" (nếu frontend và backend cùng domain)
+// Hoặc:        "https://domain.com/" (nếu khác domain)
 export const BASE_URL = "http://localhost:8080/";
+
+
+// =============================================
+// IMAGE URL HELPER
+// =============================================
+/**
+ * Chuyển relative image path (lưu trong DB) thành URL đầy đủ để dùng trong <img src>.
+ *
+ * Kiến trúc:
+ *   - Backend chạy tại: http://localhost:8080/  (document root = thư mục backend/)
+ *   - File ảnh nằm:   backend/assets/products/abc.jpg
+ *   - URL truy cập:   http://localhost:8080/assets/products/abc.jpg
+ *   - DB lưu:          assets/products/abc.jpg
+ *
+ * Khi deploy cùng domain: đổi BASE_URL thành domain thật.
+ * Frontend không bao giờ hard-code localhost trong component.
+ *
+ * @param {string} imagePath - Relative path từ DB, có thể null/undefined
+ * @param {string} fallback  - URL fallback nếu không có ảnh
+ * @returns {string} URL đầy đủ
+ */
+export function getImageUrl(imagePath, fallback = 'https://placehold.co/60x60/e2e8f0/94a3b8?text=SP') {
+    if (!imagePath || imagePath.trim() === '') {
+        return fallback;
+    }
+
+    // Nếu đã là URL đầy đủ (http/https) — trả về nguyên
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return imagePath;
+    }
+
+    // Path mới từ DB: "assets/products/abc123.jpg"
+    // Backend server root = backend/ nên đường dẫn web là BASE_URL + path
+    // Ví dụ: http://localhost:8080/assets/products/abc123.jpg
+    if (imagePath.startsWith('assets/')) {
+        return BASE_URL + imagePath;
+    }
+
+    // Path cũ (backward compatibility): "../assets/images/products/abc.jpg"
+    // Lấy basename và map sang path mới
+    if (imagePath.includes('/')) {
+        const filename = imagePath.split('/').pop();
+        if (imagePath.includes('/products/')) {
+            return BASE_URL + 'assets/products/' + filename;
+        }
+        if (imagePath.includes('/categories/')) {
+            return BASE_URL + 'assets/categories/' + filename;
+        }
+        if (imagePath.includes('/users/')) {
+            return BASE_URL + 'assets/users/' + filename;
+        }
+    }
+
+    // Fallback
+    return fallback;
+}
+
 
 // =============================================
 // AUTH

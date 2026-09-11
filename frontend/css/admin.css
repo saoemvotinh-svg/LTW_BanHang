@@ -1,4 +1,17 @@
 /* =========================================================
+   ADMIN GLOBAL RESET
+   ========================================================= */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden; /* Ngăn horizontal scroll toàn trang */
+}
+
+/* =========================================================
    ADMIN - SIDEBAR
    ========================================================= */
 
@@ -18,7 +31,7 @@
 
     overflow-y: auto;
 
-    transition: width 0.25s ease;
+    transition: transform 0.28s ease, width 0.25s ease;
 
     z-index: 1000;
 }
@@ -105,7 +118,7 @@ main {
 
 
 /* =========================================================
-   MOBILE MENU
+   MENU TOGGLE BUTTON (hiển thị trên tablet/mobile)
    ========================================================= */
 
 .menu-toggle {
@@ -113,8 +126,8 @@ main {
 
     position: fixed;
 
-    top: 15px;
-    left: 15px;
+    top: 14px;
+    left: 14px;
 
     z-index: 1100;
 
@@ -130,17 +143,48 @@ main {
     color: #111827;
 
     cursor: pointer;
+
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+
+    transition: background 0.2s ease;
+}
+
+.menu-toggle:hover {
+    background: #f3f4f6;
 }
 
 
 /* =========================================================
-   TABLET
+   SIDEBAR OVERLAY (chỉ xuất hiện khi sidebar mở trên mobile)
    ========================================================= */
 
-@media (max-width: 1024px) {
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.28s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+
+/* =========================================================
+   LAPTOP (992px - 1199px)
+   ========================================================= */
+
+@media (max-width: 1199px) {
 
     .sidebar {
-        width: 200px;
+        width: 210px;
         padding: 18px;
     }
 
@@ -150,91 +194,98 @@ main {
 
     .sidebar nav a {
         padding: 11px 12px;
+        font-size: 13px;
     }
 
     main {
-        margin-left: 200px;
-        width: calc(100% - 200px);
+        margin-left: 210px;
+        width: calc(100% - 210px);
     }
 }
 
 
 /* =========================================================
-   MOBILE
+   TABLET (768px - 991px)
    ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
+
+    /* Ẩn sidebar mặc định, chuyển sang drawer */
+    .sidebar {
+        width: 240px;
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+
+    /* Khi sidebar mở */
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Hiện nút toggle */
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* Main chiếm toàn bộ chiều rộng */
+    main {
+        margin-left: 0;
+        width: 100%;
+        /* Padding top để không bị che bởi menu toggle */
+        padding-top: 0;
+    }
+}
+
+
+/* =========================================================
+   MOBILE (< 768px)
+   ========================================================= */
+
+@media (max-width: 767px) {
 
     .sidebar {
-        width: 70px;
-        padding: 16px 10px;
+        width: 260px;
+        padding: 20px 16px;
     }
 
     .sidebar .logo {
-        justify-content: center;
-        margin-bottom: 25px;
-    }
-
-    .sidebar .logo span {
-        display: none;
-    }
-
-    .sidebar nav {
-        align-items: center;
+        font-size: 18px;
+        margin-bottom: 24px;
     }
 
     .sidebar nav a {
-        width: 44px;
-        height: 44px;
-
-        padding: 0;
-
-        justify-content: center;
-
-        gap: 0;
-    }
-
-    .sidebar nav a span {
-        display: none;
-    }
-
-    .sidebar nav a i {
-        width: auto;
-        min-width: auto;
-
-        font-size: 17px;
+        padding: 12px 14px;
+        font-size: 14px;
     }
 
     main {
-        margin-left: 70px;
-        width: calc(100% - 70px);
+        margin-left: 0;
+        width: 100%;
     }
 }
 
 
 /* =========================================================
-   SMALL MOBILE
+   MOBILE NHỎ (< 480px)
    ========================================================= */
 
-@media (max-width: 480px) {
+@media (max-width: 479px) {
 
     .sidebar {
-        width: 60px;
-        padding: 15px 8px;
+        width: 80vw;
+        max-width: 260px;
     }
 
-    .sidebar nav a {
-        width: 42px;
-        height: 42px;
-    }
-
-    main {
-        margin-left: 60px;
-        width: calc(100% - 60px);
+    .menu-toggle {
+        top: 12px;
+        left: 12px;
+        width: 38px;
+        height: 38px;
     }
 }
 
-.dropdown
-{
+
+.dropdown {
     display: none;
 }

@@ -18,6 +18,33 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 [$conn] = requireAdmin();
 
+/**
+ * Tính physical path của file ảnh từ image_url lưu trong DB.
+ * Hỗ trợ cả path cũ (../assets/images/products/) và path mới (assets/products/).
+ */
+function resolveImagePath(string $imageUrl): string {
+    // Path mới: "assets/products/filename.jpg"
+    if (strpos($imageUrl, 'assets/products/') === 0) {
+        $filename = basename($imageUrl);
+        return realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $filename;
+    }
+
+    // Path cũ: "../assets/images/products/filename.jpg" (backward compatibility)
+    if (strpos($imageUrl, '../assets/') !== false || strpos($imageUrl, 'assets/images/') !== false) {
+        $filename = basename($imageUrl);
+        // Tìm trong cả hai thư mục
+        $newPath = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $filename;
+        if (file_exists($newPath)) {
+            return $newPath;
+        }
+        // Thử path cũ ở frontend
+        $oldPath = realpath(__DIR__ . '/../../../../frontend/assets/images/products/') . DIRECTORY_SEPARATOR . $filename;
+        return $oldPath;
+    }
+
+    return '';
+}
+
 try {
 
     $input = json_decode(file_get_contents('php://input'), true);
@@ -57,19 +84,19 @@ try {
     $imgStmt->execute([$id]);
     $images = $imgStmt->fetchAll();
 
+    // --- Xóa sản phẩm (cascade sẽ xóa product_images, reviews, cart_items) ---
+    $deleteStmt = $conn->prepare("DELETE FROM products WHERE id = ?");
+    $deleteStmt->execute([$id]);
+
+    // --- Xóa file vật lý SAU KHI xóa DB thành công ---
     foreach ($images as $img) {
         if (!empty($img['image_url'])) {
-            $filename = basename($img['image_url']);
-            $physicalPath = __DIR__ . '/../../../../frontend/assets/images/products/' . $filename;
-            if (file_exists($physicalPath)) {
+            $physicalPath = resolveImagePath($img['image_url']);
+            if ($physicalPath && file_exists($physicalPath)) {
                 unlink($physicalPath);
             }
         }
     }
-
-    // --- Xóa sản phẩm (cascade sẽ xóa product_images, reviews, cart_items) ---
-    $deleteStmt = $conn->prepare("DELETE FROM products WHERE id = ?");
-    $deleteStmt->execute([$id]);
 
     echo json_encode([
         'success' => true,

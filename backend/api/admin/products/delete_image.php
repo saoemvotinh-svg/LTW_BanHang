@@ -19,6 +19,33 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 [$conn] = requireAdmin();
 
+/**
+ * Tính physical path của file ảnh từ image_url lưu trong DB.
+ * Hỗ trợ cả path cũ (../assets/images/products/) và path mới (assets/products/).
+ */
+function resolveImagePath(string $imageUrl): string {
+    // Path mới: "assets/products/filename.jpg"
+    if (strpos($imageUrl, 'assets/products/') === 0) {
+        $filename = basename($imageUrl);
+        return realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $filename;
+    }
+
+    // Path cũ: "../assets/images/products/filename.jpg" (backward compatibility)
+    if (strpos($imageUrl, '../assets/') !== false || strpos($imageUrl, 'assets/images/') !== false) {
+        $filename = basename($imageUrl);
+        // Tìm trong backend/assets/products/
+        $newPath = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $filename;
+        if (file_exists($newPath)) {
+            return $newPath;
+        }
+        // Thử path cũ ở frontend/assets/images/products/
+        $oldPath = realpath(__DIR__ . '/../../../../frontend/assets/images/products/') . DIRECTORY_SEPARATOR . $filename;
+        return $oldPath;
+    }
+
+    return '';
+}
+
 try {
     $input = json_decode(file_get_contents('php://input'), true);
     $image_id = (int) ($input['image_id'] ?? 0);
@@ -60,13 +87,10 @@ try {
     }
     $conn->commit();
 
-    // --- 4. Xóa file vật lý ---
+    // --- 4. Xóa file vật lý SAU KHI DB thành công ---
     if (!empty($image_url)) {
-        // image_url có dạng "../assets/images/products/..."
-        // Cần path tuyệt đối để xóa
-        $filename = basename($image_url);
-        $physicalPath = __DIR__ . '/../../../../frontend/assets/images/products/' . $filename;
-        if (file_exists($physicalPath)) {
+        $physicalPath = resolveImagePath($image_url);
+        if ($physicalPath && file_exists($physicalPath)) {
             unlink($physicalPath);
         }
     }

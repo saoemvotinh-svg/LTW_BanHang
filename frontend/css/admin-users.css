@@ -208,3 +208,157 @@
 
 .action-buttons-col { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
 .btn-block { width: 100%; justify-content: center; }
+
+
+/* =========================================================
+   RESPONSIVE — USERS PAGE
+   ========================================================= */
+
+/* --- Laptop (992px - 1199px) --- */
+@media (max-width: 1199px) {
+  .users-wrapper { padding: 20px; }
+}
+
+/* --- Tablet (768px - 991px) --- */
+@media (max-width: 991px) {
+  .users-wrapper { padding: 70px 16px 16px; } /* top: offset menu-toggle */
+
+  /* Layout stack dọc */
+  .users-layout {
+    flex-direction: column;
+  }
+
+  /* Details panel: full-width */
+  .details-panel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Filter */
+  .filter-bar { padding: 12px; gap: 10px; }
+  .search-group { min-width: 100%; }
+
+  /* Table scroll */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .users-table {
+    min-width: 620px;
+  }
+
+  /* Page header */
+  .page-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .page-title h1 { font-size: 20px; }
+
+  /* Modal */
+  .modal-content {
+    max-width: 90vw;
+    width: 100%;
+  }
+}
+
+/* --- Mobile (< 768px) --- */
+@media (max-width: 767px) {
+  .users-wrapper { padding: 60px 12px 12px; } /* top: offset menu-toggle */
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .page-title h1 { font-size: 18px; }
+  .actions { width: 100%; justify-content: flex-end; }
+
+  /* Filter */
+  .filter-bar { padding: 10px; gap: 8px; margin-bottom: 16px; }
+  .filter-group { width: 100%; }
+  .filter-group input,
+  .filter-group select { width: 100%; box-sizing: border-box; }
+
+  /* Table */
+  .users-table { min-width: 560px; }
+  .users-table th,
+  .users-table td { padding: 10px 8px; font-size: 12px; }
+
+  /* Details panel */
+  .details-panel {
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  /* User profile */
+  .user-profile-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .u-avatar-large {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* User stats grid: 1 cột trên mobile */
+  .user-stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* Modal */
+  .modal {
+    padding: 20px 16px;
+    margin: 0 12px;
+  }
+
+  .modal-content {
+    max-width: calc(100vw - 24px);
+    padding: 20px 16px;
+  }
+
+  /* Pagination */
+  .pagination-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .btn-page {
+    min-width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .display-info { font-size: 12px; }
+}
+
+/* --- Mobile nhỏ (< 480px) --- */
+@media (max-width: 479px) {
+  .users-wrapper { padding: 10px; }
+  .page-title h1 { font-size: 16px; }
+
+  .users-table { min-width: 480px; }
+  .users-table th,
+  .users-table td { padding: 8px 6px; font-size: 11px; }
+
+  .modal-content {
+    padding: 16px 12px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+}

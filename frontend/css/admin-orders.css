@@ -190,3 +190,177 @@
 .form-group label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; color: #374151; }
 .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid #E8E8E8; border-radius: 2px; font-family: inherit; font-size: 13px; box-sizing: border-box; }
 .form-group select:focus, .form-group textarea:focus { border-color: #10B981; outline: none; }
+
+
+/* =========================================================
+   RESPONSIVE — ORDERS PAGE
+   ========================================================= */
+
+/* --- Laptop (992px - 1199px) --- */
+@media (max-width: 1199px) {
+  .orders-wrapper { padding: 20px; }
+
+  .summary-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* --- Tablet (768px - 991px) --- */
+@media (max-width: 991px) {
+  .orders-wrapper { padding: 70px 16px 16px; } /* top: offset menu-toggle */
+
+  /* Summary cards: 3→2 cột */
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Layout: bỏ side-by-side, stack dọc */
+  .orders-layout {
+    flex-direction: column;
+  }
+
+  /* Details panel: full-width khi active */
+  .details-panel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .search-group { min-width: 100%; }
+  .date-group { width: 100%; }
+
+  /* Table scroll */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .orders-table {
+    min-width: 650px;
+  }
+
+  /* Page header */
+  .page-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .page-title h1 { font-size: 20px; }
+}
+
+/* --- Mobile (< 768px) --- */
+@media (max-width: 767px) {
+  .orders-wrapper { padding: 60px 12px 12px; } /* top: offset menu-toggle */
+
+  /* Summary cards: 2→2 cột (tốt hơn 1 cột cho loại này) */
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .summary-card {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .summary-card .icon {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .summary-card .info strong {
+    font-size: 18px;
+  }
+
+  /* Page header */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .page-title h1 { font-size: 18px; }
+  .actions { width: 100%; justify-content: flex-end; }
+
+  /* Filter */
+  .filter-bar { padding: 10px; gap: 8px; margin-bottom: 16px; }
+  .filter-group { width: 100%; }
+  .filter-group input,
+  .filter-group select { width: 100%; box-sizing: border-box; }
+  .date-inputs { flex-wrap: wrap; }
+  .date-input-wrap input { width: 100%; }
+
+  /* Table */
+  .orders-table {
+    min-width: 580px;
+  }
+  .orders-table th,
+  .orders-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  /* Details panel: chiếm full width */
+  .details-panel {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 0;
+  }
+
+  /* Pagination */
+  .pagination-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .btn-page {
+    min-width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .display-info { font-size: 12px; }
+}
+
+/* --- Mobile nhỏ (< 480px) --- */
+@media (max-width: 479px) {
+  .orders-wrapper { padding: 10px; }
+
+  /* Summary: 1 cột */
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .summary-card {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .page-title h1 { font-size: 16px; }
+
+  .orders-table {
+    min-width: 500px;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+}

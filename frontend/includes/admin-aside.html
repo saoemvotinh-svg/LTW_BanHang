@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -12,11 +12,15 @@
 
 <body>
 
-    <button class="menu-toggle" id="menuToggle">
+    <!-- Nút toggle mở/đóng sidebar trên mobile/tablet -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Mở menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <aside class="sidebar">
+    <!-- Overlay backdrop khi sidebar mở trên mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="adminSidebar">
 
         <div class="logo">
             <i class="fa-solid fa-chart-line"></i>

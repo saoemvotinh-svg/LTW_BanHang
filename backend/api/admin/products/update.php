@@ -71,7 +71,9 @@ try {
 
     // --- Xử lý upload ảnh mới (nhiều ảnh) ---
     $uploadedImages = [];
-    $uploadDir = __DIR__ . '/../../../../frontend/assets/images/products/';
+
+    // Upload vào backend/assets/products/ (dùng __DIR__ để luôn đúng khi deploy)
+    $uploadDir = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR;
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
@@ -101,11 +103,14 @@ try {
                     'image/gif'  => 'gif',
                     default      => 'jpg',
                 };
-                $newName = uniqid('product_', true) . '.' . $ext;
+
+                // Tạo filename an toàn và duy nhất
+                $newName  = 'product_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
                 $destPath = $uploadDir . $newName;
 
                 if (move_uploaded_file($tmpPath, $destPath)) {
-                    $uploadedImages[] = '../assets/images/products/' . $newName;
+                    // Lưu relative path vào DB — không chứa localhost hay domain
+                    $uploadedImages[] = 'assets/products/' . $newName;
                 }
             }
         }

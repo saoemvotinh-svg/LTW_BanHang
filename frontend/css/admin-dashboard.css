@@ -812,3 +812,41 @@
         padding: 15px;
     }
 }
+
+
+/* =========================================================
+   RESPONSIVE — DASHBOARD: Extra adjustments for sidebar drawer
+   ========================================================= */
+
+/* Khi sidebar là drawer (tablet/mobile), thêm padding-top cho dashboard
+   để nội dung không bị che bởi menu-toggle button (40px + offset) */
+@media (max-width: 991px) {
+    .dashboard {
+        padding-top: 70px;
+    }
+}
+
+@media (max-width: 767px) {
+    .dashboard {
+        padding: 60px 16px 24px;
+    }
+
+    .dashboard-title h1 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 479px) {
+    .dashboard {
+        padding: 56px 12px 20px;
+    }
+
+    .dashboard-title h1 {
+        font-size: 18px;
+    }
+
+    /* Bottom cards: stack dọc */
+    .dashboard-bottom {
+        grid-template-columns: 1fr;
+    }
+}

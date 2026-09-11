@@ -1,4 +1,9 @@
-// Header và Footer được load bởi admin.js để độc lập với layout.js
+// admin.js — Header, Footer và Aside loader cho Admin pages
+
+// ============================================================
+// INCLUDE LOADER
+// ============================================================
+
 function loadIncludes() {
   const header = document.querySelector("header");
   const footer = document.querySelector("footer");
@@ -90,6 +95,10 @@ function loadIncludes() {
   }
 }
 
+// ============================================================
+// ASIDE LOADER
+// ============================================================
+
 function loadAside() {
 
     const aside = document.querySelector("aside");
@@ -103,17 +112,101 @@ function loadAside() {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
 
-            const asideReal = doc.querySelector("aside");
+            // Lấy các elements từ file aside
+            const asideReal    = doc.querySelector("aside");
+            const toggleReal   = doc.querySelector(".menu-toggle");
+            const overlayReal  = doc.querySelector(".sidebar-overlay");
 
             if (asideReal) {
-
                 aside.outerHTML = asideReal.outerHTML;
-
                 setActiveMenu();
-
             }
+
+            // Chèn menu-toggle button vào body nếu chưa có
+            if (toggleReal && !document.getElementById("menuToggle")) {
+                const toggleClone = toggleReal.cloneNode(true);
+                document.body.insertBefore(toggleClone, document.body.firstChild);
+            }
+
+            // Chèn sidebar overlay vào body nếu chưa có
+            if (overlayReal && !document.getElementById("sidebarOverlay")) {
+                const overlayClone = overlayReal.cloneNode(true);
+                document.body.insertBefore(overlayClone, document.body.firstChild);
+            }
+
+            // Khởi tạo sidebar toggle sau khi DOM đã sẵn sàng
+            initSidebarToggle();
         });
 }
+
+// ============================================================
+// SIDEBAR TOGGLE (Drawer behavior trên tablet/mobile)
+// ============================================================
+
+function initSidebarToggle() {
+
+    const toggle  = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("adminSidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+
+    if (!toggle || !sidebar) return;
+
+    // Mở/Đóng sidebar
+    toggle.addEventListener("click", () => {
+        const isOpen = sidebar.classList.contains("open");
+        if (isOpen) {
+            closeSidebar(sidebar, overlay, toggle);
+        } else {
+            openSidebar(sidebar, overlay, toggle);
+        }
+    });
+
+    // Click vào overlay để đóng sidebar
+    if (overlay) {
+        overlay.addEventListener("click", () => {
+            closeSidebar(sidebar, overlay, toggle);
+        });
+    }
+
+    // Đóng sidebar khi click vào link menu (trên mobile)
+    sidebar.querySelectorAll("nav a").forEach(link => {
+        link.addEventListener("click", () => {
+            if (window.innerWidth < 992) {
+                closeSidebar(sidebar, overlay, toggle);
+            }
+        });
+    });
+
+    // Đóng sidebar khi resize lên desktop
+    window.addEventListener("resize", () => {
+        if (window.innerWidth >= 992) {
+            sidebar.classList.remove("open");
+            if (overlay) overlay.classList.remove("active");
+            document.body.style.overflow = "";
+            toggle.setAttribute("aria-label", "Mở menu");
+        }
+    });
+}
+
+function openSidebar(sidebar, overlay, toggle) {
+    sidebar.classList.add("open");
+    if (overlay) overlay.classList.add("active");
+    document.body.style.overflow = "hidden"; // Ngăn scroll body
+    toggle.setAttribute("aria-label", "Đóng menu");
+    toggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+}
+
+function closeSidebar(sidebar, overlay, toggle) {
+    sidebar.classList.remove("open");
+    if (overlay) overlay.classList.remove("active");
+    document.body.style.overflow = "";
+    toggle.setAttribute("aria-label", "Mở menu");
+    toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+}
+
+// ============================================================
+// ACTIVE MENU
+// ============================================================
 
 function setActiveMenu() {
 
@@ -138,4 +231,4 @@ function setActiveMenu() {
 
 // Admin tự sử dụng loadIncludes riêng, không phụ thuộc layout.js
 loadIncludes();
-loadAside();
+loadAside();
