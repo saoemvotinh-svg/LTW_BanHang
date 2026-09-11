@@ -71,6 +71,7 @@ try {
 
     // --- Xử lý upload ảnh mới (nhiều ảnh) ---
     $uploadedImages = [];
+    $primary_image_index = isset($_POST['primary_image_index']) ? (int)$_POST['primary_image_index'] : -1;
 
     // Upload vào backend/assets/products/ (dùng __DIR__ để luôn đúng khi deploy)
     $uploadDir = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR;
@@ -80,12 +81,15 @@ try {
 
     if (isset($_FILES['new_images']) && is_array($_FILES['new_images']['name'])) {
         $fileCount = count($_FILES['new_images']['name']);
+        $validImageIndex = 0; // Để map với primary_image_index từ frontend
+        
         for ($i = 0; $i < $fileCount; $i++) {
             if ($_FILES['new_images']['error'][$i] === UPLOAD_ERR_OK) {
                 $tmpPath = $_FILES['new_images']['tmp_name'][$i];
                 $maxSize = 2 * 1024 * 1024;
 
                 if ($_FILES['new_images']['size'][$i] > $maxSize) {
+                    $validImageIndex++;
                     continue;
                 }
 
@@ -93,6 +97,7 @@ try {
                 $mime = mime_content_type($tmpPath);
 
                 if (!in_array($mime, $allowedMimes)) {
+                    $validImageIndex++;
                     continue;
                 }
 
@@ -109,9 +114,16 @@ try {
                 $destPath = $uploadDir . $newName;
 
                 if (move_uploaded_file($tmpPath, $destPath)) {
+                    $is_primary = ($validImageIndex === $primary_image_index) ? 1 : 0;
                     // Lưu relative path vào DB — không chứa localhost hay domain
-                    $uploadedImages[] = 'assets/products/' . $newName;
+                    $uploadedImages[] = [
+                        'url' => 'assets/products/' . $newName,
+                        'is_primary' => $is_primary
+                    ];
                 }
+                $validImageIndex++;
+            } else {
+                $validImageIndex++;
             }
         }
     }
@@ -138,6 +150,12 @@ try {
         ':id'          => $id,
     ]);
 
+    // Nếu ảnh mới upload được set làm ảnh chính, thì bỏ ảnh chính cũ
+    if ($primary_image_index !== -1 && !empty($uploadedImages)) {
+        $resetPrimary = $conn->prepare("UPDATE product_images SET is_primary = 0 WHERE product_id = ?");
+        $resetPrimary->execute([$id]);
+    }
+
     // Thêm các ảnh mới (nếu có)
     if (!empty($uploadedImages)) {
         // Kiểm tra xem đã có ảnh chính chưa
@@ -150,13 +168,14 @@ try {
             VALUES (?, ?, ?)
         ");
 
-        foreach ($uploadedImages as $index => $imgUrl) {
-            $is_primary = 0;
-            if (!$hasPrimary && $index === 0) {
+        foreach ($uploadedImages as $index => $img) {
+            $is_primary = $img['is_primary'];
+            // Fallback: nếu chưa có ảnh chính nào và đây là ảnh mới đầu tiên, set nó làm chính
+            if (!$hasPrimary && $primary_image_index === -1 && $index === 0) {
                 $is_primary = 1;
                 $hasPrimary = true;
             }
-            $insImg->execute([$id, $imgUrl, $is_primary]);
+            $insImg->execute([$id, $img['url'], $is_primary]);
         }
     }
 

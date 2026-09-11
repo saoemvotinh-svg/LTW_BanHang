@@ -33,8 +33,8 @@ if (strlen($newPassword) < 6) {
 }
 
 try {
-    // Kiểm tra user có tồn tại không
-    $stmt = $conn->prepare("SELECT id FROM users WHERE id = :id LIMIT 1");
+    // Kiểm tra user có tồn tại không và lấy role
+    $stmt = $conn->prepare("SELECT id, role FROM users WHERE id = :id LIMIT 1");
     $stmt->execute([':id' => $userId]);
     $user = $stmt->fetch();
 
@@ -43,6 +43,16 @@ try {
         echo json_encode([
             'success' => false,
             'message' => 'Không tìm thấy người dùng'
+        ]);
+        exit;
+    }
+
+    // Kiểm tra quyền: Admin không được đổi pass của admin khác (chỉ đổi của chính mình hoặc khách hàng)
+    if ($user['role'] === 'admin' && (int)$user['id'] !== (int)$adminUserId) {
+        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Bạn không có quyền đổi mật khẩu của Admin khác'
         ]);
         exit;
     }

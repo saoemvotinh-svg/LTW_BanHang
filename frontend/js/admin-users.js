@@ -14,6 +14,11 @@ function authHeaders() {
     return { 'Authorization': 'Bearer ' + getAuthToken() };
 }
 
+function getCurrentUser() {
+    const raw = localStorage.getItem('auth_user') || localStorage.getItem('user');
+    try { return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+
 function formatCurrency(amount) {
     return Number(amount).toLocaleString('vi-VN') + ' đ';
 }
@@ -318,6 +323,17 @@ window.openUserPanel = async function(userId) {
         document.getElementById('u-orders-total').textContent = formatCurrency(total_spent);
         document.getElementById('u-reviews-count').textContent = review_count;
         document.getElementById('u-rating').textContent       = avg_rating > 0 ? avg_rating.toFixed(1) : '—';
+
+        // Permissions: Hide Change Password if target is admin and not me
+        const me = getCurrentUser();
+        const btnChangePass = document.querySelector('.action-buttons-col button[onclick="openChangePasswordModal()"]');
+        if (btnChangePass) {
+            if (user.role === 'admin' && (!me || parseInt(me.id) !== parseInt(user.id))) {
+                btnChangePass.style.display = 'none';
+            } else {
+                btnChangePass.style.display = '';
+            }
+        }
 
     } catch (err) {
         console.error('Lỗi load user detail:', err);

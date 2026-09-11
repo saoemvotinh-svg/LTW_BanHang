@@ -103,6 +103,11 @@ async function loadProfile() {
         elAddress.innerText      = user.address   || "—";
         elRole.innerText         = user.role === "admin" ? "Quản trị viên" : "Khách hàng";
 
+        const adminBtn = document.querySelector(".profile-admin-btn");
+        if (adminBtn) {
+            adminBtn.style.display = user.role === "admin" ? "inline-flex" : "none";
+        }
+
         // Lấy thêm created_at từ profile API
         await loadCreatedAt();
 

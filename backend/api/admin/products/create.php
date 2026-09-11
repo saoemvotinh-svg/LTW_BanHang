@@ -60,6 +60,7 @@ try {
 
     // --- Xử lý upload ảnh (nhiều ảnh) ---
     $uploadedImages = [];
+    $primary_image_index = isset($_POST['primary_image_index']) ? (int)$_POST['primary_image_index'] : -1;
 
     // Upload vào backend/assets/products/ (dùng __DIR__ để luôn đúng khi deploy)
     $uploadDir = realpath(__DIR__ . '/../../../') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR;
@@ -69,12 +70,15 @@ try {
 
     if (isset($_FILES['images']) && is_array($_FILES['images']['name'])) {
         $fileCount = count($_FILES['images']['name']);
+        $validImageIndex = 0; // Để map với primary_image_index từ frontend
+        
         for ($i = 0; $i < $fileCount; $i++) {
             if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
                 $tmpPath = $_FILES['images']['tmp_name'][$i];
                 $maxSize = 2 * 1024 * 1024; // 2MB
 
                 if ($_FILES['images']['size'][$i] > $maxSize) {
+                    $validImageIndex++;
                     continue; // Skip large files
                 }
 
@@ -82,6 +86,7 @@ try {
                 $mime = mime_content_type($tmpPath);
 
                 if (!in_array($mime, $allowedMimes)) {
+                    $validImageIndex++;
                     continue; // Skip invalid formats
                 }
 
@@ -98,9 +103,20 @@ try {
                 $destPath = $uploadDir . $newName;
 
                 if (move_uploaded_file($tmpPath, $destPath)) {
+                    $is_primary = ($validImageIndex === $primary_image_index) ? 1 : 0;
+                    if ($primary_image_index === -1 && count($uploadedImages) === 0) {
+                        $is_primary = 1; // Fallback: ảnh đầu tiên
+                    }
+                    
                     // Lưu relative path vào DB — không chứa localhost hay domain
-                    $uploadedImages[] = 'assets/products/' . $newName;
+                    $uploadedImages[] = [
+                        'url' => 'assets/products/' . $newName,
+                        'is_primary' => $is_primary
+                    ];
                 }
+                $validImageIndex++;
+            } else {
+                $validImageIndex++;
             }
         }
     }
@@ -125,16 +141,24 @@ try {
 
     // Lưu mảng ảnh vào database
     if (!empty($uploadedImages)) {
+        // Đảm bảo có ít nhất 1 ảnh chính
+        $hasPrimary = false;
+        foreach ($uploadedImages as $img) {
+            if ($img['is_primary']) $hasPrimary = true;
+        }
+        if (!$hasPrimary) {
+            $uploadedImages[0]['is_primary'] = 1;
+        }
+
         $insertImage = $conn->prepare("
             INSERT INTO product_images (product_id, image_url, is_primary)
             VALUES (:product_id, :image_url, :is_primary)
         ");
-        foreach ($uploadedImages as $index => $imgUrl) {
-            $is_primary = ($index === 0) ? 1 : 0; // Ảnh đầu tiên là ảnh chính
+        foreach ($uploadedImages as $img) {
             $insertImage->execute([
                 ':product_id' => $productId,
-                ':image_url'  => $imgUrl,
-                ':is_primary' => $is_primary
+                ':image_url'  => $img['url'],
+                ':is_primary' => $img['is_primary']
             ]);
         }
     }

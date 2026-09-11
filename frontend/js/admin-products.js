@@ -318,8 +318,10 @@ function renderImages() {
     let primaryHtml = '<div class="empty-state">Chưa có ảnh chính</div>';
     let galleryHtml = '';
 
+    const newPrimaryImage = newImageFiles.find(f => f.is_primary);
+
     currentProductImages.forEach(img => {
-        if (img.is_primary) {
+        if (img.is_primary && !newPrimaryImage) {
             // Dùng getImageUrl() — không hard-code localhost
             primaryHtml = `<img src="${getImageUrl(img.image_url)}" alt="Primary Image">`;
         } else {
@@ -336,23 +338,42 @@ function renderImages() {
     });
 
     newImageFiles.forEach((fileObj, index) => {
-        galleryHtml += `
-            <div class="gallery-item">
-                <img src="${fileObj.preview}" alt="New Image">
-                <div class="item-actions">
-                    <span class="btn-action" style="background:transparent; color:#fff">Chưa lưu</span>
-                    <button type="button" class="btn-action delete" onclick="removeNewImage(${index})">Hủy</button>
+        if (fileObj.is_primary) {
+            primaryHtml = `
+                <img src="${fileObj.preview}" alt="Primary Image (Mới)">
+                <div style="margin-top: 10px; text-align: center;">
+                    <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; border-color: #dc2626; color: #dc2626;" onclick="removeNewImage(${index})">Hủy ảnh này</button>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            galleryHtml += `
+                <div class="gallery-item">
+                    <img src="${fileObj.preview}" alt="New Image">
+                    <div class="item-actions">
+                        <button type="button" class="btn-action" onclick="setNewImagePrimary(${index})">Đặt làm chính</button>
+                        <button type="button" class="btn-action delete" onclick="removeNewImage(${index})">Hủy</button>
+                    </div>
+                </div>
+            `;
+        }
     });
 
     primaryContainer.innerHTML = primaryHtml;
     galleryContainer.innerHTML = galleryHtml;
 }
 
+window.setNewImagePrimary = function(index) {
+    newImageFiles.forEach((img, i) => img.is_primary = (i === index));
+    renderImages();
+};
+
 window.removeNewImage = function(index) {
-    newImageFiles.splice(index, 1);
+    const removed = newImageFiles.splice(index, 1)[0];
+    if (removed && removed.is_primary) {
+        if (newImageFiles.length > 0) {
+            newImageFiles[0].is_primary = true;
+        }
+    }
     renderImages();
 };
 
@@ -396,6 +417,9 @@ window.setPrimaryImage = async function(imageId) {
         const result = await res.json();
         if (result.success) {
             showToast('Đã đổi ảnh chính', 'success');
+            // Hủy set ảnh chính ở các ảnh mới thêm vì DB đã lấy ảnh khác
+            newImageFiles.forEach(img => img.is_primary = false);
+            
             const detailRes = await fetch(`${ADMIN_PRODUCTS_DETAIL_URL}?id=${editingProductId}`, { headers: authHeaders() });
             const detailData = await detailRes.json();
             if (detailData.success) {
@@ -434,10 +458,16 @@ async function saveProduct() {
 
     if (editingProductId) {
         formData.append('id', editingProductId);
-        newImageFiles.forEach(f => formData.append('new_images[]', f.file));
-    } else {
-        newImageFiles.forEach(f => formData.append('images[]', f.file));
     }
+    
+    let primaryNewImageIndex = -1;
+    newImageFiles.forEach((f, i) => {
+        formData.append(editingProductId ? 'new_images[]' : 'images[]', f.file);
+        if (f.is_primary) {
+            primaryNewImageIndex = i;
+        }
+    });
+    formData.append('primary_image_index', primaryNewImageIndex);
 
     const url     = editingProductId ? PRODUCTS_UPDATE_URL : PRODUCTS_CREATE_URL;
     const saveBtn = document.getElementById('btn-save-product');
@@ -544,26 +574,31 @@ function setupImagePreview() {
     if (btnAddImages && uploadInput) {
         btnAddImages.addEventListener('click', () => uploadInput.click());
         
-        uploadInput.addEventListener('change', function() {
+        uploadInput.addEventListener('change', async function() {
             const files = Array.from(this.files);
             
-            files.forEach(file => {
+            for (const file of files) {
                 if (file.size > 2 * 1024 * 1024) {
                     showToast(`File ${file.name} quá lớn (tối đa 2MB)`, 'error');
-                    return;
+                    continue;
                 }
                 
-                const reader = new FileReader();
-                reader.onload = e => {
-                    newImageFiles.push({
-                        file: file,
-                        preview: e.target.result
-                    });
-                    renderImages();
-                };
-                reader.readAsDataURL(file);
-            });
+                await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        const hasPrimary = currentProductImages.some(i => i.is_primary) || newImageFiles.some(i => i.is_primary);
+                        newImageFiles.push({
+                            file: file,
+                            preview: e.target.result,
+                            is_primary: !hasPrimary
+                        });
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
             
+            renderImages();
             this.value = '';
         });
     }
