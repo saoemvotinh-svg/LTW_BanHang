@@ -1,6 +1,6 @@
 // API
 // const CART_API = "http://127.0.0.1:8080/LTW_BanHang/backend/api/cart";
-import { CART_GET_URL, CART_ADD_URL, CART_UPDATE_URL, CART_REMOVE_URL } from './configs.js';
+import { CART_GET_URL, CART_ADD_URL, CART_UPDATE_URL, CART_REMOVE_URL, ORDER_CREATE_URL } from './configs.js';
 // Data
 let cart =[];
 
@@ -301,7 +301,7 @@ function handleOrder() {
         };
         try {
             const response = await fetch(
-                "http://127.0.0.1:8080/LTW_BanHang/backend/api/orders/create.php",
+                `${ORDER_CREATE_URL}`,
                 {
                     method: "POST",
                     headers: {
