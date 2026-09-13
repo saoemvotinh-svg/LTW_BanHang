@@ -42,28 +42,52 @@ document.addEventListener('DOMContentLoaded', () => {
         const quantityInput = document.getElementById('quantity');
 
         if (addToCartBtn && product) {
-            addToCartBtn.addEventListener('click', (e) => {
+            addToCartBtn.addEventListener('click', async(e) => {
                 e.preventDefault();
-                const qty = parseInt(quantityInput.value);
-
-                let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-
-                const existingProductIndex = cart.findIndex(item => item.id === product.id);
-
-                if (existingProductIndex !== -1) {
-                    cart[existingProductIndex].quantity += qty;
-                } else {
-                    cart.push({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        img: product.img,
-                        category: product.category,
-                        quantity: qty
-                    });
+                // kiểm tra đăng nhập
+                const authUser = localStorage.getItem("auth_user");
+                if (!authUser) {
+                    alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+                    return;
                 }
-                localStorage.setItem('cartItems', JSON.stringify(cart));
-                alert(`Tuyệt vời! Đã thêm ${qty} sản phẩm "${product.name}" vào giỏ hàng.`);
+                
+                const token = localStorage.getItem("auth_token");
+                if (!token) {
+                    alert("Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.");
+                    window.location.href = "login.html";
+                    return;
+                }
+                const qty = parseInt(quantityInput.value);
+                if (isNaN(qty) || qty < 1) {
+                     alert("Số lượng không hợp lệ.");
+                     return;
+                }
+                try{
+                    const response = await fetch(
+                        "http://localhost:8080/LTW_BanHang/backend/api/cart/add.php",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                product_id: product.id,
+                                quantity: qty
+                            })
+                        }
+                    );
+                    const result = await response.json();
+                    if (result.success) {
+                        alert( `Đã thêm ${qty} sản phẩm "${product.name}" vào giỏ hàng.`);
+                    }
+                    else{
+                        alert(result.message || "Không thể thêm sản phẩm vào giỏ hàng.");
+                    }
+                } catch (error){
+                     console.error("Lỗi thêm vào giỏ:", error);
+                     alert("Không thể kết nối đến máy chủ.");
+                }
             });
         }
         const reviewForm = document.getElementById('reviewForm');

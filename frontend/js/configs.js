@@ -1,5 +1,5 @@
 // Base URL của backend PHP (chạy bằng XAMPP)
-export const BASE_URL = "http://localhost:8080/";
+export const BASE_URL = "http://127.0.0.1:8080/LTW_BanHang/backend/";
 
 // =============================================
 // AUTH
