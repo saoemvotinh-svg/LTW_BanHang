@@ -9,22 +9,22 @@ function createProductCard(product, badgeText) {
     const categoryName = product.category_name || "Sản phẩm";
 
     return `
-      <div class="product-card" data-id="${product.id}">
+    <div class="product-card" data-id="${product.id}" onclick="window.location.href='./pages/product-detail.html?id=${product.id}'" style="cursor: pointer;">
         <div class="card-img">
-          <span class="badge">${badgeText}</span>
-          <div class="img-placeholder">
-            <img src="${imageUrl}" alt="${product.name}" onerror="this.src='./assets/images/shopping.webp'">
-          </div>
+            <span class="badge">${badgeText}</span>
+            <div class="img-placeholder">
+                <img src="${imageUrl}" alt="${product.name}" onerror="this.src='./assets/images/shopping.webp'">
+            </div>
         </div>
         <div class="card-body">
-          <span class="category">${categoryName}</span>
-          <h3 class="product-title">${product.name}</h3>
-          <div class="card-footer">
-            <span class="price">${formatCurrency(product.price)}</span>
-          </div>
+            <span class="category">${categoryName}</span>
+            <h3 class="product-title">${product.name}</h3>
+            <div class="card-footer">
+                <span class="price">${formatCurrency(product.price)}</span>
+            </div>
         </div>
-      </div>
-    `;
+    </div>
+`;
 }
 
 function renderProductsToContainer(containerId, productsList, badgeText) {

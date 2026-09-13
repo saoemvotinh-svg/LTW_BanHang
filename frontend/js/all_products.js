@@ -29,18 +29,35 @@ function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + " VNĐ";
 }
 
+// function createProductCard(product) {
+//     const imageUrl = getImageUrl(product.image, "../assets/images/shopping.webp");
+//     const desc = product.description || "Đang cập nhật mô tả...";
+
+//     return `
+//         <div class="product-card">
+//         <div class="product-sku">MÃ SẢN PHẨM: ${product.id}</div>
+//         <div class="product-title">${product.category_name}</div>
+//         <img class="product-image" src="${imageUrl}" alt="${product.name}" onerror="this.src='../assets/images/shopping.webp'">
+//         <div class="product-desc">${product.name}</div>
+//         <div class="product-price">Giá: ${formatCurrency(product.price)}</div>
+//         <button class="buy-btn">Mua ngay</button>
+//         </div>
+//     `;
+// }
 function createProductCard(product) {
     const imageUrl = getImageUrl(product.image, "../assets/images/shopping.webp");
     const desc = product.description || "Đang cập nhật mô tả...";
 
     return `
-        <div class="product-card">
-        <div class="product-sku">MÃ SẢN PHẨM: ${product.id}</div>
-        <div class="product-title">${product.category_name}</div>
-        <img class="product-image" src="${imageUrl}" alt="${product.name}" onerror="this.src='../assets/images/shopping.webp'">
-        <div class="product-desc">${product.name}</div>
-        <div class="product-price">Giá: ${formatCurrency(product.price)}</div>
-        <button class="buy-btn">Mua ngay</button>
+        <div class="product-card" onclick="window.location.href='product-detail.html?id=${product.id}'" style="cursor: pointer;">
+            <div class="product-sku">MÃ SẢN PHẨM: ${product.id}</div>
+            <div class="product-title">${product.category_name}</div>
+            <img class="product-image" src="${imageUrl}" alt="${product.name}" onerror="this.src='../assets/images/shopping.webp'">
+            <div class="product-desc">${product.name}</div>
+            <div class="product-price">Giá: ${formatCurrency(product.price)}</div>
+            
+            <!-- Thêm event.stopPropagation() để không bị nhảy trang khi bấm nút Mua -->
+            <button class="buy-btn">Chi tiết</button>
         </div>
     `;
 }
