@@ -1,5 +1,6 @@
 // API
-const CART_API = "http://127.0.0.1:8080/LTW_BanHang/backend/api/cart";
+// const CART_API = "http://127.0.0.1:8080/LTW_BanHang/backend/api/cart";
+import { CART_GET_URL, CART_ADD_URL, CART_UPDATE_URL, CART_REMOVE_URL } from './configs.js';
 // Data
 let cart =[];
 
@@ -27,7 +28,7 @@ function getAuthHeaders() {
 async function loadCart() {
     try {
         const response = await fetch(
-            `${CART_API}/get.php`,
+            `${CART_GET_URL}`,
             {
                 method: "GET",
                 headers: getAuthHeaders(),
@@ -125,7 +126,7 @@ function handleQuantityChange() {
             }
             try{
                 const response = await fetch(
-                    `${CART_API}/update.php`,
+                    `${CART_ADD_URL}`,
                     {
                         method: "PUT",
                         headers: {
@@ -168,7 +169,7 @@ function handleRemoveCartItem() {
             }
             try {
                 const response = await fetch(
-                    `${CART_API}/remove.php`,
+                    `${CART_REMOVE_URL}`,
                     {
                         method: "DELETE",
                         headers: {
@@ -213,7 +214,7 @@ function handleClearCart() {
         try {
             for (const cartItem of cart) {
                 await fetch(
-                    `${CART_API}/remove.php`,
+                    `${CART_REMOVE_URL}`,
                     {
                         method: "DELETE",
                         headers: {

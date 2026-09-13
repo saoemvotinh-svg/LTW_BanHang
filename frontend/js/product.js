@@ -1,4 +1,5 @@
-import { GET_PRODUCT_DETAIL_URL, BASE_URL } from "./configs.js"; 
+
+import { GET_PRODUCT_DETAIL_URL, CART_ADD_URL, BASE_URL } from "./configs.js";
 
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price) + ' VNĐ';
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 try {
                     const response = await fetch(
-                        "http://localhost:8080/LTW_BanHang/backend/api/cart/add.php",
+                        CART_ADD_URL,
                         {
                             method: "POST",
                             headers: {

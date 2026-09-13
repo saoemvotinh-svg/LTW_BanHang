@@ -58,18 +58,16 @@ function createProductCard(product) {
             <img class="product-image" src="${imageUrl}" alt="${product.name}" onerror="this.src='../assets/images/shopping.webp'">
             <div class="product-desc">${product.name}</div>
             <div class="product-price">Giá: ${formatCurrency(product.price)}</div>
-            
-            <!-- Thêm event.stopPropagation() để không bị nhảy trang khi bấm nút Mua -->
             <button class="buy-btn">Chi tiết</button>
         </div>
     `;
 }
 
-// lấy token đăng nhập
+
 function getToken() {
     return localStorage.getItem("auth_token");
 }
-// thêm sản phẩm vào giỏ hàng
+
 async function addToCart(productId, quantity = 1) {
     const authUser = localStorage.getItem("auth_user");
     if (!authUser) {
@@ -114,7 +112,7 @@ async function addToCart(productId, quantity = 1) {
         alert("Không thể kết nối đến máy chủ.");
     }
 }
-// nút thêm giỏ hàng
+
 function bindAddToCartButtons() {
     const addCartButtons = document.querySelectorAll(".buy-btn");
     addCartButtons.forEach(button => {
