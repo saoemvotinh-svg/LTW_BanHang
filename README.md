@@ -115,8 +115,7 @@ LTW_BanHang/
 ### 2. Cài đặt Cơ sở dữ liệu
 1. Mở phpMyAdmin (hoặc bất kỳ MySQL Client nào).
 2. Tạo database mới với tên `ecommerce` (Charset: `utf8mb4_unicode_ci`).
-3. Import file SQL: `database/MYSQL/ecommerce/0_ecommerce.sql` để tạo các bảng.
-4. (Tùy chọn) Import tiếp các file từ `1_seed_products.sql` đến `4_seed_recent_orders.sql` để có dữ liệu mẫu test hệ thống.
+3. Import file SQL: `database/MYSQL/ecommerce/ecommerce.sql` để tạo bảng và dữ liệu test trên mysql.
 
 ### 3. Cấu hình Backend
 Đảm bảo thông tin kết nối CSDL trong file `backend/config/config.php` là chính xác:
