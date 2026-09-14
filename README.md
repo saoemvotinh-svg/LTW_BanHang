@@ -62,20 +62,20 @@ flowchart LR
     Client((Trình duyệt))
     
     subgraph Frontend [Client Tier - Frontend]
-        UI[HTML/CSS/JS]
+        UI["HTML/CSS/JS"]
     end
     
     subgraph Backend [Application Tier - Backend]
-        API[RESTful API\n(PHP)]
-        PDO[Data Access\n(PDO)]
+        API["RESTful API<br/>(PHP)"]
+        PDO["Data Access<br/>(PDO)"]
     end
     
     subgraph Database [Data Tier - MySQL]
-        DB[(ecommerce)]
+        DB[("ecommerce")]
     end
     
     Client -->|Truy cập| UI
-    UI <-->|Fetch API (JSON)| API
+    UI <-->|"Fetch API (JSON)"| API
     API <-->|Xử lý Logic| PDO
     PDO <-->|SQL Queries| DB
 ```
