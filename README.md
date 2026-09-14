@@ -29,7 +29,7 @@
 - **Xác thực:** Đăng ký, Đăng nhập (với Session lưu trong Database), Đăng xuất.
 - **Sản phẩm:** Lọc sản phẩm theo danh mục, Tìm kiếm.
 - **Giỏ hàng:** Thêm, Sửa số lượng, Xóa sản phẩm khỏi giỏ.
-- **Đặt hàng:** Thanh toán đơn hàng, Xem lịch sử đơn hàng.
+- **Đặt hàng:** Xác nhận đơn hàng, Xem lịch sử đơn hàng.
 - **Hủy đơn:** Người dùng có thể tự hủy đơn khi đơn ở trạng thái *Chờ xử lý*, tự động hoàn lại số lượng hàng (stock) về kho.
 
 ### 👑 Quản trị viên (Admin)
@@ -57,28 +57,7 @@
 
 Dự án áp dụng mô hình **3-Tier Architecture** (Kiến trúc 3 Tầng) tách biệt hoàn toàn giữa Frontend (Giao diện) và Backend (Dữ liệu), giao tiếp 100% qua RESTful API.
 
-```mermaid
-flowchart LR
-    Client((Trình duyệt))
-    
-    subgraph Frontend [Client Tier - Frontend]
-        UI["HTML/CSS/JS"]
-    end
-    
-    subgraph Backend [Application Tier - Backend]
-        API["RESTful API<br/>(PHP)"]
-        PDO["Data Access<br/>(PDO)"]
-    end
-    
-    subgraph Database [Data Tier - MySQL]
-        DB[("ecommerce")]
-    end
-    
-    Client -->|Truy cập| UI
-    UI <-->|"Fetch API (JSON)"| API
-    API <-->|Xử lý Logic| PDO
-    PDO <-->|SQL Queries| DB
-```
+![Architecture Diagram](diagram/architecture.png)
 
 ---
 
@@ -86,18 +65,7 @@ flowchart LR
 
 Dự án có lược đồ CSDL được thiết kế chặt chẽ. Dưới đây là mô hình ER các bảng chính:
 
-```mermaid
-erDiagram
-    USERS ||--o{ ORDERS : places
-    USERS ||--o{ CARTS : has
-    USERS ||--o{ SESSIONS : authenticates
-    CATEGORIES ||--o{ PRODUCTS : contains
-    PRODUCTS ||--o{ PRODUCT_IMAGES : has
-    ORDERS ||--|{ ORDER_ITEMS : contains
-    PRODUCTS ||--o{ ORDER_ITEMS : inside
-    CARTS ||--|{ CART_ITEMS : contains
-    PRODUCTS ||--o{ CART_ITEMS : inside
-```
+![Database Schema](diagram/database.png)
 
 Các bảng chính:
 - `users`: Quản lý người dùng (Phân quyền: `admin`, `customer`).
