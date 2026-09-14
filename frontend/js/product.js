@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 document.querySelector('.product-info h1').textContent = `Tên Sản Phẩm: ${productData.name}`;
                 document.querySelector('.product-info .price').textContent = `Giá: ${formatPrice(productData.price)}`;
+                document.querySelector('.product-description p').innerHTML = productData.description ? productData.description.replace(/\n/g, '<br>') : 'Chưa có mô tả cho sản phẩm này.';
                 document.title = productData.name;
 
                 if (images && images.length > 0) {

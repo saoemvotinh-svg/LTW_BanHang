@@ -66,23 +66,30 @@ document.addEventListener("DOMContentLoaded", function(){
             const orderDate = order.created_at || "Chưa có";
             const total = Number(order.total_amount || 0);
             let status = order.status || "Chưa xác định";
+            let statusClass = "status-pending";
             if(status === "pending"){
                 status = "Chờ xác nhận";
+                statusClass = "status-pending";
             }
             else if(status === "confirmed"){
                 status = "Đã xác nhận";
+                statusClass = "status-confirmed";
             }
             else if(status === "processing"){
                 status = "Đang xử lý";
+                statusClass = "status-confirmed";
             }
             else if(status === "shipping"){
                 status = "Đang giao";
+                statusClass = "status-shipping";
             }
-            else if(status === "delivered"){
+            else if(status === "delivered" || status === "completed"){
                 status = "Đã giao";
+                statusClass = "status-completed";
             }
             else if(status === "cancelled"){
                 status = "Đã hủy";
+                statusClass = "status-cancelled";
             }
             const items = order.items || []
             html += `
@@ -111,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function(){
                             <p class="order_label">
                                 Trạng thái
                             </p>
-                            <p class="order_status">
+                            <p class="order_status ${statusClass}">
                                 ${status}
                             </p>
                         </div>
