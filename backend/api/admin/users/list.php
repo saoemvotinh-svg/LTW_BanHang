@@ -31,8 +31,10 @@ try {
     $params       = [];
 
     if ($search !== '') {
-        $whereClauses[] = "(u.full_name LIKE :search OR u.email LIKE :search OR u.phone LIKE :search)";
-        $params[':search'] = '%' . $search . '%';
+        $whereClauses[] = "(u.full_name LIKE :search1 OR u.email LIKE :search2 OR u.phone LIKE :search3)";
+        $params[':search1'] = '%' . $search . '%';
+        $params[':search2'] = '%' . $search . '%';
+        $params[':search3'] = '%' . $search . '%';
     }
 
     $validRoles = ['admin', 'customer'];
