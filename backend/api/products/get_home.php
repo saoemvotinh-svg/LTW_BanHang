@@ -26,11 +26,12 @@ try {
         SELECT p.id, p.name, p.price, p.stock,
                c.name AS category_name,
                COALESCE(pi.image_url, '') AS image,
-               COALESCE(SUM(oi.quantity), 0) AS total_sold
+               COALESCE(SUM(CASE WHEN o.status != 'cancelled' THEN oi.quantity ELSE 0 END), 0) AS total_sold
         FROM products p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.is_primary = 1
         LEFT JOIN order_items oi ON p.id = oi.product_id
+        LEFT JOIN orders o ON oi.order_id = o.id
         GROUP BY p.id, p.name, p.price, p.stock, c.name, pi.image_url
         ORDER BY total_sold DESC, p.id DESC
         LIMIT 4
