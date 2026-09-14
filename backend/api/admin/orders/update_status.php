@@ -80,6 +80,18 @@ try {
         ':id'     => $id,
     ]);
 
+    // Restore stock if the new status is cancelled
+    if ($dbStatusToUpdate === 'cancelled') {
+        $itemsStmt = $conn->prepare("SELECT product_id, quantity FROM order_items WHERE order_id = ?");
+        $itemsStmt->execute([$id]);
+        $orderItems = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $restoreStmt = $conn->prepare("UPDATE products SET stock = stock + ? WHERE id = ?");
+        foreach ($orderItems as $item) {
+            $restoreStmt->execute([$item['quantity'], $item['product_id']]);
+        }
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Cập nhật trạng thái đơn hàng thành công',

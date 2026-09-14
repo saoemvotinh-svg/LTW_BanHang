@@ -382,6 +382,15 @@ function showToast(message, type = 'success') {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Xử lý auto-search từ URL query parameter TRƯỚC KHI load data
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+    const searchInput = document.getElementById('orders-search');
+    
+    if (searchQuery && searchInput) {
+        searchInput.value = searchQuery;
+    }
+
     loadOrders();
 
     // Đóng panel
@@ -396,12 +405,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnClose)  btnClose.addEventListener('click', closePanel);
     if (btnCancel) btnCancel.addEventListener('click', closePanel);
 
+    // Xóa block url params bị lặp bên dưới
     // Nút cập nhật trạng thái
     const updateBtn = document.getElementById('btn-update-order');
     if (updateBtn) updateBtn.addEventListener('click', updateOrderStatus);
 
     // Search debounce
-    const searchInput = document.getElementById('orders-search');
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             clearTimeout(searchTimeout);

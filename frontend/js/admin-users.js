@@ -143,6 +143,9 @@ function renderTable(users) {
                         <button class="btn-icon view" onclick="openUserPanel(${user.id})" title="Xem chi tiết">
                             <i class="fa-regular fa-eye"></i>
                         </button>
+                        <a href="admin-orders.html?search=${encodeURIComponent(user.email)}" class="btn-icon view" title="Xem đơn hàng của người dùng" style="color:#059669; text-decoration: none;">
+                            <i class="fa-solid fa-cart-arrow-down"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

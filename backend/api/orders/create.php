@@ -117,6 +117,15 @@ try {
     if ($address === '') {
         responseJson(false, 'Vui lòng nhập địa chỉ nhận hàng');
     }
+    
+    $selectedItemIds = $input['selected_cart_item_ids'] ?? [];
+    if (!is_array($selectedItemIds) || empty($selectedItemIds)) {
+        responseJson(false, 'Vui lòng chọn ít nhất 1 sản phẩm để đặt hàng');
+    }
+    
+    // Đảm bảo tất cả item ID là số nguyên
+    $selectedItemIds = array_map('intval', $selectedItemIds);
+    $inPlaceholders = str_repeat('?,', count($selectedItemIds) - 1) . '?';
 
     $conn->beginTransaction();
 
@@ -147,12 +156,11 @@ try {
         FROM cart_items ci
         INNER JOIN products p
             ON ci.product_id = p.id
-        WHERE ci.cart_id = :cart_id
+        WHERE ci.cart_id = ? AND ci.id IN ($inPlaceholders)
         FOR UPDATE
     ");
-    $itemsStmt->execute([
-        ':cart_id' => $cartId
-    ]);
+    $params = array_merge([$cartId], $selectedItemIds);
+    $itemsStmt->execute($params);
     $cartItems = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
     if (!$cartItems) {
         $conn->rollBack();
@@ -259,15 +267,13 @@ try {
             );
         }
     }
-// xóa sản phẩm sau khi đặt
+// xóa sản phẩm đã chọn khỏi giỏ hàng sau khi đặt
     $deleteCartItemsStmt = $conn->prepare("
         DELETE FROM cart_items
-        WHERE cart_id = :cart_id
+        WHERE cart_id = ? AND id IN ($inPlaceholders)
     ");
 
-    $deleteCartItemsStmt->execute([
-        ':cart_id' => $cartId
-    ]);
+    $deleteCartItemsStmt->execute(array_merge([$cartId], $selectedItemIds));
 
     $conn->commit();
     responseJson(

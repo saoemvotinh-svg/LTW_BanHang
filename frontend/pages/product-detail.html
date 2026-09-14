@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết sản phẩm</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/product.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết sản phẩm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="../css/product.css">
 </head>
+
 <body>
-<header class="main-header">
+  <header class="main-header">
     <div class="container header-container">
       <div class="logo"><a href="#">Nhóm 2</a></div>
       <nav class="main-nav">
@@ -30,55 +32,62 @@
       </nav>
       <div class="header-actions">
         <form action="search.html" method="GET" class="search-form">
-            <input type="text" name="keyword" class="search-input" placeholder="Tìm kiếm sản phẩm...">
-            <button type="submit" class="search-btn">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
+          <input type="text" name="keyword" class="search-input" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit" class="search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
         </form>
         <a href="profile.html"><i class="fa-regular fa-user"></i> Tài khoản</a>
         <a href="cart.html" class="cart-btn"><i class="fa-solid fa-bag-shopping"></i> Giỏ hàng</a>
       </div>
     </div>
   </header>
-    <main class="container">      
-        <div class ="product-top-row">
-        <section class="product-gallery">
-            <img src="../assets/images/demo-main.jpg" alt="Ảnh sản phẩm chính">
-            <div class="thumbnails">
-                <img src="../assets/images/thumb1.jpg" alt="Ảnh nhỏ 1">
-                <img src="../assets/images/thumb2.jpg" alt="Ảnh nhỏ 2">
-            </div>
-        </section>
-        <section class="product-info">
-            <h1>Tên Sản Phẩm: Áo Quần Mùa Hè Cute</h1>
-            <p class="price">Giá: 90.000 VNĐ</p>
-            <p class="status">Tình trạng: Còn hàng</p>
-            
-            <form action="#">
-                <label for="quantity">Số lượng:</label>
-                <input type="number" id="quantity" name="quantity" value="1" min="1">
-                <button type="button">Thêm vào giỏ hàng</button>
-            </form>
-        </section>
+  <main class="container">
+    <div class="product-top-row">
+      <section class="product-gallery">
+        <img src="#" alt="Ảnh sản phẩm chính">
+        <div class="thumbnails">
+          <img src="#" alt="Ảnh nhỏ 1">
+          <img src="#" alt="Ảnh nhỏ 2">
         </div>
-        <section class="product-description">
-            <h2>Mô tả sản phẩm</h2>
-            <p>Chất liệu cotton thoáng mát, thấm hút mồ hôi tốt, thiết kế dễ thương rất phù hợp cho bé vận động trong những ngày hè oi bức...</p>
-        </section>
-        <section class="product-reviews">
-            <h2>Đánh giá từ khách hàng</h2>
-            <form action="" id="reviewForm" class="review-form" style="margin-bottom: 20px;">
-                <textarea name="" id="reviewText" class="review-form__input" placeholder="Viết đánh giá của bạn..." required style="width: 100%; min-height: 80px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
-                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-            </form>
-            <ul>
-                <li><strong>Trâm:</strong> Áo rất đẹp, chất vải mềm mại! (5 sao)</li>
-                <li><strong>Đăng Khoa:</strong> Giao hàng nhanh, bé mặc vừa vặn. (4 sao)</li>
-            </ul>
-        </section>
-    </main>
+      </section>
+      <section class="product-info">
+        <h1>Tên Sản Phẩm: </h1>
+        <p class="price">Giá: </p>
+        <p class="status">Tình trạng: còn hàng</p>
 
-    <footer class="main-footer">
+        <form action="#">
+          <div class="quantity-group">
+            <label for="quantity">Số lượng:</label>
+            <div class="quantity-control">
+              <button type="button" class="qty-btn minus-btn">-</button>
+              <input type="number" id="quantity" name="quantity" value="1" min="1">
+              <button type="button" class="qty-btn plus-btn">+</button>
+            </div>
+          </div>
+          <button type="button" class="order-btn">Thêm vào giỏ hàng</button>
+        </form>
+      </section>
+    </div>
+    <section class="product-description">
+      <h2>Mô tả sản phẩm</h2>
+      <p></p>
+    </section>
+    <section class="product-reviews">
+      <h2>Đánh giá từ khách hàng</h2>
+      <form action="" id="reviewForm" class="review-form" style="margin-bottom: 20px;">
+        <textarea name="" id="reviewText" class="review-form__input" placeholder="Viết đánh giá của bạn..." required
+          style="width: 100%; min-height: 80px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+      </form>
+      <ul>
+        <li><strong>Trâm:</strong> Áo rất đẹp, chất vải mềm mại! (5 sao)</li>
+        <li><strong>Đăng Khoa:</strong> Giao hàng nhanh, bé mặc vừa vặn. (4 sao)</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="main-footer">
     <div class="container footer-grid">
       <div class="footer-col">
         <h3>Nhóm 2</h3>
@@ -86,20 +95,30 @@
       </div>
       <div class="footer-col">
         <h4>Điều hướng</h4>
-        <ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
       </div>
       <div class="footer-col">
         <h4>Liên hệ</h4>
-        <ul><li>Địa chỉ: 25, Võ Oanh</li><li>Email: vanwhuy60@gmail,com</li></ul>
+        <ul>
+          <li>Địa chỉ: 25, Võ Oanh</li>
+          <li>Email: vanwhuy60@gmail,com</li>
+        </ul>
       </div>
       <div class="footer-col">
         <h4>Chính sách</h4>
-        <ul><li>Lỗi đổi trả trong 7 ngày</li><li>Bảo hành 2 tháng</li></ul>
+        <ul>
+          <li>Lỗi đổi trả trong 7 ngày</li>
+          <li>Bảo hành 2 tháng</li>
+        </ul>
       </div>
     </div>
-    </footer>
-    <script src="../js/layout.js"></script>
-<script type="module" src="../js/product.js"></script>
-<script src="../js/cart.js"></script>
+  </footer>
+  <script src="../js/layout.js"></script>
+  <script type="module" src="../js/product.js"></script>
+  <script src="../js/cart.js"></script>
 </body>
+
 </html>

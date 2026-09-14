@@ -76,81 +76,65 @@
 
             <!--Giỏ hàng-->
             <section class="cart-section">
-                <div class="cart-list" id="cart-list">
-                </div>
-
-                <button type="button" id="clear-cart-btn" class="clear-cart-btn">
-                    <i class="fa-solid fa-trash"></i>
-                    Xóa tất cả
-                </button>
                 
-                <!--TỔNG TIỀN-->
-                <div class="cart-summary">
-                    <div class="summary-row">
-                        <span>Tổng tiền hàng</span>
-                        <strong id="cart-subtotal">0 VNĐ</strong>
+                <!-- Tiêu đề các cột -->
+                <div class="cart-table-header">
+                    <div class="col-checkbox">
+                        <input type="checkbox" id="check-all-header" style="transform: scale(1.2); cursor: pointer;">
                     </div>
-
-                    <div class="summary-row">
-                        <span>Phí vận chuyển</span>
-                        <strong>0 VNĐ</strong>
-                    </div>
-
-                    <div class="summary-row summary-total">
-                        <span>Tổng thanh toán</span>
-                        <strong id="cart-total">0 VNĐ</strong>
-                    </div>
+                    <div class="col-product">Sản Phẩm</div>
+                    <div class="col-price">Đơn Giá</div>
+                    <div class="col-quantity">Số Lượng</div>
+                    <div class="col-total">Số Tiền</div>
+                    <div class="col-action">Thao Tác</div>
                 </div>
-            </section>
 
-            <!--FORM đặt hàng-->
-            <section class="order-section">
+                <!-- Danh sách sản phẩm -->
+                <div class="cart-list" id="cart-list">
+                    <!-- Sản phẩm sẽ được render ở đây -->
+                </div>
+
+                <!--FORM đặt hàng-->
                 <div class="order-form-container">
-                    <div class="order-title">
-                        <h2>Thông tin đặt hàng</h2>
-                        <p>Vui lòng nhập đầy đủ thông tin của bạn</p>
+                    <div class="order-title" style="margin-bottom: 25px;">
+                        <h2 style="font-size: 20px; margin-bottom: 8px;">Thông tin giao hàng</h2>
+                        <p style="color: #777; font-size: 14px; margin: 0;">Vui lòng nhập thông tin nhận hàng của bạn</p>
                     </div>
 
-                    <form class="order-form">
+                    <form class="order-form" id="checkout-form">
                         <div class="form-group">
-                            <label for="fullname">
-                                Họ và tên
-                            </label>
-                            <input
-                                type="text"
-                                id="fullname"
-                                name="fullname"
-                                placeholder="Nhập họ và tên">
+                            <input type="text" id="fullname" name="fullname" placeholder="Họ và tên">
                         </div>
 
                         <div class="form-group">
-                            <label for="phone">
-                                Số điện thoại
-                            </label>
-                            <input
-                                type="tel"
-                                id="phone"
-                                name="phone"
-                                placeholder="Nhập số điện thoại">
+                            <input type="tel" id="phone" name="phone" placeholder="Số điện thoại">
                         </div>
 
                         <div class="form-group">
-                            <label for="address">
-                                Địa chỉ
-                            </label>
-                            <textarea
-                                id="address"
-                                name="address"
-                                rows="4"
-                                placeholder="Nhập địa chỉ nhận hàng"></textarea>
+                            <textarea id="address" name="address" rows="2" placeholder="Địa chỉ chi tiết nhận hàng"></textarea>
                         </div>
-
-                        <button type="submit" class="order-btn">
-                            <i class="fa-solid fa-check"></i>
-                            Xác nhận đặt hàng
-                        </button>
                     </form>
                 </div>
+                
+                <!-- THANH TOÁN STICKY Ở ĐÁY -->
+                <div class="cart-bottom-bar">
+                    <div class="cart-bottom-left">
+                        <button type="button" id="delete-selected-btn" class="clear-cart-btn" style="color: #999; font-weight: bold; font-size: 15px; pointer-events: none;">
+                            Xóa các sản phẩm đã chọn
+                        </button>
+                    </div>
+
+                    <div class="cart-bottom-right">
+                        <div class="cart-total-info">
+                            <span>Tổng thanh toán (<span id="cart-count">0</span> sản phẩm):</span>
+                            <strong id="cart-total" style="color: #d9534f; font-size: 24px; margin-left: 15px;">0 VNĐ</strong>
+                        </div>
+                        <button type="submit" form="checkout-form" class="order-btn bottom-order-btn">
+                            Xác nhận đặt hàng
+                        </button>
+                    </div>
+                </div>
+
             </section>
         </div>
     </main>

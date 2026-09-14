@@ -33,8 +33,10 @@ try {
     $params       = [];
 
     if ($search !== '') {
-        $whereClauses[] = "(o.customer_name LIKE :search OR o.phone LIKE :search OR o.id LIKE :search_id)";
-        $params[':search']    = '%' . $search . '%';
+        $whereClauses[] = "(o.customer_name LIKE :search1 OR o.phone LIKE :search2 OR u.email LIKE :search3 OR CAST(o.id AS CHAR) LIKE :search_id)";
+        $params[':search1']   = '%' . $search . '%';
+        $params[':search2']   = '%' . $search . '%';
+        $params[':search3']   = '%' . $search . '%';
         $params[':search_id'] = '%' . $search . '%';
     }
 
@@ -72,7 +74,7 @@ try {
     $whereSQL = "WHERE " . implode(" AND ", $whereClauses);
 
     // --- Đếm tổng ---
-    $countSQL  = "SELECT COUNT(*) AS total FROM orders o $whereSQL";
+    $countSQL  = "SELECT COUNT(*) AS total FROM orders o LEFT JOIN users u ON o.user_id = u.id $whereSQL";
     $stmtCount = $conn->prepare($countSQL);
     foreach ($params as $k => $v) {
         $stmtCount->bindValue($k, $v);

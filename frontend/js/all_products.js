@@ -1,5 +1,5 @@
 import { GET_ALL_PRODUCTS_URL, getImageUrl } from "./configs.js";
-
+import { showToast, generateSkeletonCard, generateEmptyState } from "./ui-helpers.js";
 let products = [];
 let currentPage = 1;
 const itemsPerPage = 8;
@@ -192,32 +192,36 @@ async function fetchAndRenderProducts() {
     }
 
     try {
+        // Show skeleton loading first
+        productGrid.innerHTML = Array(itemsPerPage).fill(generateSkeletonCard()).join("");
+
         const response = await fetch(`${GET_ALL_PRODUCTS_URL}?${params.toString()}`);
         const result = await response.json();
 
         if (!result.success) {
-        productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Lỗi: ${result.message}</p>`;
-        return;
+            productGrid.innerHTML = generateEmptyState(`Lỗi: ${result.message}`, "fa-circle-exclamation");
+            return;
         }
 
         if (result.categories) {
-        renderCategories(result.categories);
+            renderCategories(result.categories);
         }
 
         products = result.data;
         const pagination = result.pagination;
 
         if (!products || products.length === 0) {
-        productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">Không tìm thấy sản phẩm nào phù hợp.</p>`;
+            productGrid.innerHTML = generateEmptyState("Không tìm thấy sản phẩm nào phù hợp.", "fa-box-open");
         } else {
-        productGrid.innerHTML = products.map(p => createProductCard(p)).join("");
+            productGrid.innerHTML = products.map(p => createProductCard(p)).join("");
         }
 
         renderPagination(pagination.total_pages);
 
     } catch (error) {
         console.error("Lỗi khi kết nối API:", error);
-        productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Không thể tải danh sách sản phẩm.</p>`;
+        productGrid.innerHTML = generateEmptyState("Không thể tải danh sách sản phẩm.", "fa-network-wired");
+        showToast("Không thể tải danh sách sản phẩm.", "error");
     }
 }
 
