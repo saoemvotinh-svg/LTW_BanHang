@@ -29,7 +29,7 @@
 - **Xác thực:** Đăng ký, Đăng nhập (với Session lưu trong Database), Đăng xuất.
 - **Sản phẩm:** Lọc sản phẩm theo danh mục, Tìm kiếm.
 - **Giỏ hàng:** Thêm, Sửa số lượng, Xóa sản phẩm khỏi giỏ.
-- **Đặt hàng:** Thanh toán đơn hàng, Xem lịch sử đơn hàng.
+- **Đặt hàng:** Xác nhận đơn hàng, Xem lịch sử đơn hàng.
 - **Hủy đơn:** Người dùng có thể tự hủy đơn khi đơn ở trạng thái *Chờ xử lý*, tự động hoàn lại số lượng hàng (stock) về kho.
 
 ### 👑 Quản trị viên (Admin)
