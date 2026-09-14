@@ -94,6 +94,7 @@ export const CART_REMOVE_URL = BASE_URL + "api/cart/remove.php";
 // =============================================
 export const ORDER_MY_ORDERS_URL = BASE_URL + "api/orders/my_orders.php";
 export const ORDER_CREATE_URL = BASE_URL + "api/orders/create.php";
+export const ORDER_CANCEL_URL = BASE_URL + "api/orders/cancel.php";
 
 // =============================================
 // ADMIN APIs

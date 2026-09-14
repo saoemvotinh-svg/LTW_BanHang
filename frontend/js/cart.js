@@ -29,6 +29,23 @@ function getAuthHeaders() {
 
 // lấy giỏ hàng từ database 
 async function loadCart() {
+    const token = getToken();
+    if (!token) {
+        const cartList = document.getElementById("cart-list");
+        if (cartList) {
+            cartList.innerHTML = `
+                <div style="text-align:center; padding: 60px 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                    <i class="fa-solid fa-lock" style="font-size: 48px; color: #ddd; margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 15px; font-size: 20px; color: #333;">Yêu cầu đăng nhập</h3>
+                    <p style="margin-bottom: 20px; color: #777;">Vui lòng đăng nhập để xem giỏ hàng của bạn.</p>
+                    <a href="login.html" style="display: inline-block; padding: 12px 24px; background-color: var(--primary-color); color: white; border-radius: 8px; font-weight: 600;">Đăng nhập ngay</a>
+                </div>
+            `;
+        }
+        updateCartTotal();
+        return;
+    }
+
     try {
         const response = await fetch(
             `${CART_GET_URL}`,
@@ -384,8 +401,16 @@ function handleOrder() {
 
         const token = getToken();
         if (!token) {
-            showToast("Vui lòng đăng nhập trước khi đặt hàng", "warning");
-            setTimeout(() => window.location.href = "login.html", 1500);
+            showModal(
+                "Yêu cầu đăng nhập",
+                "Vui lòng đăng nhập trước khi đặt hàng.",
+                () => {
+                    window.location.href = "login.html";
+                },
+                "Đăng nhập ngay",
+                "Đóng",
+                false
+            );
             return;
         }
         
