@@ -135,6 +135,9 @@ function renderTable(products) {
                 <td>${formatDate(product.created_at)}</td>
                 <td>
                     <div class="action-btns">
+                        <button class="btn-icon view" onclick="window.open('../pages/product-detail.html?id=${product.id}', '_blank')" title="Xem chi tiết">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
                         <button class="btn-icon edit" onclick="openOffcanvas(${product.id})" title="Chỉnh sửa">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
@@ -578,8 +581,8 @@ function setupImagePreview() {
             const files = Array.from(this.files);
             
             for (const file of files) {
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast(`File ${file.name} quá lớn (tối đa 2MB)`, 'error');
+                if (file.size > 5000 * 1024) {
+                    showToast(`File ${file.name} quá lớn (tối đa 5000KB)`, 'error');
                     continue;
                 }
                 

@@ -1,4 +1,4 @@
-import { ORDER_MY_ORDERS_URL, ORDER_CANCEL_URL } from "./configs.js";
+import { ORDER_MY_ORDERS_URL, ORDER_CANCEL_URL, getImageUrl } from "./configs.js";
 import { showToast, showModal } from "./ui-helpers.js";
 document.addEventListener("DOMContentLoaded", function(){
     const OrdersContainer = document.getElementById("orders_container");
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function(){
                             ${
                                 image
                                 ?
-                                `<img src="${image}" alt="${productName}">`
+                                `<img src="${getImageUrl(image)}" alt="${productName}">`
                                 :
                                 `<span>Không có ảnh</span>`
                             }

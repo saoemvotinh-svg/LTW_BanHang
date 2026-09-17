@@ -4,7 +4,10 @@
 // Development: "http://localhost:8080/"
 // Production:  "/" (nếu frontend và backend cùng domain)
 // Hoặc:        "https://domain.com/" (nếu khác domain)
-export const BASE_URL = "http://localhost:8080/";
+// Tự động nhận diện môi trường (localhost hoặc production)
+export const BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+    ? "http://localhost:8080/" 
+    : "/";
 
 
 
@@ -37,11 +40,18 @@ export function getImageUrl(imagePath, fallback = 'https://placehold.co/60x60/e2
         return imagePath;
     }
 
+    // Đảm bảo baseUrl kết thúc bằng '/' và xử lý trường hợp BASE_URL rỗng
+    let baseUrl = BASE_URL;
+    if (baseUrl === "") {
+        baseUrl = "/";
+    } else if (!baseUrl.endsWith('/')) {
+        baseUrl += '/';
+    }
+
     // Path mới từ DB: "assets/products/abc123.jpg"
-    // Backend server root = backend/ nên đường dẫn web là BASE_URL + path
-    // Ví dụ: http://localhost:8080/assets/products/abc123.jpg
+    // Backend server root = backend/ nên đường dẫn web là baseUrl + path
     if (imagePath.startsWith('assets/')) {
-        return BASE_URL + imagePath;
+        return baseUrl + imagePath;
     }
 
     // Path cũ (backward compatibility): "../assets/images/products/abc.jpg"
@@ -49,13 +59,13 @@ export function getImageUrl(imagePath, fallback = 'https://placehold.co/60x60/e2
     if (imagePath.includes('/')) {
         const filename = imagePath.split('/').pop();
         if (imagePath.includes('/products/')) {
-            return BASE_URL + 'assets/products/' + filename;
+            return baseUrl + 'assets/products/' + filename;
         }
         if (imagePath.includes('/categories/')) {
-            return BASE_URL + 'assets/categories/' + filename;
+            return baseUrl + 'assets/categories/' + filename;
         }
         if (imagePath.includes('/users/')) {
-            return BASE_URL + 'assets/users/' + filename;
+            return baseUrl + 'assets/users/' + filename;
         }
     }
 

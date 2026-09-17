@@ -86,7 +86,7 @@ try {
         for ($i = 0; $i < $fileCount; $i++) {
             if ($_FILES['new_images']['error'][$i] === UPLOAD_ERR_OK) {
                 $tmpPath = $_FILES['new_images']['tmp_name'][$i];
-                $maxSize = 2 * 1024 * 1024;
+                $maxSize = 5000 * 1024; // 5000KB
 
                 if ($_FILES['new_images']['size'][$i] > $maxSize) {
                     $validImageIndex++;

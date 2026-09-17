@@ -1,5 +1,5 @@
 // API
-import { CART_GET_URL, CART_ADD_URL, CART_UPDATE_URL, CART_REMOVE_URL, ORDER_CREATE_URL } from './configs.js';
+import { CART_GET_URL, CART_ADD_URL, CART_UPDATE_URL, CART_REMOVE_URL, ORDER_CREATE_URL, getImageUrl } from './configs.js';
 import { showToast, showModal, showInlineError, clearInlineError, generateEmptyState } from './ui-helpers.js';
 
 // Data
@@ -72,7 +72,14 @@ async function loadCart() {
 
 // RENDER
 function renderCart() {
+    // Luôn cập nhật số lượng giỏ hàng trên header nếu có
+    const cartCountElement = document.getElementById("cart-count");
+    if (cartCountElement) {
+        cartCountElement.textContent = cart.length;
+    }
+
     const cartList = document.getElementById("cart-list");
+    if (!cartList) return; // Nếu không ở trang giỏ hàng thì dừng lại
 
     cartList.innerHTML = "";
     if (cart.length === 0) {
@@ -88,7 +95,7 @@ function renderCart() {
                     <input type="checkbox" class="item-checkbox" data-id="${cartItem.id}" style="transform: scale(1.2); cursor: pointer;">
                 </div>
                 <div class="col-product cart-product">
-                    <img src="${cartItem.image_url || ""}" alt="${cartItem.name}">
+                    <img src="${getImageUrl(cartItem.image_url || "")}" alt="${cartItem.name}">
                     <div class="cart-product-info">
                         <h3>${cartItem.name}</h3>
                         <p> ${cartItem.category_name || ""} </p>
@@ -123,12 +130,6 @@ function renderCart() {
     handleQuantityChange();
     handleRemoveCartItem();
     handleCheckboxes();
-
-    // Update cart count
-    const cartCountElement = document.getElementById("cart-count");
-    if (cartCountElement) {
-        cartCountElement.textContent = cart.length;
-    }
 }
 
 function updateCartTotal() {

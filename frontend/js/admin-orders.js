@@ -1,6 +1,6 @@
 // admin-orders.js — Quản lý đơn hàng, kết nối API thật
 
-import { ADMIN_ORDERS_LIST_URL as ORDERS_LIST_URL, ADMIN_ORDERS_DETAIL_URL as ORDERS_DETAIL_URL, ADMIN_ORDERS_UPDATE_STATUS_URL as ORDERS_UPDATE_STATUS_URL } from "./configs.js";
+import { ADMIN_ORDERS_LIST_URL as ORDERS_LIST_URL, ADMIN_ORDERS_DETAIL_URL as ORDERS_DETAIL_URL, ADMIN_ORDERS_UPDATE_STATUS_URL as ORDERS_UPDATE_STATUS_URL, getImageUrl } from "./configs.js";
 
 function getAuthToken() {
     return localStorage.getItem('auth_token') || '';
@@ -58,6 +58,8 @@ async function loadOrders() {
     const tbody     = document.getElementById('orders-tbody');
     const searchVal = document.getElementById('orders-search')?.value.trim() || '';
     const statusVal = document.getElementById('status-filter')?.value || '';
+    const dateFrom  = document.getElementById('date-from')?.value || '';
+    const dateTo    = document.getElementById('date-to')?.value || '';
 
     if (tbody) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#6b7280">Đang tải...</td></tr>';
@@ -68,6 +70,8 @@ async function loadOrders() {
         limit:  currentLimit,
         search: searchVal,
         status: statusVal,
+        date_from: dateFrom,
+        date_to: dateTo,
     });
 
     try {
@@ -269,7 +273,7 @@ window.openOrderPanel = async function(orderId) {
         if (items && items.length > 0) {
             let itemsHtml = '';
             items.forEach(item => {
-                const imgSrc = item.image || 'https://placehold.co/60x60/e2e8f0/94a3b8?text=SP';
+                const imgSrc = getImageUrl(item.image);
                 itemsHtml += `
                     <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center">
                         <img src="${imgSrc}" style="width:60px;height:60px;border-radius:6px;object-fit:cover"
@@ -429,4 +433,10 @@ document.addEventListener('DOMContentLoaded', () => {
             loadOrders();
         });
     }
+
+    // Filter dates
+    const dateFromEl = document.getElementById('date-from');
+    const dateToEl   = document.getElementById('date-to');
+    if (dateFromEl) dateFromEl.addEventListener('change', () => { currentPage = 1; loadOrders(); });
+    if (dateToEl)   dateToEl.addEventListener('change', () => { currentPage = 1; loadOrders(); });
 });

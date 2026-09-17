@@ -1,5 +1,5 @@
 
-import { GET_PRODUCT_DETAIL_URL, CART_ADD_URL, BASE_URL } from "./configs.js";
+import { GET_PRODUCT_DETAIL_URL, CART_ADD_URL, BASE_URL, getImageUrl } from "./configs.js";
 import { showToast } from "./ui-helpers.js";
 
 function formatPrice(price) {
@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (images && images.length > 0) {
                     const mainImg = document.querySelector('.product-gallery > img');
-                    mainImg.src = images[0].image_url; 
+                    mainImg.src = getImageUrl(images[0].image_url); 
                     
                     let thumbHtml = '';
                     images.forEach(img => {
-                        thumbHtml += `<img src="${img.image_url}" alt="Thumbnail" onerror="this.src='../assets/images/shopping.webp'">`;
+                        thumbHtml += `<img src="${getImageUrl(img.image_url)}" alt="Thumbnail" onerror="this.src='../assets/images/shopping.webp'">`;
                     });
                     const thumbContainer = document.querySelector('.thumbnails');
                     thumbContainer.innerHTML = thumbHtml;
